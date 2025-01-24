@@ -6,6 +6,7 @@ from tqdm import tqdm
 import numpy as np
 from sklearn import tree, metrics
 from sklearn.model_selection import cross_validate
+from sklearn.calibration import CalibratedClassifierCV 
 import pandas as pd
 import matplotlib.pyplot as plt
 
@@ -37,7 +38,34 @@ def main():
     df_acc.to_csv(RESULTS_DIR / 'tolerance factors accuracy.csv')
 
     logger.success("Modeling evaluation complete.")
+
+    train_platt_scaling(train_df, test_df)
     # -----------------------------------------
+
+
+def train_platt_scaling(train_df, test_df,
+                        output_dir: Path = RESULTS_DIR):
+
+    logger.info("Training Platt scaling model...")
+
+    x_train_t_sisso = train_df['t_sisso'].to_numpy()
+    x_test_t_sisso = test_df['t_sisso'].to_numpy()
+    threshold_t_sisso = tolerance_factor_dict['t_sisso'][1]
+
+    labels_platt=clf_t_sisso.predict(x_train_t_sisso.reshape(-1,1))
+    clf2_sisso = CalibratedClassifierCV(cv=3)
+    clf2_sisso = clf2_sisso.fit(x_train_t_sisso.reshape(-1,1), labels_platt)
+    p_t_sisso_train=clf2_sisso.predict_proba(x_train_t_sisso.reshape(-1,1))[:,1]
+    p_t_sisso_test=clf2_sisso.predict_proba(x_test_t_sisso.reshape(-1,1))[:,1]
+    train_df['p_t_sisso'] = p_t_sisso_train            # add p_t_sisso to the train and test data frame
+    test_df['p_t_sisso'] = p_t_sisso_test
+
+    train_df.to_csv(output_dir / 'proccessed_chpvk_train_dataset.csv')
+    test_df.to_csv(output_dir / 'proccessed_chpvk_test_dataset.csv')
+
+    logger.success("Platt scaling model training complete.")
+
+    return train_df, test_df
 
 
 def train_tree_sis_features(
