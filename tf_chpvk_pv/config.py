@@ -20,6 +20,7 @@ MODELS_DIR = PROJ_ROOT / "models"
 
 REPORTS_DIR = PROJ_ROOT / "reports"
 FIGURES_DIR = REPORTS_DIR / "figures"
+RESULTS_DIR = MODELS_DIR/ "results"
 
 # Random seed
 RANDOM_SEED = 187636123

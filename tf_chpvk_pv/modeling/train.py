@@ -9,8 +9,9 @@ from sklearn.model_selection import cross_validate
 from sklearn.calibration import CalibratedClassifierCV 
 import pandas as pd
 import matplotlib.pyplot as plt
+import pickle
 
-from config import MODELS_DIR, PROCESSED_DATA_DIR, INTERIM_DATA_DIR, TREES_DIR, RESULTS_DIR
+from config import PROCESSED_DATA_DIR, INTERIM_DATA_DIR, TREES_DIR, RESULTS_DIR
 
 app = typer.Typer()
 
@@ -18,7 +19,6 @@ app = typer.Typer()
 @app.command()
 def main():
     # ---- REPLACE THIS WITH YOUR OWN CODE ----
-    logger.info("Training some model...")
     t_sisso_expression = train_tree_sis_features()
     logger.success("Modeling training complete.")
 
@@ -39,20 +39,24 @@ def main():
 
     logger.success("Modeling evaluation complete.")
 
-    train_platt_scaling(train_df, test_df)
+    train_platt_scaling(train_df, test_df, tolerance_factor_dict, clfs['t_sisso'])
     # -----------------------------------------
 
 
-def train_platt_scaling(train_df, test_df,
-                        output_dir: Path = RESULTS_DIR):
+def train_platt_scaling(train_df, test_df, tolerance_factor_dict, clf_t,
+                        output_dir: Path = RESULTS_DIR,
+                        tolerance_factor_path: Path = INTERIM_DATA_DIR / "tolerance_factors.pkl"):
 
     logger.info("Training Platt scaling model...")
+
+    with open(tolerance_factor_path, 'wb') as file:
+        pickle.dump(tolerance_factor_dict, file)
 
     x_train_t_sisso = train_df['t_sisso'].to_numpy()
     x_test_t_sisso = test_df['t_sisso'].to_numpy()
     threshold_t_sisso = tolerance_factor_dict['t_sisso'][1]
 
-    labels_platt=clf_t_sisso.predict(x_train_t_sisso.reshape(-1,1))
+    labels_platt=clf_t.predict(x_train_t_sisso.reshape(-1,1))
     clf2_sisso = CalibratedClassifierCV(cv=3)
     clf2_sisso = clf2_sisso.fit(x_train_t_sisso.reshape(-1,1), labels_platt)
     p_t_sisso_train=clf2_sisso.predict_proba(x_train_t_sisso.reshape(-1,1))[:,1]
@@ -60,8 +64,8 @@ def train_platt_scaling(train_df, test_df,
     train_df['p_t_sisso'] = p_t_sisso_train            # add p_t_sisso to the train and test data frame
     test_df['p_t_sisso'] = p_t_sisso_test
 
-    train_df.to_csv(output_dir / 'proccessed_chpvk_train_dataset.csv')
-    test_df.to_csv(output_dir / 'proccessed_chpvk_test_dataset.csv')
+    train_df.to_csv(output_dir / 'processed_chpvk_train_dataset.csv')
+    test_df.to_csv(output_dir / 'processed_chpvk_test_dataset.csv')
 
     logger.success("Platt scaling model training complete.")
 
@@ -128,8 +132,9 @@ def evaluate_t_sisso(t_sisso_expression,
     #"t_old": ["sqrt(chi_AX_ratio) * 1/log(rA_rB_ratio) - (rB_rX_ratio * nB) + (rA_rB_ratio/chi_AX_ratio)"],
     }
 
+
     #Add tau threshold
-    tolerance_factor_dict["tau"].append(4.18)
+    tolerance_factor_dict["tau"].append([4.18])
     #tolerance_factor_dict["t_old"].append(2.75)
 
     train_df.eval('t_sisso = ' + tolerance_factor_dict['t_sisso'][0], inplace=True)
@@ -143,6 +148,8 @@ def evaluate_t_sisso(t_sisso_expression,
     test_df.eval('tau = '+ tolerance_factor_dict['tau'][0], inplace=True)
     test_df.eval('t_jess = '+ tolerance_factor_dict['t_jess'][0], inplace=True)
     #test_df.eval('t_old = '+ tolerance_factor_dict['t_old'][0], inplace=True)
+
+
 
     return train_df, test_df, tolerance_factor_dict
 
