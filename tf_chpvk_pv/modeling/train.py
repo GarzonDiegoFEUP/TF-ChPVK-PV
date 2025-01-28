@@ -134,7 +134,7 @@ def evaluate_t_sisso(t_sisso_expression,
 
 
     #Add tau threshold
-    tolerance_factor_dict["tau"].append([4.18])
+    tolerance_factor_dict["tau"].append(4.18)
     #tolerance_factor_dict["t_old"].append(2.75)
 
     train_df.eval('t_sisso = ' + tolerance_factor_dict['t_sisso'][0], inplace=True)
