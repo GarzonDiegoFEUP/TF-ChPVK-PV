@@ -6,7 +6,7 @@ from tqdm import tqdm
 import pandas as pd
 import numpy as np
 
-from config import PROCESSED_DATA_DIR, RAW_DATA_DIR, INTERIM_DATA_DIR, RANDOM_SEED
+from tf_chpvk_pv.config import PROCESSED_DATA_DIR, RAW_DATA_DIR, INTERIM_DATA_DIR, RANDOM_SEED
 
 app = typer.Typer()
 
@@ -29,11 +29,77 @@ def main():
 
 
 def create_dataset(input_path: Path = RAW_DATA_DIR / "shuffled_dataset_chalcogenide_pvk.csv",
-                   output_path: Path = PROCESSED_DATA_DIR / "chpvk_dataset.csv",):
+                   output_path: Path = PROCESSED_DATA_DIR / "chpvk_dataset.csv",
+                   new_radii_path: Path = RAW_DATA_DIR / "Expanded_Shannon_Effective_Ionic_Radii.csv"):
+    
+    from pymatgen.core import Composition, periodic_table
     
     logger.info("Processing dataset...")
     #load data
     df = pd.read_csv(input_path, index_col=0)
+
+    #correct radii values
+    new_radii = pd.read_csv(new_radii_path) 
+
+    for idx in df.index:
+    
+        nA = df.loc[idx, 'nA']
+        nB = df.loc[idx, 'nB']
+        nX = df.loc[idx, 'nX']
+
+        A = df.loc[idx, 'A']
+        B = df.loc[idx, 'B']
+        X = df.loc[idx, 'X']
+
+        """if nA > 0:
+            nA_ = '+' + str(round(nA))
+        else:
+            nA_ = str(round(nA))
+
+        if nB > 0:
+            nB_ = '+' + str(round(nB))
+        else:
+            nB_ = str(round(nB))
+
+        if nX > 0:
+            nX_ = '+' + str(round(nX))
+        else:
+            nX_ = str(round(nX))"""
+
+        Z_A = periodic_table.Element(A).Z
+        Z_B = periodic_table.Element(B).Z
+        Z_X = periodic_table.Element(X).Z
+
+        #rA_ = radii.loc[(radii.ION  == A + ' ' + nA_ ) & (radii['Coord. #'] == 12), 'Ionic Radius'].values
+        rA_ = new_radii.loc[(new_radii["Atomic Number"] == Z_A) & (new_radii["Oxidation State"] == nA) &(new_radii['Coordination Number'] == 12), 'Mean'].values
+        
+        #if np.shape(rA_)[0] == 0:
+            #rA_ = radii.loc[(radii.ION  == A + nA_ ) & (radii['Coord. #'] == 12), 'Ionic Radius'].values
+
+        if np.shape(rA_)[0] == 0:
+            #rA_ = radii.loc[(radii.ION  == A + nA_ ) & (radii['Coord. #'] == 8), 'Ionic Radius'].values
+            rA_ = new_radii.loc[(new_radii["Atomic Number"] == Z_A) & (new_radii["Oxidation State"] == nA) & (new_radii['Coordination Number'] == 8), 'Mean'].values
+
+        if np.shape(rA_)[0] > 0:  
+            df.loc[idx, 'rA'] = rA_
+
+        #rB_ = radii.loc[(radii.ION  == B + ' ' + nB_ ) & (radii['Coord. #'] == 6), 'Ionic Radius'].values
+        rB_ = new_radii.loc[(new_radii["Atomic Number"] == Z_B) & (new_radii["Oxidation State"] == nB) & (new_radii['Coordination Number'] == 6), 'Mean'].values
+
+        #if np.shape(rB_)[0] == 0:
+        #    rB_ = radii.loc[(radii.ION  == B + nB_ ) & (radii['Coord. #'] == 6), 'Ionic Radius'].values
+
+        if np.shape(rB_)[0] > 0:  
+            try:
+                df.loc[idx, 'rB'] = rB_
+
+            except:
+                df.loc[idx, 'rB'] = rB_[0]
+
+        #rX_ = radii.loc[radii.ION  == X + nX_, 'Ionic Radius'].values
+        rX_ = new_radii.loc[(new_radii["Atomic Number"] == Z_X) & (new_radii["Oxidation State"] == nX) & (new_radii['Coordination Number'] == 6), 'Mean'].values
+        df.loc[idx, 'rX'] = rX_
+
 
     #add rX_rB_ratio feature to the dataframe
     rX_rB_ratio="rB_rX_ratio**-1"
@@ -54,6 +120,8 @@ def create_dataset(input_path: Path = RAW_DATA_DIR / "shuffled_dataset_chalcogen
     df.to_csv(output_path)
 
     logger.success("Processing dataset complete.")
+
+    return df
 
 
 def train_test_split(ratio_splitting=0.8, 

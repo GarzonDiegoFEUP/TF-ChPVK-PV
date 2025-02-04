@@ -7,7 +7,7 @@ import pandas as pd
 import numpy as np
 
 
-from config import PROCESSED_DATA_DIR, INTERIM_DATA_DIR, RAW_DATA_DIR
+from tf_chpvk_pv.config import PROCESSED_DATA_DIR, INTERIM_DATA_DIR, RAW_DATA_DIR
 
 app = typer.Typer()
 
@@ -152,6 +152,8 @@ def create_features_SISSO(df_units, inputs,
 
     feature_df=pd.DataFrame(index=index_id,data=np.array(vals),columns=features)   # make a data frame of the features and values of the features for different materials
     feature_df.to_csv(output_path)
+
+    df
 
 if __name__ == "__main__":
     app()

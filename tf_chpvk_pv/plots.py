@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import pickle
 
-from config import FIGURES_DIR, PROCESSED_DATA_DIR, RESULTS_DIR, INTERIM_DATA_DIR
+from tf_chpvk_pv.config import FIGURES_DIR, PROCESSED_DATA_DIR, RESULTS_DIR, INTERIM_DATA_DIR
 
 app = typer.Typer()
 

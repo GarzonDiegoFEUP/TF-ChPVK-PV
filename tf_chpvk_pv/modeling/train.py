@@ -11,7 +11,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import pickle
 
-from config import PROCESSED_DATA_DIR, INTERIM_DATA_DIR, TREES_DIR, RESULTS_DIR
+from tf_chpvk_pv.config import PROCESSED_DATA_DIR, INTERIM_DATA_DIR, TREES_DIR, RESULTS_DIR
 
 app = typer.Typer()
 

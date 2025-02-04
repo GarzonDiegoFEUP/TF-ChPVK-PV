@@ -6,7 +6,7 @@ from tqdm import tqdm
 import pandas as pd
 import pickle
 
-from config import MODELS_DIR, PROCESSED_DATA_DIR, INTERIM_DATA_DIR
+from tf_chpvk_pv.config import MODELS_DIR, PROCESSED_DATA_DIR, INTERIM_DATA_DIR
 
 app = typer.Typer()
 
