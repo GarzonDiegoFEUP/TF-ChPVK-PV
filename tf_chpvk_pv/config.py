@@ -17,6 +17,8 @@ PROCESSED_DATA_DIR = DATA_DIR / "processed"
 EXTERNAL_DATA_DIR = DATA_DIR / "external"
 
 MODELS_DIR = PROJ_ROOT / "models"
+TREES_DIR = MODELS_DIR / "trees"
+RESULTS_DIR = MODELS_DIR/ "results"
 
 REPORTS_DIR = PROJ_ROOT / "reports"
 FIGURES_DIR = REPORTS_DIR / "figures"
