@@ -212,13 +212,13 @@ def test_tolerance_factor(t, train_df, test_df, tolerance_factor_dict, df_acc=pd
     df_acc.loc['test_data', t] = acc_test
     df_acc.loc['all_data', t] = acc_all
     
-    #get accuracy per X anion
-    dict_ch = {1.33:'F',
-               1.81:'Cl',
-               1.98:'Se',
-               1.96:'Br',
-               1.84:'S',
-               2.2:'I'
+    #get accuracy per X anion with the rX
+    dict_ch = {133.15:'F',
+               180.61:'Cl',
+               198.14:'Se',
+               195.56:'Br',
+               184.40:'S',
+               219.49:'I'
               }       
     
     for rx in train_df.rX.unique():

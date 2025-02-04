@@ -159,5 +159,16 @@ def plot_p_t_sisso_tf(tf, train_input_path: Path = RESULTS_DIR / "processed_chpv
         logger.error(f"P(t_sisso) as a function of {tf} plot cannot be generated as the required columns are not present in the dataframes.")
 
 
+def graph_periodic_table(stable_candidates_t_sisso):
+    from pymatviz import count_elements, ptable_heatmap
+
+    element_counts = count_elements([x.replace('3', '') for x in stable_candidates_t_sisso])
+
+    # Plot the periodic table heatmap
+    ptable_heatmap(element_counts, log=True, cbar_title='Element Prevalence', return_type="figure")#, plot_kwargs={"fontsize": 12})#, return_type="figure")# cmap="RdYlBu", cbar_title="Element Prevalence", log=True)
+    #plt.title("Element Prevalence in Extracted Formulas for Valid Perovskites")
+    plt.savefig(FIGURES_DIR / "element_prevalence_heatmap.png")
+
+
 if __name__ == "__main__":
     app()

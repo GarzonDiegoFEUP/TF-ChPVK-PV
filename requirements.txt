@@ -16,4 +16,5 @@ scikit-learn
 seaborn
 tqdm
 typer
+pymatviz
 #-e .
