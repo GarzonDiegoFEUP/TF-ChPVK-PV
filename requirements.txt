@@ -17,4 +17,7 @@ seaborn
 tqdm
 typer
 pymatviz
+crabnet
+torch
+jmespath
 #-e .
