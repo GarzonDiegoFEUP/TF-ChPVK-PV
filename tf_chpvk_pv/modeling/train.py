@@ -122,6 +122,10 @@ def evaluate_t_sisso(t_sisso_expression,
     train_df = pd.read_csv(train_df_path, index_col=0)
     test_df = pd.read_csv(test_df_path, index_col=0)
 
+    if 'rA_rB_ratio' not in train_df.columns:
+        train_df.eval('rA_rB_ratio = rA/rB', inplace=True)
+        test_df.eval('rA_rB_ratio = rA/rB', inplace=True)
+
     
     #make a dictionary for t_sisso,t, tau
     tolerance_factor_dict = {

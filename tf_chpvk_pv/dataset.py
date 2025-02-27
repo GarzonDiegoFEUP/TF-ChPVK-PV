@@ -16,7 +16,7 @@ def main():
     # ---- REPLACE THIS WITH YOUR OWN CODE ----
 
     create_dataset()
-    train_test_split()
+    train_test_split_()
 
     elements_selection = ["Si", "Ge", "V", "Rh", "Ti", "Ru", "Mo", "Ta", "Nb",
                           "Sn", "Hf", "Zr", "Tb", "Pb", "Pt", "Ce", "U", "Ba",
@@ -33,6 +33,7 @@ def create_dataset(input_path: Path = RAW_DATA_DIR / "shuffled_dataset_chalcogen
                    new_radii_path: Path = RAW_DATA_DIR / "Expanded_Shannon_Effective_Ionic_Radii.csv"):
     
     from pymatgen.core import Composition, periodic_table
+
     
     logger.info("Processing dataset...")
     #load data
@@ -40,6 +41,9 @@ def create_dataset(input_path: Path = RAW_DATA_DIR / "shuffled_dataset_chalcogen
 
     #correct radii values
     new_radii = pd.read_csv(new_radii_path) 
+
+    #get atomic_features
+    atomic_features = pd.read_csv(RAW_DATA_DIR / "atomic_features.csv")
 
     for idx in df.index:
     
@@ -117,6 +121,43 @@ def create_dataset(input_path: Path = RAW_DATA_DIR / "shuffled_dataset_chalcogen
 
     df['log_rA_rB_ratio'] = np.log(df['rA_rB_ratio'])
 
+    atomic_features.rename(columns={'atomic_homo':'HOMO_',
+                            'atomic_lumo':'LUMO_',
+                            'atomic_ea_by_energy_difference':'EA_',
+                            'atomic_ip_by_energy_difference':'IP_',
+                            'atomic_rs_max':'rS_',
+                            'atomic_rp_max':'rP_',
+                            'atomic_rd_max':'rD_'}, inplace=True)
+
+
+    matches = df.index.str.extractall(r"([A-Z][a-z]*)")
+
+    matches = matches.unstack()
+    matches.columns = matches.columns.droplevel()
+    matches.rename(columns={0:'A',
+                            1:'B',
+                            2:'X'}, 
+                inplace=True)
+
+    matches.index = df.index
+
+    df = df.join(matches)
+    df.drop(columns=['rA_rB_ratio', 'rX_rB_ratio'], inplace=True)
+
+    columns = ['HOMO_', 'LUMO_', 'EA_', 'IP_', 'rS_', 'rP_', 'rD_']
+
+    for col in columns:
+        df_ = atomic_features[['atomic_element_symbol', col]].copy()
+        if 'HOMO' in col or 'LUMO' in col or 'EA' in col or 'IP' in col:
+            df_[col] /= 1.602176565e-19
+        else:
+            df_[col] *= 10**12
+        
+        df_.set_index('atomic_element_symbol', inplace=True)
+        dict_col = df_.to_dict()[col]
+        for z in ['A', 'B', 'X']:
+            df[col + z] = pd.to_numeric(df[z].map(dict_col))
+
     df.to_csv(output_path)
 
     logger.success("Processing dataset complete.")
@@ -124,29 +165,29 @@ def create_dataset(input_path: Path = RAW_DATA_DIR / "shuffled_dataset_chalcogen
     return df
 
 
-def train_test_split(ratio_splitting=0.8, 
+def train_test_split_(ratio_splitting=0.8, 
                      input_path: Path = PROCESSED_DATA_DIR / "chpvk_dataset.csv",
                      output_train_path: Path = PROCESSED_DATA_DIR / "chpvk_train_dataset.csv",
                      output_test_path: Path = PROCESSED_DATA_DIR / "chpvk_test_dataset.csv"):
+    
+    
+    from sklearn.model_selection import train_test_split
+
     # ---- REPLACE THIS WITH YOUR OWN CODE ----
     logger.info("Creating train and test dataset...")
     # -----------------------------------------
 
     df = pd.read_csv(input_path, index_col=0)
     
-    #train and test dataset size
-    size = len(df)
-    size_train = int(size * ratio_splitting)
-    size_test = size - size_train
+    random_state = 42
 
-    # make lists of random numbers for train and test sets 
-    inds = np.arange(size)
-    np.random.seed(RANDOM_SEED)
-    np.random.shuffle(inds)
-    task_sizes_train = [size_train]
-    task_sizes_test = [size_test]
-    test_inds = [int(ii) for ii in np.sort(inds[:task_sizes_test[0]])]
-    train_inds = [int(ii) for ii in np.sort(inds[task_sizes_test[0]:])]
+    inds = np.arange(df.shape[0])
+
+    # train is 80% of the entire data set
+    # test is 20% of the entire data set
+    train_inds, test_inds = train_test_split(inds, test_size=1 - ratio_splitting, random_state=random_state, stratify=df['rX'])
+
+    df.drop(columns=['A', 'B', 'X'], inplace=True)
 
     # test data frame
     index_id_test=df.index[test_inds]
@@ -244,6 +285,7 @@ def generate_compositions(element_symbols, anions=["S", "Se"],
     electronegativities = pd.read_csv(electronegativities_path)
     new_radii = pd.read_csv(new_radii_path)
     chi_O = electronegativities.loc[electronegativities.H == 'O', '2.2' ].values
+    atomic_features = pd.read_csv(atomic_features_path)
     
     for idx in df.index:
     
@@ -319,17 +361,40 @@ def generate_compositions(element_symbols, anions=["S", "Se"],
 
     df['rA_rB_ratio'] = df['rA'] / df['rB']
     df['rB_rX_ratio'] = df['rB'] / df['rX']
+    df['rA_rX_ratio'] = df['rA'] / df['rX']
 
 
     df['chi_AX_ratio'] = df['delta_chi_AX'] / df['delta_chi_AO']
-    df['chi_BX_ratio'] = df['delta_chi_BX'] / df['delta_chi_BO']
+    df['chi_BX_ratio'] = df['delta_chi_BX'] / df['delta_chi_BO']   
 
-    df['log_rA_rB_ratio'] = np.log(df['rA_rB_ratio'])
+    atomic_features.rename(columns={'atomic_homo':'HOMO_',
+                            'atomic_lumo':'LUMO_',
+                            'atomic_ea_by_energy_difference':'EA_',
+                            'atomic_ip_by_energy_difference':'IP_',
+                            'atomic_rs_max':'rS_',
+                            'atomic_rp_max':'rP_',
+                            'atomic_rd_max':'rD_'}, inplace=True)
 
-    for tf in tolerance_factor_dict.keys():
-        df.eval(tf + " = " + tolerance_factor_dict[tf][0], inplace = True)
+    columns = ['HOMO_', 'LUMO_', 'EA_', 'IP_', 'rS_', 'rP_', 'rD_']
+
+    for col in columns:
+        df_ = atomic_features[['atomic_element_symbol', col]].copy()
+        if 'HOMO' in col or 'LUMO' in col or 'EA' in col or 'IP' in col:
+            df_[col] /= 1.602176565e-19
+        else:
+            df_[col] *= 10**12
+        
+        df_.set_index('atomic_element_symbol', inplace=True)
+        dict_col = df_.to_dict()[col]
+        for z in ['A', 'B', 'X']:
+            df[col + z] = pd.to_numeric(df[z].map(dict_col))
     
     df.drop(df[df.nB < df.nA].index, inplace=True)
+
+    #df['log_rA_rB_ratio'] = np.log(df['rA_rB_ratio'])
+    for tf in tolerance_factor_dict.keys():
+        exp = tolerance_factor_dict[tf][0].replace('log_rA_rB_ratio', 'log(rA_rB_ratio)')
+        df.eval(tf + " = " + exp, inplace = True)
     
     df.to_csv(output_path)
 

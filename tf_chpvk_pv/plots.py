@@ -159,7 +159,7 @@ def plot_p_t_sisso_tf(tf, train_input_path: Path = RESULTS_DIR / "processed_chpv
         logger.error(f"P(t_sisso) as a function of {tf} plot cannot be generated as the required columns are not present in the dataframes.")
 
 
-def graph_periodic_table(stable_candidates_t_sisso):
+def graph_periodic_table(stable_candidates_t_sisso, t='t_sisso'):
     from pymatviz import count_elements, ptable_heatmap
 
     element_counts = count_elements([x.replace('3', '') for x in stable_candidates_t_sisso])
@@ -167,7 +167,79 @@ def graph_periodic_table(stable_candidates_t_sisso):
     # Plot the periodic table heatmap
     ptable_heatmap(element_counts, log=True, cbar_title='Element Prevalence', return_type="figure")#, plot_kwargs={"fontsize": 12})#, return_type="figure")# cmap="RdYlBu", cbar_title="Element Prevalence", log=True)
     #plt.title("Element Prevalence in Extracted Formulas for Valid Perovskites")
-    plt.savefig(FIGURES_DIR / "element_prevalence_heatmap.png")
+    txt_save = 'element_prevalence_heatmap_' + t + '.png'
+    plt.savefig(FIGURES_DIR / txt_save)
+
+
+def spider_plot(df, title):
+
+    # Libraries
+    import matplotlib.pyplot as plt
+    import pandas as pd
+    from math import pi
+
+
+    # ------- PART 1: Create background
+
+    # number of variable
+    categories=list(df.drop(columns=['group']))
+    N = len(categories)
+
+    # What will be the angle of each axis in the plot? (we divide the plot / number of variable)
+    angles = [n / float(N) * 2 * pi for n in range(N)]
+    angles += angles[:1]
+
+    # Initialise the spider plot
+    plt.figure(figsize=(15,15))
+    ax = plt.subplot(111, polar=True)
+
+    # If you want the first axis to be on top:
+    ax.set_theta_offset(pi / 2)
+    ax.set_theta_direction(-1)
+
+    # Draw one axe per variable + add labels
+    plt.xticks(angles[:-1], categories)
+
+    # Draw ylabels
+    ax.set_rlabel_position(0)
+    plt.yticks([0.2,0.4,0.6, 0.8], ["0.2","0.4","0.6", "0.8"], color="grey", size=20)
+    plt.ylim(0,1)
+
+
+    # ------- PART 2: Add plots
+
+    # Plot each individual = each line of the data
+    # I don't make a loop, because plotting more than 3 groups makes the chart unreadable
+
+    # Ind1
+    values=df.loc['S'].drop(['group']).values.flatten().tolist()
+    values += values[:1]
+    ax.plot(angles, values, linewidth=1, linestyle='solid', label="S")
+    ax.fill(angles, values, 'b', alpha=0.1)
+
+    # Ind2
+    values=df.loc['Se'].drop(['group']).values.flatten().tolist()
+    values += values[:1]
+    ax.plot(angles, values, linewidth=1, linestyle='solid', label="Se")
+    ax.fill(angles, values, 'r', alpha=0.1)
+
+    # Ind3
+    values=df.loc['hal'].drop(['group']).values.flatten().tolist()
+    values += values[:1]
+    ax.plot(angles, values, linewidth=1, linestyle='solid', label="Hal.")
+    ax.fill(angles, values, 'r', alpha=0.1)
+
+    # Add legend
+    plt.legend(loc='upper right', bbox_to_anchor=(1.2, 1), prop={'size': 35})
+    
+    #change font_size
+    #ax.tick_params(labelsize=5)
+    
+    #save the graph
+
+    txt_title = 'radar plot - ' + title + '.png'
+
+    plt.savefig(FIGURES_DIR / txt_title, bbox_inches='tight')
 
 
 if __name__ == "__main__":

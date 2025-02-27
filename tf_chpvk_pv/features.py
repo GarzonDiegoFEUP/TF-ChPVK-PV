@@ -26,7 +26,7 @@ def run_SISSO_model(input_path: Path = PROCESSED_DATA_DIR / "chpvk_dataset.csv",
     # Load the dataset
     df = pd.read_csv(input_path)
 
-    df_units=df.rename(columns={ 'rA':'rA (AA)',
+    change_columns = { 'rA':'rA (AA)',
                                  'rB':'rB (AA)', 
                                  'rX':'rX (AA)',
                                  'nA':'nA (Unitless)',
@@ -60,12 +60,15 @@ def run_SISSO_model(input_path: Path = PROCESSED_DATA_DIR / "chpvk_dataset.csv",
                                  'delta_chi_BX':'delta_chi_BX (Unitless)',
                                  'delta_chi_AO':'delta_chi_AO (Unitless)',
                                  'delta_chi_BO':'delta_chi_BO (Unitless)',
-                                })
+                                }
+
+    df_units=df.rename(columns=change_columns)
     
     if output_path.is_file():
         logger.success("SISSO Features were already generated.")
     else:
         logger.info("Generating SISSO features from dataset...")
+        choose_primary_features(df, change_columns)
         inputs = createInputs(df_units)
         create_features_SISSO(df_units, inputs)
         logger.success("SISSO Features generation complete.")
@@ -128,6 +131,79 @@ def createInputs(df,
 
     return inputs
 
+
+def choose_primary_features(df, change_columns, number_of_cycles=15,
+                            cols_path: Path = RAW_DATA_DIR / "cols.csv"):
+    """
+    Choose the primary features
+    """
+    # Choose the primary features
+    results_df = pd.DataFrame(columns = df.drop(columns=['exp_label']).columns)
+    
+    for i in range(number_of_cycles):
+        # Choose the primary features
+        results_df = get_best_features(df, results_df, i)
+
+    most_important_features = list(results_df.mean(axis=0).sort_values(ascending=False).iloc[:5].index)
+
+    cols = [change_columns[x] for x in most_important_features]
+
+    np.savetxt(cols_path, cols, delimiter=',', fmt='%s')
+
+
+
+def get_best_features(df, results_df, idx=0, train_ratio = 0.80, random_state=42):
+    
+    if 'A' in df.columns:
+        df_ = df.drop(columns=['A', 'B', 'X'])
+    else:
+        df_ = df.copy()
+    
+    from sklearn.ensemble import RandomForestClassifier
+    from sklearn.model_selection import GridSearchCV, train_test_split
+    
+    # make lists of random numbers for train and test sets 
+    inds = np.arange(df_.shape[0])
+
+    train_inds, test_inds = train_test_split(inds, test_size=1 - train_ratio, stratify=df['rX'])
+
+    # test data frame
+    index_id_test=df_.index[test_inds]
+    df_units_columns= df_.columns.values[:]
+    test_vals = df_.loc[index_id_test, :].values
+    test_df= pd.DataFrame(index=index_id_test,data=np.array(test_vals),columns=df_units_columns)
+
+    # train data frame
+    index_id_train=df_.index[train_inds]
+    train_vals = df_.loc[index_id_train,:].values
+    train_df= pd.DataFrame(index=index_id_train,data=np.array(train_vals),columns=df_units_columns)
+    
+    rf = RandomForestClassifier(random_state=random_state)
+
+    cv_params = {'max_depth': [3,4,5, None],
+                 'min_samples_split': [2, 5, 10],
+                 'max_features': [5,10,15],
+                 'n_estimators': [50, 100, 125, 150]
+                 }  
+
+    scoring = {'accuracy', 'precision', 'recall', 'f1'}
+
+    rf_cv = GridSearchCV(rf, cv_params, scoring=scoring, cv=5, refit='f1')
+    
+    
+    X_train = train_df.drop(columns=['exp_label']).values
+    y_train = train_df['exp_label'].values
+
+    rf_cv.fit(X_train, y_train)
+    
+    b_clf = rf_cv.best_estimator_
+    
+    results_df.loc[idx] = b_clf.feature_importances_
+    
+    return results_df  
+
+
+
 def create_features_SISSO(df_units, inputs,
                           output_path: Path = INTERIM_DATA_DIR / "features_sisso.csv",
                           train_inds_path: Path = INTERIM_DATA_DIR / "train_inds.npy"):
@@ -152,8 +228,6 @@ def create_features_SISSO(df_units, inputs,
 
     feature_df=pd.DataFrame(index=index_id,data=np.array(vals),columns=features)   # make a data frame of the features and values of the features for different materials
     feature_df.to_csv(output_path)
-
-    df
 
 if __name__ == "__main__":
     app()
