@@ -1,0 +1,1 @@
+['add', 'sub', 'abs_diff', 'log']

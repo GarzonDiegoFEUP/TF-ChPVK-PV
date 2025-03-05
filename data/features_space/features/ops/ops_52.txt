@@ -1,0 +1,1 @@
+['add', 'abs_diff', 'exp', 'sqrt']

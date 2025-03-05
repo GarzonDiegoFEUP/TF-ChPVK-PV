@@ -115,7 +115,7 @@ def train_tree_sis_features(
     print('Identified expression for t_sisso: %s' % t_sisso_expression)
     return t_sisso_expression
     
-def evaluate_t_sisso(t_sisso_expression,
+def evaluate_t_sisso(t_sisso_expression, idx=-1,
                      train_df_path: Path = PROCESSED_DATA_DIR / "chpvk_train_dataset.csv",
                      test_df_path: Path = PROCESSED_DATA_DIR / "chpvk_test_dataset.csv"):
 
@@ -141,7 +141,14 @@ def evaluate_t_sisso(t_sisso_expression,
     tolerance_factor_dict["tau"].append(4.18)
     #tolerance_factor_dict["t_old"].append(2.75)
 
-    train_df.eval('t_sisso = ' + tolerance_factor_dict['t_sisso'][0], inplace=True)
+    if idx != -1:
+        train_df.eval('t_sisso = ' + tolerance_factor_dict['t_sisso'][0], inplace=True)
+        test_df.eval('t_sisso = ' + tolerance_factor_dict['t_sisso'][0], inplace=True)
+    else:
+        train_df.eval('t_sisso_' + str(idx) + '= ' + tolerance_factor_dict['t_sisso'][0], inplace=True)
+        test_df.eval('t_sisso_' + str(idx) + '= ' + tolerance_factor_dict['t_sisso'][0], inplace=True)
+
+
     train_df.eval('t = '+ tolerance_factor_dict['t'][0],inplace=True)
     train_df.eval('tau = '+ tolerance_factor_dict['tau'][0], inplace=True) 
     train_df.eval('t_jess = '+ tolerance_factor_dict['t_jess'][0], inplace=True) 
@@ -153,6 +160,7 @@ def evaluate_t_sisso(t_sisso_expression,
     test_df.eval('t_jess = '+ tolerance_factor_dict['t_jess'][0], inplace=True)
     #test_df.eval('t_old = '+ tolerance_factor_dict['t_old'][0], inplace=True)
 
+    print(train_df.columns)
 
 
     return train_df, test_df, tolerance_factor_dict
