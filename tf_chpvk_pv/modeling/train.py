@@ -118,6 +118,33 @@ def train_tree_sis_features(
 def evaluate_t_sisso(t_sisso_expression, idx=-1,
                      train_df_path: Path = PROCESSED_DATA_DIR / "chpvk_train_dataset.csv",
                      test_df_path: Path = PROCESSED_DATA_DIR / "chpvk_test_dataset.csv"):
+    
+    import re
+    
+    if t_sisso_expression == '':
+        tolerance_factor_dict = {
+    "t": ["(rA+rX)/(1.41421*(rB+rX))"],
+    "tau": ["rX/rB-nA*(nA-rA_rB_ratio/log(rA_rB_ratio))"],
+    "t_jess": ["chi_AX_ratio * (rA+rX)/(1.41421*chi_BX_ratio*(rB+rX))"],
+    }
+    else:
+        pattern = r"\|\s*(.*?)\s*\|"
+        replacement = r"abs(\1)"
+        t_sisso_expression = re.sub(pattern, replacement, t_sisso_expression)
+        if idx != -1:
+            tolerance_factor_dict = {
+        't_sisso_' + str(idx): [t_sisso_expression],
+        "t": ["(rA+rX)/(1.41421*(rB+rX))"],
+        "tau": ["rX/rB-nA*(nA-rA_rB_ratio/log(rA_rB_ratio))"],
+        "t_jess": ["chi_AX_ratio * (rA+rX)/(1.41421*chi_BX_ratio*(rB+rX))"],
+        }
+        else:
+            tolerance_factor_dict = {
+        "t_sisso": [t_sisso_expression],
+        "t": ["(rA+rX)/(1.41421*(rB+rX))"],
+        "tau": ["rX/rB-nA*(nA-rA_rB_ratio/log(rA_rB_ratio))"],
+        "t_jess": ["chi_AX_ratio * (rA+rX)/(1.41421*chi_BX_ratio*(rB+rX))"],
+        }
 
     train_df = pd.read_csv(train_df_path, index_col=0)
     test_df = pd.read_csv(test_df_path, index_col=0)
@@ -128,25 +155,26 @@ def evaluate_t_sisso(t_sisso_expression, idx=-1,
 
     
     #make a dictionary for t_sisso,t, tau
-    tolerance_factor_dict = {
-    "t_sisso": [t_sisso_expression],
-    "t": ["(rA+rX)/(1.41421*(rB+rX))"],
-    "tau": ["rX/rB-nA*(nA-rA_rB_ratio/log(rA_rB_ratio))"],
-    "t_jess": ["chi_AX_ratio * (rA+rX)/(1.41421*chi_BX_ratio*(rB+rX))"],
+    #tolerance_factor_dict = {
+    #"t_sisso": [t_sisso_expression],
+    #"t": ["(rA+rX)/(1.41421*(rB+rX))"],
+    #"tau": ["rX/rB-nA*(nA-rA_rB_ratio/log(rA_rB_ratio))"],
+    #"t_jess": ["chi_AX_ratio * (rA+rX)/(1.41421*chi_BX_ratio*(rB+rX))"],
     #"t_old": ["sqrt(chi_AX_ratio) * 1/log(rA_rB_ratio) - (rB_rX_ratio * nB) + (rA_rB_ratio/chi_AX_ratio)"],
-    }
+    #}
 
 
     #Add tau threshold
     tolerance_factor_dict["tau"].append(4.18)
     #tolerance_factor_dict["t_old"].append(2.75)
 
-    if idx != -1:
-        train_df.eval('t_sisso = ' + tolerance_factor_dict['t_sisso'][0], inplace=True)
-        test_df.eval('t_sisso = ' + tolerance_factor_dict['t_sisso'][0], inplace=True)
-    else:
-        train_df.eval('t_sisso_' + str(idx) + '= ' + tolerance_factor_dict['t_sisso'][0], inplace=True)
-        test_df.eval('t_sisso_' + str(idx) + '= ' + tolerance_factor_dict['t_sisso'][0], inplace=True)
+    if t_sisso_expression != '':
+        if idx == -1:
+            train_df.eval('t_sisso = ' + tolerance_factor_dict['t_sisso'][0], inplace=True)
+            test_df.eval('t_sisso = ' + tolerance_factor_dict['t_sisso'][0], inplace=True)
+        else:
+            train_df.eval('t_sisso_' + str(idx) + '= ' + tolerance_factor_dict['t_sisso_' + str(idx)][0], inplace=True)
+            test_df.eval('t_sisso_' + str(idx) + '= ' + tolerance_factor_dict['t_sisso_' + str(idx)][0], inplace=True)
 
 
     train_df.eval('t = '+ tolerance_factor_dict['t'][0],inplace=True)
@@ -154,13 +182,10 @@ def evaluate_t_sisso(t_sisso_expression, idx=-1,
     train_df.eval('t_jess = '+ tolerance_factor_dict['t_jess'][0], inplace=True) 
     #train_df.eval('t_old = '+ tolerance_factor_dict['t_old'][0], inplace=True) 
 
-    test_df.eval('t_sisso = ' + tolerance_factor_dict['t_sisso'][0], inplace=True)
     test_df.eval('t = '+ tolerance_factor_dict['t'][0], inplace=True)
     test_df.eval('tau = '+ tolerance_factor_dict['tau'][0], inplace=True)
     test_df.eval('t_jess = '+ tolerance_factor_dict['t_jess'][0], inplace=True)
     #test_df.eval('t_old = '+ tolerance_factor_dict['t_old'][0], inplace=True)
-
-    print(train_df.columns)
 
 
     return train_df, test_df, tolerance_factor_dict
