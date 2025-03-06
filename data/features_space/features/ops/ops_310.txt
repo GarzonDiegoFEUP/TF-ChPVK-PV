@@ -1,0 +1,1 @@
+['div', 'inv', 'sqrt', 'log']
