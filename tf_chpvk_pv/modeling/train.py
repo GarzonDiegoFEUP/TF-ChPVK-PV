@@ -129,10 +129,10 @@ def evaluate_t_sisso(t_sisso_expression, idx=-1,
     }
     else:
         pattern = r"\|\s*(.*?)\s*\|"
-        replacement = r"abs(\1)"
+        replaement = r"abs(\1)"
         t_sisso_expression = re.sub(pattern, replacement, t_sisso_expression)
         if idx != -1:
-            tolerance_factor_dict = {
+            tolerance_factor_dcict = {
         't_sisso_' + str(idx): [t_sisso_expression],
         "t": ["(rA+rX)/(1.41421*(rB+rX))"],
         "tau": ["rX/rB-nA*(nA-rA_rB_ratio/log(rA_rB_ratio))"],
