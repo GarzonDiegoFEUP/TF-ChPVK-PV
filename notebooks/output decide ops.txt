@@ -1872,3 +1872,18 @@ Classification tree accuracy (for t_sisso_291) on the test set: 0.736842.
 t_sisso_291 < 1.955000 indicates stable perovskites.
 /home/nomad-lanasc/Documents/Diego Garzon/TF-ChPVK-PV/tf_chpvk_pv/modeling/train.py:248: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
   df_acc.loc['train_data', t] = acc_train
+[32m2025-03-13 16:27:02.080[0m | [1mINFO    [0m | [36mtf_chpvk_pv.modeling.train[0m:[36mtrain_tree_sis_features[0m:[36m76[0m - [1mTraining tree model with SISSO features...[0m
+Identified expression for t_sisso: (((|rA_rX_ratio - chi_BX_ratio|) * (|rB_rX_ratio - chi_BX_ratio|)) + (|(|rB_rX_ratio - log_rA_rB_ratio|) - (rB_rX_ratio + log_rA_rB_ratio)|))
+Classification tree accuracy (for t_sisso_42) on the train set: 0.853982.
+Classification tree accuracy (for t_sisso_42) on the train set (5 fold CV): 0.849372.
+Classification tree accuracy (for t_sisso_42) on the test set: 0.877193.
+t_sisso_42 < 0.963963 indicates stable perovskites.
+Tree with operations idx = 97 already exists
+Tree with operations idx = 265 already exists
+Tree with operations idx = 109 already exists
+Tree with operations idx = 125 already exists
+Tree with operations idx = 157 already exists
+Tree with operations idx = 280 already exists
+Tree with operations idx = 291 already exists
+/home/nomad-lanasc/Documents/Diego Garzon/TF-ChPVK-PV/tf_chpvk_pv/modeling/train.py:250: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  df_acc.loc['train_data', t] = acc_train

@@ -43,33 +43,28 @@ def main():
     # -----------------------------------------
 
 
-def train_platt_scaling(train_df, test_df, tolerance_factor_dict, clf_t,
-                        output_dir: Path = RESULTS_DIR,
-                        tolerance_factor_path: Path = INTERIM_DATA_DIR / "tolerance_factors.pkl"):
+def train_platt_scaling(train_df, test_df, clf_t, t='t_sisso',
+                        output_dir: Path = RESULTS_DIR):
 
     logger.info("Training Platt scaling model...")
 
-    with open(tolerance_factor_path, 'wb') as file:
-        pickle.dump(tolerance_factor_dict, file)
-
-    x_train_t_sisso = train_df['t_sisso'].to_numpy()
-    x_test_t_sisso = test_df['t_sisso'].to_numpy()
-    threshold_t_sisso = tolerance_factor_dict['t_sisso'][1]
+    x_train_t_sisso = train_df[t].to_numpy()
+    x_test_t_sisso = test_df[t].to_numpy()
 
     labels_platt=clf_t.predict(x_train_t_sisso.reshape(-1,1))
     clf2_sisso = CalibratedClassifierCV(cv=3)
     clf2_sisso = clf2_sisso.fit(x_train_t_sisso.reshape(-1,1), labels_platt)
     p_t_sisso_train=clf2_sisso.predict_proba(x_train_t_sisso.reshape(-1,1))[:,1]
     p_t_sisso_test=clf2_sisso.predict_proba(x_test_t_sisso.reshape(-1,1))[:,1]
-    train_df['p_t_sisso'] = p_t_sisso_train            # add p_t_sisso to the train and test data frame
-    test_df['p_t_sisso'] = p_t_sisso_test
+    train_df['p_' + t] = p_t_sisso_train            # add p_t_sisso to the train and test data frame
+    test_df['p_' + t] = p_t_sisso_test
 
-    train_df.to_csv(output_dir / 'processed_chpvk_train_dataset.csv')
-    test_df.to_csv(output_dir / 'processed_chpvk_test_dataset.csv')
+    train_df.to_csv(output_dir / 'diff_ops_processed_chpvk_train_dataset.csv')
+    test_df.to_csv(output_dir / 'diff_ops_processed_chpvk_test_dataset.csv')
 
     logger.success("Platt scaling model training complete.")
 
-    return train_df, test_df
+    return train_df, test_df, clf2_sisso
 
 
 def train_tree_sis_features(
@@ -91,15 +86,20 @@ def train_tree_sis_features(
     #depth of the classification tree - user has to choose
     def rank_tree(labels, feature_space, depth):                       #rank features according to the classification-tree accuracy                             
         score = []
-        for i in list(range(0,feature_space.shape[1])):                # 'i' is a column and 'for' is from the first column to the last one
-            x=np.array(feature_space)[:,i]                             # take the first column values
-            clf = tree.DecisionTreeClassifier(max_depth=depth, class_weight='balanced', criterion='entropy')
-            
-            clf_cv = cross_validate(clf, x.reshape(-1,1), labels, scoring='accuracy')
-            clf_cv_score = np.mean(clf_cv['test_score'])
-            
-            #clf = clf.fit(x.reshape(-1,1), labels)                     # Build a decision-tree classifier from the training set (X, y). X is the values of features (for each for iteration on column) and Y is the target value, here exp_label
-            score.append([feature_space.columns.values[i],clf_cv_score])      # make a list of the feature and the mean accuracy of the all values of that feaure (for different materials)
+        for i in list(range(0,feature_space.shape[1])):  
+            #print(feature_space.columns[i])              # 'i' is a column and 'for' is from the first column to the last one
+            x=np.array(feature_space)[:,i]
+            if (x > 1e6).any():
+                print('Feature %s has values greater than 1e6. Skipping.' % feature_space.columns.values[i])
+                continue                           # take the first column values
+            else:
+                clf = tree.DecisionTreeClassifier(max_depth=depth, class_weight='balanced', criterion='entropy')
+                
+                clf_cv = cross_validate(clf, x.reshape(-1,1), labels, scoring='accuracy')
+                clf_cv_score = np.mean(clf_cv['test_score'])
+                
+                #clf = clf.fit(x.reshape(-1,1), labels)                     # Build a decision-tree classifier from the training set (X, y). X is the values of features (for each for iteration on column) and Y is the target value, here exp_label
+                score.append([feature_space.columns.values[i],clf_cv_score])      # make a list of the feature and the mean accuracy of the all values of that feaure (for different materials)
         score_sorted=sorted(score,reverse=True,key=lambda x: x[1])     # sort the features based on the accuracy
         return score_sorted
 
@@ -128,11 +128,13 @@ def evaluate_t_sisso(t_sisso_expression, idx=-1,
     "t_jess": ["chi_AX_ratio * (rA+rX)/(1.41421*chi_BX_ratio*(rB+rX))"],
     }
     else:
-        pattern = r"\|\s*(.*?)\s*\|"
-        replaement = r"abs(\1)"
+        pattern = r"\(\|(.+?)\|\)"
+        replacement = r"abs(\1)"
         t_sisso_expression = re.sub(pattern, replacement, t_sisso_expression)
+        while '|' in t_sisso_expression:
+            t_sisso_expression = re.sub(pattern, replacement, t_sisso_expression)
         if idx != -1:
-            tolerance_factor_dcict = {
+            tolerance_factor_dict = {
         't_sisso_' + str(idx): [t_sisso_expression],
         "t": ["(rA+rX)/(1.41421*(rB+rX))"],
         "tau": ["rX/rB-nA*(nA-rA_rB_ratio/log(rA_rB_ratio))"],

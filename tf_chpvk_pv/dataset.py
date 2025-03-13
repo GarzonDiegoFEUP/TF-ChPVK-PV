@@ -395,9 +395,11 @@ def generate_compositions(element_symbols, anions=["S", "Se"],
     #df['log_rA_rB_ratio'] = np.log(df['rA_rB_ratio'])
     for tf in tolerance_factor_dict.keys():
         exp = tolerance_factor_dict[tf][0].replace('log_rA_rB_ratio', 'log(rA_rB_ratio)')
-        pattern = r"\|\s*(.*?)\s*\|"
+        pattern = r"\(\|(.+?)\|\)"
         replacement = r"abs(\1)"
-        exp = re.sub(pattern, replacement, exp)
+        t_sisso_expression = re.sub(pattern, replacement, t_sisso_expression)
+        while '|' in t_sisso_expression:
+            t_sisso_expression = re.sub(pattern, replacement, t_sisso_expression)
         df.eval(tf + " = " + exp, inplace = True)
     
     df.to_csv(output_path)

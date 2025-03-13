@@ -27,7 +27,7 @@ def main():
     plot_p_t_sisso_tf("tau")
 
 
-def platt_scaling_plot(train_input_path: Path = RESULTS_DIR / "processed_chpvk_train_dataset.csv",
+def platt_scaling_plot(t = 't_sisso', train_input_path: Path = RESULTS_DIR / "processed_chpvk_train_dataset.csv",
                         test_input_path: Path = RESULTS_DIR / "processed_chpvk_test_dataset.csv",
                         concat_input_path: Path = RESULTS_DIR / "processed_chpvk_concat_dataset.csv",
                         tolerance_dict_path: Path = INTERIM_DATA_DIR / "tolerance_factors.pkl",
@@ -39,7 +39,7 @@ def platt_scaling_plot(train_input_path: Path = RESULTS_DIR / "processed_chpvk_t
     with open(tolerance_dict_path, 'rb') as file:
         tolerance_factor_dict = pickle.load(file)
 
-    threshold_t_sisso = tolerance_factor_dict["t_sisso"][1]
+    threshold_t_sisso = tolerance_factor_dict[t][1]
 
     if concat_input_path.exists():
         concat = pd.read_csv(concat_input_path)
@@ -47,16 +47,16 @@ def platt_scaling_plot(train_input_path: Path = RESULTS_DIR / "processed_chpvk_t
         concat = pd.concat([train_df.assign(dataset='train'), test_df.assign(dataset='test')])
         concat.to_csv(concat_input_path)
     
-    if 'p_t_sisso' in train_df.columns and 'p_t_sisso' in test_df.columns:
+    if 'p_' + t in train_df.columns and 'p_' + t in test_df.columns:
         logger.info("Generating Platt Scaling plot from data...")
         plt.figure(figsize=(8,8))
-        plot1=sns.scatterplot(x='t_sisso', y='p_t_sisso', data=concat,hue='exp_label', style='dataset',
+        plot1=sns.scatterplot(x=t, y='p_' + t, data=concat,hue='exp_label', style='dataset',
                     palette=['red','blue'], markers=['s','o'], s=80)
         plot1.set_xlabel("$t_{sisso}$", fontsize=20)
         plot1.set_ylabel("$P(t_{sisso})$", fontsize=20)
         plot1.tick_params(labelsize=20)
         plt.xlim(threshold_t_sisso-0.5, threshold_t_sisso+0.5)
-        plt.axvline(tolerance_factor_dict["t_sisso"][1])
+        plt.axvline(tolerance_factor_dict[t][1])
         plt.axhline(0.5,linestyle='--')
         plt.savefig(output_path)
 
