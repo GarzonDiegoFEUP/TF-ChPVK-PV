@@ -159,16 +159,19 @@ def plot_p_t_sisso_tf(tf, train_input_path: Path = RESULTS_DIR / "processed_chpv
         logger.error(f"P(t_sisso) as a function of {tf} plot cannot be generated as the required columns are not present in the dataframes.")
 
 
-def graph_periodic_table(stable_candidates_t_sisso, t='t_sisso'):
+def graph_periodic_table(stable_candidates_t_sisso, t='t_sisso', save_plot=True):
     from pymatviz import count_elements, ptable_heatmap
+    import re
 
-    element_counts = count_elements([x.replace('3', '') for x in stable_candidates_t_sisso])
+    element_counts = count_elements([re.sub(r'\d+', '', x) for x in stable_candidates_t_sisso])
 
     # Plot the periodic table heatmap
     ptable_heatmap(element_counts, log=True, cbar_title='Element Prevalence', return_type="figure")#, plot_kwargs={"fontsize": 12})#, return_type="figure")# cmap="RdYlBu", cbar_title="Element Prevalence", log=True)
     #plt.title("Element Prevalence in Extracted Formulas for Valid Perovskites")
-    txt_save = 'element_prevalence_heatmap_' + t + '.png'
-    plt.savefig(FIGURES_DIR / txt_save)
+    if save_plot:
+        txt_save = 'element_prevalence_heatmap_' + t + '.png'
+        plt.savefig(FIGURES_DIR / txt_save)
+    plt.show()
 
 
 def spider_plot(df, title):
