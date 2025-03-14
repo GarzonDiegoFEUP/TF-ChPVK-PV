@@ -33,7 +33,7 @@ def check_stable_compositions(t,
             name_real = df.A[idx] + df.B[idx] + df.X[idx] + '3'
             stable_candidates_t_sisso.append(name_real)
 
-    print('According to t_sisso, {} ({}%) compositions are predicted to be stable as perovskites:'.format(len(stable_candidates_t_sisso), len(stable_candidates_t_sisso)/df.shape[0] * 100))
+    print('According to {}, {} ({}%) compositions are predicted to be stable as perovskites:'.format(t, len(stable_candidates_t_sisso), len(stable_candidates_t_sisso)/df.shape[0] * 100))
     print(stable_candidates_t_sisso)
 
     df_out = df[df[t] < tolerance_factor_dict[t][1]]

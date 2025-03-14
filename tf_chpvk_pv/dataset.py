@@ -6,7 +6,7 @@ from tqdm import tqdm
 import pandas as pd
 import numpy as np
 
-from tf_chpvk_pv.config import PROCESSED_DATA_DIR, RAW_DATA_DIR, INTERIM_DATA_DIR, RANDOM_SEED
+from tf_chpvk_pv.config import PROCESSED_DATA_DIR, RAW_DATA_DIR, INTERIM_DATA_DIR, BANDGAP_DATA_DIR
 
 app = typer.Typer()
 
@@ -26,6 +26,7 @@ def main():
                           "Al", "Cr", "In", "V", "Mn", "Tm"]
 
     generate_compositions(elements_selection)
+    curated_bandgap_db_semicon()
 
 
 def create_dataset(input_path: Path = RAW_DATA_DIR / "shuffled_dataset_chalcogenide_pvk.csv",
@@ -394,13 +395,13 @@ def generate_compositions(element_symbols, anions=["S", "Se"],
 
     #df['log_rA_rB_ratio'] = np.log(df['rA_rB_ratio'])
     for tf in tolerance_factor_dict.keys():
-        exp = tolerance_factor_dict[tf][0].replace('log_rA_rB_ratio', 'log(rA_rB_ratio)')
+        t_sisso_expression = tolerance_factor_dict[tf][0].replace('log_rA_rB_ratio', 'log(rA_rB_ratio)')
         pattern = r"\(\|(.+?)\|\)"
         replacement = r"abs(\1)"
         t_sisso_expression = re.sub(pattern, replacement, t_sisso_expression)
         while '|' in t_sisso_expression:
             t_sisso_expression = re.sub(pattern, replacement, t_sisso_expression)
-        df.eval(tf + " = " + exp, inplace = True)
+        df.eval(tf + " = " + t_sisso_expression, inplace = True)
     
     df.to_csv(output_path)
 
@@ -408,6 +409,108 @@ def generate_compositions(element_symbols, anions=["S", "Se"],
     
     return df
 
+def curated_bandgap_db_semicon(input_path: Path = BANDGAP_DATA_DIR / 'Bandgap.csv',
+                               output_path: Path = BANDGAP_DATA_DIR / 'chalcogen_semicon_bandgap.csv'):
+    """
+    Curate the bandgap database for semiconductors.
+
+    This function reads the bandgap database and filters out the entries that are
+    semiconductors based on their formula to only have S and Se based semiconductors.
+
+    Parameters:
+    - input_path (Path): The path to the bandgap database.
+    - output_path (Path): The path to save the curated bandgap database.
+
+    Returns:
+    - df (DataFrame): The curated bandgap database for semiconductors.
+
+    """
+    logger.info("Curating bandgap database for semiconductors...")
+
+    df = pd.read_csv(input_path)
+
+    def check_S_Se(row):
+        import ast
+        try:
+            row_dict = ast.literal_eval(row)
+            if 'Se' in row_dict.keys() or 'S' in row_dict.keys():
+                return True
+            else:
+                return False
+        except:
+            print('Error with row:', row)
+            return False
+    
+    def check_no_O(row):
+        import ast
+        try:
+            row_dict = ast.literal_eval(row)
+            if 'O' in row_dict.keys():
+                return False
+            else:
+                return True
+        except:
+            print('Error with row:', row)
+            return False
+        
+    def check_chemical_composition(row):
+        import ast
+        row_dict = ast.literal_eval(row)
+        periodic_table_symbols = [
+        "H", "He", "Li", "Be", "B", "C", "N", "O", "F", "Ne", "Na", "Mg", "Al", "Si", "P", "S", 
+        "Cl", "Ar", "K", "Ca", "Sc", "Ti", "V", "Cr", "Mn", "Fe", "Co", "Ni", "Cu", "Zn", "Ga", 
+        "Ge", "As", "Se", "Br", "Kr", "Rb", "Sr", "Y", "Zr", "Nb", "Mo", "Tc", "Ru", "Rh", "Pd", 
+        "Ag", "Cd", "In", "Sn", "Sb", "Te", "I", "Xe", "Cs", "Ba", "La", "Ce", "Pr", "Nd", "Pm", 
+        "Sm", "Eu", "Gd", "Tb", "Dy", "Ho", "Er", "Tm", "Yb", "Lu", "Hf", "Ta", "W", "Re", "Os", 
+        "Ir", "Pt", "Au", "Hg", "Tl", "Pb", "Bi", "Po", "At", "Rn", "Fr", "Ra", "Ac", "Th", "Pa", 
+        "U", "Np", "Pu", "Am", "Cm", "Bk", "Cf", "Es", "Fm", "Md", "No", "Lr", "Rf", "Db", "Sg", 
+        "Bh", "Hs", "Mt", "Ds", "Rg", "Cn", "Uut", "Uuq", "Uup", "Uuh", "Uus", "Uuo"]
+        for k in row_dict.keys():
+            if k not in periodic_table_symbols or row_dict[k] == 0:
+                return False
+        return True
+        
+    def convert_to_list(row):
+        import ast
+        try:
+            row_dict = ast.literal_eval(row)
+            return row_dict
+        except:
+            print('Error with row:', row)
+            return None
+        
+    def create_reduced_formulas(row):
+        import ast
+        row_dict = ast.literal_eval(row)
+        elements_formula = []
+        for k, v in row_dict.items():
+            if is_match(r'(?<!\d)0\.', str(v)):
+                elements_formula.append(k + str(v))  
+            else:
+                elements_formula.append(k + str(int(v)))
+        return ''.join(elements_formula)
+
+    def is_match(regex, text):
+        import re
+        pattern = re.compile(regex)
+        return pattern.search(text) is not None
+        
+    df_chalcogen = df[~df.Composition.isna()]
+    df_chalcogen = df_chalcogen[df_chalcogen.Composition.apply(check_chemical_composition)]
+    df_chalcogen = df_chalcogen[df_chalcogen.Composition.apply(check_S_Se)]
+    df_chalcogen = df_chalcogen[df_chalcogen.Composition.apply(check_no_O)]
+    df_chalcogen.Value = df_chalcogen.Value.apply(convert_to_list)
+    df_chalcogen['bandgap'] = df_chalcogen.Value.apply(lambda x: np.mean(x))
+    df_chalcogen['reduced_formulas'] = df_chalcogen.Composition.apply(create_reduced_formulas)
+    df_chalcogen['descriptive_formulas'] = df_chalcogen.reduced_formulas.str.replace(r'(?<!\d)1(?!\d)', '', regex=True)
+
+    df_result = df_chalcogen[['reduced_formulas', 'descriptive_formulas', 'bandgap']]
+    df_result = df_result[df_result.bandgap > 0]
+    df_result.to_csv(output_path, index=False)
+
+    logger.success("Bandgap database for semiconductors curated.")
+
+    return df_result
 
 if __name__ == "__main__":
     app()
