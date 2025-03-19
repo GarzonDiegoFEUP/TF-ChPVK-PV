@@ -213,7 +213,7 @@ def train_test_split_(ratio_splitting=0.8,
     
     return train_df, test_df
 
-def generate_compositions(element_symbols, anions=["S", "Se"],
+def generate_compositions(element_symbols, cation_oxidation_states=[2, 3, 4], anions=["S", "Se"],
                           dict_tol_factors_path: Path = INTERIM_DATA_DIR / "tolerance_factors.pkl",
                           output_path: Path = PROCESSED_DATA_DIR / "valid_new_compositions.csv",):
     """
@@ -352,6 +352,10 @@ def generate_compositions(element_symbols, anions=["S", "Se"],
         #rX_ = radii.loc[radii.ION  == X + nX_, 'Ionic Radius'].values
         rX_ = new_radii.loc[(new_radii["Atomic Number"] == Z_X) & (new_radii["Oxidation State"] == nX) & (new_radii['Coordination Number'] == 6), 'Mean'].values
         df.loc[idx, 'rX'] = rX_
+
+        if nA not in cation_oxidation_states or nB not in cation_oxidation_states:
+            df.drop(index=idx, inplace=True)
+            print(f"Invalid composition: {idx}")
 
     df['delta_chi_AX'] = df['chi_A'] - df['chi_X']
     df['delta_chi_BX'] = df['chi_B'] - df['chi_X']
