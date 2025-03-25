@@ -1,0 +1,25 @@
+t (rA+rX)/(1.41421*(rB+rX)) [0.8302426636219025, 0.868341326713562]
+tau rX/rB-nA*(nA-rA_rB_ratio/log(rA_rB_ratio)) 4.18
+t_jess chi_AX_ratio * (rA+rX)/(1.41421*chi_BX_ratio*(rB+rX)) [0.835219144821167, 1.0227299928665161]
+t_sisso_38 ((abs(rA_rX_ratio - chi_BX_ratio) * abs(rB_rX_ratio - chi_BX_ratio)) + abs(abs(rB_rX_ratio - log_rA_rB_ratio) - (rB_rX_ratio + log_rA_rB_ratio))) 0.9639626741409302
+t_sisso_210 (abs((rA_rX_ratio * log_rA_rB_ratio) - exp(log_rA_rB_ratio)) * abs(abs(rB_rX_ratio - log_rA_rB_ratio) - rA_rX_ratio)) 0.656421959400177
+t_sisso_56 (abs((1.0 / rB_rX_ratio) - (1.0 / log_rA_rB_ratio)) + ((1.0 / rB_rX_ratio) + (1.0 / log_rA_rB_ratio))) 4.377568960189819
+t_sisso_214 (abs((rA_rX_ratio * log_rA_rB_ratio) - exp(log_rA_rB_ratio)) * abs(abs(rB_rX_ratio - log_rA_rB_ratio) - rA_rX_ratio)) 0.656421959400177
+t_sisso_40 (((rA_rX_ratio * rB_rX_ratio) * abs(rA_rX_ratio - chi_BX_ratio)) + abs(abs(rB_rX_ratio - log_rA_rB_ratio) - (rB_rX_ratio + log_rA_rB_ratio))) 0.9812734425067902
+t_sisso_55 (abs((1.0 / rB_rX_ratio) - (1.0 / log_rA_rB_ratio)) + ((1.0 / rB_rX_ratio) + (1.0 / log_rA_rB_ratio))) 4.377568960189819
+t_sisso_63 (log((rA_rX_ratio + rB_rX_ratio)) + abs(abs(rB_rX_ratio - log_rA_rB_ratio) - sqrt(log_rA_rB_ratio))) 0.9080227315425873
+t_sisso_216 abs(abs((rA_rX_ratio * log_rA_rB_ratio) - (log_rA_rB_ratio**3)) - ((rB_rX_ratio**3) * (rB_rX_ratio * log_rA_rB_ratio))) 0.24793849140405655
+t_sisso_37 (((rA_rX_ratio * rB_rX_ratio) * abs(rA_rX_ratio - chi_BX_ratio)) + abs(abs(rB_rX_ratio - log_rA_rB_ratio) - (rB_rX_ratio + log_rA_rB_ratio))) 0.9812734425067902
+t_sisso_44 (abs((rA_rX_ratio / chi_BX_ratio) - log_rA_rB_ratio) + abs(abs(rB_rX_ratio - log_rA_rB_ratio) - (chi_BX_ratio + log_rA_rB_ratio))) 1.5439165830612183
+t_sisso_39 (((rA_rX_ratio * rB_rX_ratio) * abs(rA_rX_ratio - chi_BX_ratio)) + abs(abs(rB_rX_ratio - log_rA_rB_ratio) - (rB_rX_ratio + log_rA_rB_ratio))) 0.9812734425067902
+t_sisso_212 (abs((rA_rX_ratio * log_rA_rB_ratio) - exp(log_rA_rB_ratio)) * abs(abs(rB_rX_ratio - log_rA_rB_ratio) - rA_rX_ratio)) 0.656421959400177
+t_sisso_49 (abs((1.0 / rB_rX_ratio) - (1.0 / log_rA_rB_ratio)) + ((1.0 / rB_rX_ratio) + (1.0 / log_rA_rB_ratio))) 4.377568960189819
+t_sisso_164 (((rA_rX_ratio * rB_rX_ratio) - (rA_rX_ratio - log_rA_rB_ratio)) * (sqrt(rA_rX_ratio) - sqrt(log_rA_rB_ratio))) 0.018464526161551476
+t_sisso_62 abs((log(rA_rX_ratio) + (rB_rX_ratio**3)) - (abs(rA_rX_ratio - log_rA_rB_ratio) + abs(rB_rX_ratio - log_rA_rB_ratio))) 0.46081940829753876
+t_sisso_223 abs(abs((rA_rX_ratio * log_rA_rB_ratio) - (log_rA_rB_ratio**3)) - ((rB_rX_ratio**3) * (rB_rX_ratio * log_rA_rB_ratio))) 0.24793849140405655
+t_sisso_43 (abs(abs(rA_rX_ratio - log_rA_rB_ratio) - (rB_rX_ratio / log_rA_rB_ratio)) + exp((log_rA_rB_ratio / rA_rX_ratio))) 2.57386577129364
+t_sisso_51 abs(abs(rB_rX_ratio - log_rA_rB_ratio) - (rB_rX_ratio + log_rA_rB_ratio)) 0.9137499928474426
+t_sisso_41 (((rA_rX_ratio * rB_rX_ratio) * abs(rA_rX_ratio - chi_BX_ratio)) + abs(abs(rB_rX_ratio - log_rA_rB_ratio) - (rB_rX_ratio + log_rA_rB_ratio))) 0.9812734425067902
+t_sisso_54 abs(abs((1.0 / rA_rX_ratio) - (log_rA_rB_ratio**2)) - ((1.0 / rB_rX_ratio) + (1.0 / log_rA_rB_ratio))) 3.0414024591445923
+t_sisso_125 ((sqrt(rB_rX_ratio) * rA_rX_ratio) - (abs(rB_rX_ratio - log_rA_rB_ratio) - sqrt(log_rA_rB_ratio))) 1.2123769521713257
+t_sisso_181 (((rA_rX_ratio / rB_rX_ratio) / sqrt(log_rA_rB_ratio)) - ((rA_rX_ratio - rB_rX_ratio)**3)) 2.2989364862442017
