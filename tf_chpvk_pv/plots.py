@@ -66,6 +66,79 @@ def platt_scaling_plot(t = 't_sisso', train_input_path: Path = RESULTS_DIR / "pr
         logger.error("Platt Scaling plot cannot be generated as the required columns are not present in the dataframes.")
 
 
+
+def platt_scaling_plot_plotly(t='t_sisso', 
+                        train_input_path: Path = RESULTS_DIR / "processed_chpvk_train_dataset.csv",
+                        test_input_path: Path = RESULTS_DIR / "processed_chpvk_test_dataset.csv",
+                        concat_input_path: Path = RESULTS_DIR / "processed_chpvk_concat_dataset.csv",
+                        tolerance_dict_path: Path = INTERIM_DATA_DIR / "tolerance_factors.pkl",
+                        output_path: Path = FIGURES_DIR / "platt_scaling_plot_plotly.html"):  # Changed to .html for interactivity
+    
+    import plotly.express as px
+    import plotly.graph_objects as go
+    
+    # Load train and test datasets
+    train_df = pd.read_csv(train_input_path)
+    test_df = pd.read_csv(test_input_path)
+
+    # Load tolerance factor dictionary
+    with open(tolerance_dict_path, 'rb') as file:
+        tolerance_factor_dict = pickle.load(file)
+
+    threshold_t_sisso = tolerance_factor_dict[t][1]
+
+    # Combine datasets
+    if concat_input_path.exists():
+        concat = pd.read_csv(concat_input_path)
+    else:
+        concat = pd.concat([train_df.assign(dataset='train'), test_df.assign(dataset='test')])
+        concat.to_csv(concat_input_path, index=False)
+
+    # Check if required columns exist
+    if 'p_' + t in train_df.columns and 'p_' + t in test_df.columns:
+        logger.info("Generating Platt Scaling plot from data...")
+
+        # Create scatter plot using Plotly
+        fig = px.scatter(
+            concat, x=t, y='p_' + t, 
+            color='exp_label', symbol='dataset',
+            color_discrete_map={'Stable': 'red', 'Unstable': 'blue'},  # Adjust colors
+            symbol_map={'train': 'square', 'test': 'circle'},  # Adjust markers
+            size_max=10, 
+            labels={t: r'$t_\text{sisso}$', 'p_' + t: r'$P(t_\text{sisso})$'},
+            hover_data=['dataset']
+        )
+
+        # Add threshold vertical line
+        fig.add_shape(
+            type="line", x0=threshold_t_sisso, x1=threshold_t_sisso, y0=0, y1=1,
+            line=dict(color="black", width=2, dash="dash")
+        )
+
+        # Add horizontal line at y=0.5
+        fig.add_shape(
+            type="line", x0=min(concat[t]), x1=max(concat[t]), y0=0.5, y1=0.5,
+            line=dict(color="gray", width=2, dash="dot")
+        )
+
+        # Update layout
+        fig.update_layout(
+            title="Platt Scaling Plot",
+            xaxis_title=r'$t_\text{sisso}$',
+            yaxis_title='$P(t_\text{sisso})$',
+            template="plotly_white",
+            legend_title="Label"
+        )
+
+        # Save plot
+        fig.write_html(output_path)  # Saves as interactive HTML
+        logger.success(f"Plot saved as {output_path}")
+
+    else:
+        logger.error("Platt Scaling plot cannot be generated as the required columns are not present in the dataframes.")
+
+
+
 def plot_t_sisso_tf(tf, train_input_path: Path = RESULTS_DIR / "processed_chpvk_train_dataset.csv",
                         test_input_path: Path = RESULTS_DIR / "processed_chpvk_test_dataset.csv",
                         concat_input_path: Path = RESULTS_DIR / "processed_chpvk_concat_dataset.csv",
