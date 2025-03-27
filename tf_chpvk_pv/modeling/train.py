@@ -146,7 +146,7 @@ def train_tree_sis_features_Ch(
             else:
                 clf = tree.DecisionTreeClassifier(max_depth=depth, class_weight='balanced', criterion='entropy')
                 
-                clf_cv = cross_validate(clf, x.reshape(-1,1), labels, scoring='accuracy', params={'sample_weight': sample_weights})
+                clf_cv = cross_validate(clf, x.reshape(-1,1), labels, scoring='f1', params={'sample_weight': sample_weights})
                 clf_cv_score = np.mean(clf_cv['test_score'])
                 
                 #clf = clf.fit(x.reshape(-1,1), labels)                     # Build a decision-tree classifier from the training set (X, y). X is the values of features (for each for iteration on column) and Y is the target value, here exp_label
@@ -352,7 +352,7 @@ def test_tolerance_factor_Ch(t, train_df, test_df, tolerance_factor_dict, df_acc
     
     clf1_tree = tree.DecisionTreeClassifier(max_depth=n_tresh, class_weight=cl_w, criterion=crit)
     
-    clf1_cv = cross_validate(clf1_tree, x_train_.reshape(-1,1), labels_train, scoring='accuracy')
+    clf1_cv = cross_validate(clf1_tree, x_train_.reshape(-1,1), labels_train, scoring='f1')
     
     clf1_cv_score = np.mean(clf1_cv['test_score'])
     
@@ -373,9 +373,9 @@ def test_tolerance_factor_Ch(t, train_df, test_df, tolerance_factor_dict, df_acc
     labels_all_data = clf1_model.predict(all_data.reshape(-1,1))
     acc_all = metrics.accuracy_score(all_labels, labels_all_data)
     
-    print('Classification tree accuracy (for ' + t + ') on the train set: %f.' % acc_train)
-    print('Classification tree accuracy (for ' + t + ') on the train set (5 fold CV): %f.' % clf1_cv_score)
-    print('Classification tree accuracy (for ' + t + ') on the test set: %f.' % acc_test)
+    print('Classification tree f1 (for ' + t + ') on the train set: %f.' % acc_train)
+    print('Classification tree f1 (for ' + t + ') on the train set (5 fold CV): %f.' % clf1_cv_score)
+    print('Classification tree f1 (for ' + t + ') on the test set: %f.' % acc_test)
 
     if n_tresh == 2:
         threshold_=[clf1_model.tree_.threshold[0],clf1_model.tree_.threshold[4]]
