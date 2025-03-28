@@ -17,6 +17,9 @@ INTERIM_DATA_DIR = DATA_DIR / "interim"
 PROCESSED_DATA_DIR = DATA_DIR / "processed"
 EXTERNAL_DATA_DIR = DATA_DIR / "external"
 
+MODNET_DIR = PROJ_ROOT / "modnet"
+CRABNET_DIR = PROJ_ROOT / "crabnet"
+
 MODELS_DIR = PROJ_ROOT / "models"
 TREES_DIR = MODELS_DIR / "trees"
 RESULTS_DIR = MODELS_DIR/ "results"
