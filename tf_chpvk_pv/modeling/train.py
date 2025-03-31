@@ -59,8 +59,8 @@ def train_platt_scaling(train_df, test_df, clf_t, t='t_sisso',
     train_df['p_' + t] = p_t_sisso_train            # add p_t_sisso to the train and test data frame
     test_df['p_' + t] = p_t_sisso_test
 
-    train_df.to_csv(output_dir / 'diff_ops_processed_chpvk_train_dataset.csv')
-    test_df.to_csv(output_dir / 'diff_ops_processed_chpvk_test_dataset.csv')
+    train_df.to_csv(output_dir / 'processed_chpvk_train_dataset.csv')
+    test_df.to_csv(output_dir / 'processed_chpvk_test_dataset.csv')
 
     logger.success("Platt scaling model training complete.")
 
