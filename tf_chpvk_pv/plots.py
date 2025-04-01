@@ -58,7 +58,7 @@ def platt_scaling_plot(t = 't_sisso', train_input_path: Path = RESULTS_DIR / "pr
         plt.xlim(threshold_t_sisso-0.5, threshold_t_sisso+0.5)
         plt.axvline(tolerance_factor_dict[t][1])
         plt.axhline(0.5,linestyle='--')
-        plt.savefig(output_path)
+        plt.savefig(output_path, dpi=600)
 
         logger.success("Plot generation complete.")
 
@@ -239,11 +239,11 @@ def graph_periodic_table(stable_candidates_t_sisso, t='t_sisso', save_plot=True)
     element_counts = count_elements([re.sub(r'\d+', '', x) for x in stable_candidates_t_sisso])
 
     # Plot the periodic table heatmap
-    ptable_heatmap(element_counts, log=True, cbar_title='Element Prevalence', return_type="figure")#, plot_kwargs={"fontsize": 12})#, return_type="figure")# cmap="RdYlBu", cbar_title="Element Prevalence", log=True)
+    ptable_heatmap(element_counts, log=False, cbar_title='Element Prevalence', return_type="figure")#, plot_kwargs={"fontsize": 12})#, return_type="figure")# cmap="RdYlBu", cbar_title="Element Prevalence", log=True)
     #plt.title("Element Prevalence in Extracted Formulas for Valid Perovskites")
     if save_plot:
         txt_save = 'element_prevalence_heatmap_' + t + '.png'
-        plt.savefig(FIGURES_DIR / txt_save)
+        plt.savefig(FIGURES_DIR / txt_save, dpi=600)
     plt.show()
 
 
