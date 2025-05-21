@@ -1,0 +1,4 @@
+,target,reactants,reaction_energy(eV/atom),inverse_hull_energy(eV/atom),reaction,competing phases
+0,LaErSe3,"['ErSe', 'LaSe2']",-0.22271355712500163,-0.07698100943054254,ErSe + LaSe2 -> LaErSe3,"[['LaErSe2', 'Er2Se3'], ['Er2Se3', 'LaSe'], ['La2Se3', 'Er2Se3'], ['La10Se19', 'Er2Se3']]"
+1,LaErSe3,"['LaSe', 'ErSe2']",-0.2419236491250054,-0.07698100943037023,LaSe + ErSe2 -> LaErSe3,"[['La2Se3', 'Er2Se3'], ['La10Se19', 'Er2Se3'], ['LaSe2', 'Er2Se3']]"
+2,LaErSe3,"['La2Se3', 'Er2Se3']",-0.00019999999999669176,-0.00019999999999775753,0.5 La2Se3 + 0.5 Er2Se3 -> LaErSe3,[]

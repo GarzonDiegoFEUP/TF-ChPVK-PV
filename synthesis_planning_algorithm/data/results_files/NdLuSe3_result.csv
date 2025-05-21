@@ -1,0 +1,3 @@
+,target,reactants,reaction_energy(eV/atom),inverse_hull_energy(eV/atom),reaction,competing phases
+0,NdLuSe3,"['NdSe2', 'LuSe']",-0.261466863500006,-0.07929367227776485,NdSe2 + LuSe -> NdLuSe3,"[['Nd10Se19', 'Lu2Se3'], ['Lu2Se3', 'NdSe']]"
+1,NdLuSe3,"['Nd2Se3', 'Lu2Se3']",-0.005366142125002689,-0.00536614212500286,0.5 Nd2Se3 + 0.5 Lu2Se3 -> NdLuSe3,[]

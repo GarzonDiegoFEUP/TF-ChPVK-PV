@@ -1,0 +1,3 @@
+,target,reactants,reaction_energy(eV/atom),inverse_hull_energy(eV/atom),reaction,competing phases
+0,PrLuSe3,"['PrSe2', 'LuSe']",-0.26256536300000466,-0.08147780933331905,PrSe2 + LuSe -> PrLuSe3,"[['Pr10Se19', 'Lu2Se3'], ['Lu2Se3', 'PrSe']]"
+1,PrLuSe3,"['Lu2Se3', 'Pr2Se3']",-0.007796503125003101,-0.0077965031250046835,0.5 Lu2Se3 + 0.5 Pr2Se3 -> PrLuSe3,[]
