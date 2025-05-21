@@ -10,6 +10,6 @@ Based on our algorithms, over 2000 recipes are high-throughput generated for pot
 
 ## Citation
 
-This synthesis planning algorithm is created by Jiadong Chen, Wenhao Sun in University of Michigan. If you use this synthesis planning algorithm, we kindly ask you to cite the following publication:
+This synthesis planning algorithm was created by Jiadong Chen, Wenhao Sun in University of Michigan. By using this synthesis planning algorithm, I am citing the following publication:
 
 **Chen, J., Cross, S. R., Miara, L. J., Cho, J. J., Wang, Y., & Sun, W. (2024). Navigating phase diagram complexity to guide robotic inorganic materials synthesis. *Nature Synthesis*, 1-9.**
