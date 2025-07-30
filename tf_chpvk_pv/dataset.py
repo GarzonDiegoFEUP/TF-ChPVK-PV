@@ -119,6 +119,7 @@ def create_dataset(input_path: Path = RAW_DATA_DIR / "shuffled_dataset_chalcogen
 
     df['chi_AX_ratio'] = df['delta_chi_AX'] / df['delta_chi_AO']
     df['chi_BX_ratio'] = df['delta_chi_BX'] / df['delta_chi_BO']
+    df['chi_diff'] = 1/5 * (3 * df['chiX'] - df['chiA'] - df['chiB'])
 
     df['log_rA_rB_ratio'] = np.log(df['rA_rB_ratio'])
 
@@ -322,6 +323,8 @@ def generate_compositions(element_symbols, cation_oxidation_states=[2, 3, 4], an
         df.loc[idx, 'chi_A'] = electronegativities.loc[electronegativities.H == A, '2.2' ].values
         df.loc[idx, 'chi_B'] = electronegativities.loc[electronegativities.H == B, '2.2' ].values
         df.loc[idx, 'chi_X'] = electronegativities.loc[electronegativities.H == X, '2.2' ].values
+
+        df.loc[idx, 'chi_diff'] = 1/5 * (3 * df.loc[idx, 'chi_X'] - df.loc[idx, 'chi_A'] - df.loc[idx, 'chi_B'])
 
         #rA_ = radii.loc[(radii.ION  == A + ' ' + nA_ ) & (radii['Coord. #'] == 12), 'Ionic Radius'].values
         rA_ = new_radii.loc[(new_radii["Atomic Number"] == Z_A) & (new_radii["Oxidation State"] == nA) &(new_radii['Coordination Number'] == 12), 'Mean'].values
