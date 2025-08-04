@@ -20,4 +20,5 @@ pymatviz
 crabnet
 torch
 jmespath
+openpyxl
 #-e .
