@@ -420,28 +420,24 @@ def generate_compositions(element_symbols, cation_oxidation_states=[2, 3, 4], an
                 df_t = df[df['A'] == ion]
                 if df_t.nA.values[0] in df_radii.loc[df_radii['Ion'] == ion, 'Charge'].values:
                     if 12 in df_radii.loc[df_radii['Ion'] == ion].loc[df_radii['Charge'] == df_t.nA.values[0]]['CN'].values:
-                        df.loc[(df['A'] == ion), 'rA_S'] = df_radii.loc[df_radii['Ion'] == ion].loc[df_radii['Charge'] == df_t.nA.values[0]].loc[df_radii['CN'] == 12, 'rS (Å)'].values[0]
+                        df.loc[(df['A'] == ion), 'rA_S'] = df_radii.loc[df_radii['Ion'] == ion].loc[df_radii['Charge'] == df_t.nA.values[0]].loc[df_radii['CN'] == 12, 'rS (Å)'].values[0] * 100
                     elif 6 in df_radii.loc[df_radii['Ion'] == ion].loc[df_radii['Charge'] == df_t.nA.values[0]]['CN'].values:
-                        df.loc[(df['A'] == ion), 'rA_S'] = df_radii.loc[df_radii['Ion'] == ion].loc[df_radii['Charge'] == df_t.nA.values[0]].loc[df_radii['CN'] == 6, 'rS (Å)'].values[0]
+                        df.loc[(df['A'] == ion), 'rA_S'] = df_radii.loc[df_radii['Ion'] == ion].loc[df_radii['Charge'] == df_t.nA.values[0]].loc[df_radii['CN'] == 6, 'rS (Å)'].values[0] * 100
 
         for ion in df.B.unique():
             if ion in df_radii.Ion.unique():
                 df_t = df[df['B'] == ion]
                 if df_t.nB.values[0] in df_radii.loc[df_radii['Ion'] == ion, 'Charge'].values:
                     if 6 in df_radii.loc[df_radii['Ion'] == ion].loc[df_radii['Charge'] == df_t.nB.values[0]]['CN'].values:
-                        df.loc[(df['B'] == ion), 'rB_S'] = df_radii.loc[df_radii['Ion'] == ion].loc[df_radii['Charge'] == df_t.nB.values[0]].loc[df_radii['CN'] == 6, 'rS (Å)'].values[0]
+                        df.loc[(df['B'] == ion), 'rB_S'] = df_radii.loc[df_radii['Ion'] == ion].loc[df_radii['Charge'] == df_t.nB.values[0]].loc[df_radii['CN'] == 6, 'rS (Å)'].values[0] * 100
                     elif 12 in df_radii.loc[df_radii['Ion'] == ion].loc[df_radii['Charge'] == df_t.nB.values[0]]['CN'].values:
-                        df.loc[(df['B'] == ion), 'rB_S'] = df_radii.loc[df_radii['Ion'] == ion].loc[df_radii['Charge'] == df_t.nB.values[0]].loc[df_radii['CN'] == 12, 'rS (Å)'].values[0]
+                        df.loc[(df['B'] == ion), 'rB_S'] = df_radii.loc[df_radii['Ion'] == ion].loc[df_radii['Charge'] == df_t.nB.values[0]].loc[df_radii['CN'] == 12, 'rS (Å)'].values[0] * 100
 
         #Use the Turnley data for compounds with 'Br', 'I', 'S', 'Se'
         df.drop(columns=['rA', 'rB'], inplace=True)
         df.rename(columns={'rA_S':'rA',
                             'rB_S':'rB'}, inplace=True)
             
-        #multiply for 100 to have the radii in pm
-        df['rA'] *= 100
-        df['rB'] *= 100
-        df['rX'] *= 100
 
     df['delta_chi_AX'] = df['chi_A'] - df['chi_X']
     df['delta_chi_BX'] = df['chi_B'] - df['chi_X']
