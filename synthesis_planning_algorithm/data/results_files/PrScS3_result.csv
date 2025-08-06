@@ -1,0 +1,3 @@
+,target,reactants,reaction_energy(eV/atom),inverse_hull_energy(eV/atom),reaction,competing phases
+0,PrScS3,"['PrS2', 'ScS']",-0.21174294299998833,-0.21174294299998753,PrS2 + ScS -> PrScS3,[]
+1,PrScS3,"['Sc2S3', 'Pr2S3']",-0.01792582675000608,-0.017925826750005314,0.5 Sc2S3 + 0.5 Pr2S3 -> PrScS3,[]

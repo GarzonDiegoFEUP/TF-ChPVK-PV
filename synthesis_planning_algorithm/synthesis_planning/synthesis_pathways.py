@@ -60,6 +60,9 @@ class SynthesisPathways():
         selected_reactions = self.get_target_deepest_reactions()
         self.all_pairwise_reactions = self.get_all_pairwise_reactions_info()
         self.selected_reactions = self.save_most_energy_for_last_step(selected_reactions)
+
+        if len(self.selected_reactions) == 0:
+            print(f"No valid reactions found for {self.formula}. with the current reactions: {self.reactions}")
         
         if selected_reactions_to_csv:
             self.turn_to_csv(selected_reactions_to_csv)

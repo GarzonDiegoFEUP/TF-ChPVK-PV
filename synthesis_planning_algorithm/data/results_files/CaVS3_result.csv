@@ -1,0 +1,2 @@
+,target,reactants,reaction_energy(eV/atom),inverse_hull_energy(eV/atom),reaction,competing phases
+0,CaVS3,"['VS2', 'CaS']",-0.0001999999999988233,-0.0001999999999986457,VS2 + CaS -> CaVS3,[]
