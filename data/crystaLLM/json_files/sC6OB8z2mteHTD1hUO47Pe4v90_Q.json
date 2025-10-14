@@ -1,0 +1,697 @@
+{
+  "entry_id": "sC6OB8z2mteHTD1hUO47Pe4v90_Q",
+  "parser_name": "parsers/archive",
+  "archive": {
+    "processing_logs": [
+      {
+        "event": "Executing local process",
+        "proc": "Entry",
+        "process": "None",
+        "process_worker_id": "On0luFEjROiYr7eniHz2-A",
+        "parser": "parsers/archive",
+        "logger": "nomad.processing",
+        "timestamp": "2025-10-04T16:19:00Z",
+        "level": "DEBUG"
+      },
+      {
+        "exec_time": "0.0037446022033691406",
+        "input_size": "704",
+        "event": "parser executed",
+        "proc": "Entry",
+        "process": "process_entry_local",
+        "process_worker_id": "On0luFEjROiYr7eniHz2-A",
+        "parser": "parsers/archive",
+        "step": "parsers/archive",
+        "logger": "nomad.processing",
+        "timestamp": "2025-10-04T16:19:00Z",
+        "level": "INFO"
+      },
+      {
+        "normalizer": "MetainfoNormalizer",
+        "step": "MetainfoNormalizer",
+        "event": "normalizer completed successfully",
+        "proc": "Entry",
+        "process": "process_entry_local",
+        "process_worker_id": "On0luFEjROiYr7eniHz2-A",
+        "parser": "parsers/archive",
+        "logger": "nomad.processing",
+        "timestamp": "2025-10-04T16:19:00Z",
+        "level": "INFO"
+      },
+      {
+        "exec_time": "0.01966571807861328",
+        "input_size": "704",
+        "event": "normalizer executed",
+        "proc": "Entry",
+        "process": "process_entry_local",
+        "process_worker_id": "On0luFEjROiYr7eniHz2-A",
+        "parser": "parsers/archive",
+        "normalizer": "MetainfoNormalizer",
+        "step": "MetainfoNormalizer",
+        "logger": "nomad.processing",
+        "timestamp": "2025-10-04T16:19:00Z",
+        "level": "INFO"
+      },
+      {
+        "normalizer": "ResultsNormalizer",
+        "step": "ResultsNormalizer",
+        "event": "normalizer completed successfully",
+        "proc": "Entry",
+        "process": "process_entry_local",
+        "process_worker_id": "On0luFEjROiYr7eniHz2-A",
+        "parser": "parsers/archive",
+        "logger": "nomad.processing",
+        "timestamp": "2025-10-04T16:19:00Z",
+        "level": "INFO"
+      },
+      {
+        "exec_time": "0.0005016326904296875",
+        "input_size": "704",
+        "event": "normalizer executed",
+        "proc": "Entry",
+        "process": "process_entry_local",
+        "process_worker_id": "On0luFEjROiYr7eniHz2-A",
+        "parser": "parsers/archive",
+        "normalizer": "ResultsNormalizer",
+        "step": "ResultsNormalizer",
+        "logger": "nomad.processing",
+        "timestamp": "2025-10-04T16:19:00Z",
+        "level": "INFO"
+      },
+      {
+        "exec_time": "0.046227216720581055",
+        "event": "entry metadata saved",
+        "proc": "Entry",
+        "process": "process_entry_local",
+        "process_worker_id": "On0luFEjROiYr7eniHz2-A",
+        "parser": "parsers/archive",
+        "logger": "nomad.processing",
+        "timestamp": "2025-10-04T16:19:00Z",
+        "level": "INFO"
+      },
+      {
+        "exec_time": "0.4078068733215332",
+        "event": "entry metadata indexed",
+        "proc": "Entry",
+        "process": "process_entry_local",
+        "process_worker_id": "On0luFEjROiYr7eniHz2-A",
+        "parser": "parsers/archive",
+        "logger": "nomad.processing",
+        "timestamp": "2025-10-04T16:19:00Z",
+        "level": "INFO"
+      }
+    ],
+    "data": {
+      "m_def": "nomad_crystallm.schemas.schema.CrystaLLMInferenceResult",
+      "m_def_id": "205aae79f578d2fe20aeb832662c524f89fc0dfe",
+      "action_instance_id": "nomad_crystallm.actions:crystallm_inference-2a497944-a042-45d1-9ec5-cd450c3d8950-db229aef-07a6-4f25-9f38-2f2c6268d7f6",
+      "generated_cifs": [
+        "nomad_crystallm.actions:crystallm_inference-2a497944-a042-45d1-9ec5-cd450c3d8950-db229aef-07a6-4f25-9f38-2f2c6268d7f6/composition_66_YbCeS3/YbCeS3_1.cif"
+      ],
+      "generated_structures": [
+        "#/results/material/topology/0"
+      ],
+      "prompt": "data_Yb4Ce4S12\n",
+      "inference_settings": {
+        "compile": false,
+        "dtype": "bfloat16",
+        "max_new_tokens": 3000,
+        "model": "crystallm_v1_large",
+        "num_samples": 1,
+        "seed": 1337,
+        "temperature": 0.8,
+        "top_k": 10
+      }
+    },
+    "metadata": {
+      "coauthor_groups": [],
+      "coauthors": [
+        "62314f75-a859-4b3a-ae6d-e9a0f6c1d8cc"
+      ],
+      "datasets": [],
+      "embargo_length": 0,
+      "entry_coauthors": [],
+      "entry_create_time": "2025-10-04T16:19:00.251000+00:00",
+      "entry_hash": "HqbnVvEL2XnR_aCa-apCSI95DI27",
+      "entry_id": "sC6OB8z2mteHTD1hUO47Pe4v90_Q",
+      "entry_name": "crystallm_YbCeS3.archive.json",
+      "entry_type": "CrystaLLMInferenceResult",
+      "files": [
+        "nomad_crystallm.actions:crystallm_inference-2a497944-a042-45d1-9ec5-cd450c3d8950-db229aef-07a6-4f25-9f38-2f2c6268d7f6/composition_66_YbCeS3/crystallm_YbCeS3.archive.json",
+        "nomad_crystallm.actions:crystallm_inference-2a497944-a042-45d1-9ec5-cd450c3d8950-db229aef-07a6-4f25-9f38-2f2c6268d7f6/composition_66_YbCeS3/YbCeS3_1.cif"
+      ],
+      "last_processing_time": "2025-10-04T16:19:00.408823+00:00",
+      "license": "CC BY 4.0",
+      "main_author": "2a497944-a042-45d1-9ec5-cd450c3d8950",
+      "mainfile": "nomad_crystallm.actions:crystallm_inference-2a497944-a042-45d1-9ec5-cd450c3d8950-db229aef-07a6-4f25-9f38-2f2c6268d7f6/composition_66_YbCeS3/crystallm_YbCeS3.archive.json",
+      "n_quantities": 104,
+      "nomad_commit": "",
+      "nomad_distro_commit_url": "https://gitlab.mpcdf.mpg.de/nomad-lab/nomad-distro/tree/f183db427",
+      "nomad_version": "1.3.18.dev215+g14e8b322b",
+      "parser_name": "parsers/archive",
+      "processed": true,
+      "processing_errors": [],
+      "published": false,
+      "quantities": [
+        "",
+        "data",
+        "data.action_instance_id",
+        "data.generated_cifs",
+        "data.generated_structures",
+        "data.inference_settings",
+        "data.inference_settings.compile",
+        "data.inference_settings.dtype",
+        "data.inference_settings.max_new_tokens",
+        "data.inference_settings.model",
+        "data.inference_settings.num_samples",
+        "data.inference_settings.seed",
+        "data.inference_settings.temperature",
+        "data.inference_settings.top_k",
+        "data.prompt",
+        "metadata",
+        "metadata.coauthor_groups",
+        "metadata.coauthors",
+        "metadata.datasets",
+        "metadata.embargo_length",
+        "metadata.entry_coauthors",
+        "metadata.entry_create_time",
+        "metadata.entry_hash",
+        "metadata.entry_id",
+        "metadata.entry_name",
+        "metadata.entry_timestamp",
+        "metadata.entry_timestamp.timestamp",
+        "metadata.entry_timestamp.token",
+        "metadata.entry_timestamp.token_seed",
+        "metadata.entry_timestamp.tsa_server",
+        "metadata.entry_type",
+        "metadata.files",
+        "metadata.last_processing_time",
+        "metadata.license",
+        "metadata.main_author",
+        "metadata.mainfile",
+        "metadata.nomad_commit",
+        "metadata.nomad_distro_commit_url",
+        "metadata.nomad_version",
+        "metadata.parser_name",
+        "metadata.processed",
+        "metadata.processing_errors",
+        "metadata.published",
+        "metadata.quantities",
+        "metadata.references",
+        "metadata.reviewer_groups",
+        "metadata.reviewers",
+        "metadata.section_defs",
+        "metadata.section_defs.definition_id",
+        "metadata.section_defs.definition_qualified_name",
+        "metadata.section_defs.used_directly",
+        "metadata.sections",
+        "metadata.upload_create_time",
+        "metadata.upload_id",
+        "metadata.upload_name",
+        "metadata.with_embargo",
+        "results",
+        "results.material",
+        "results.material.elements",
+        "results.material.topology",
+        "results.material.topology.atoms",
+        "results.material.topology.atoms.atomic_numbers",
+        "results.material.topology.atoms.labels",
+        "results.material.topology.atoms.lattice_vectors",
+        "results.material.topology.atoms.periodic",
+        "results.material.topology.atoms.positions",
+        "results.material.topology.atoms.species",
+        "results.material.topology.cell",
+        "results.material.topology.cell.a",
+        "results.material.topology.cell.alpha",
+        "results.material.topology.cell.atomic_density",
+        "results.material.topology.cell.b",
+        "results.material.topology.cell.beta",
+        "results.material.topology.cell.c",
+        "results.material.topology.cell.gamma",
+        "results.material.topology.cell.mass_density",
+        "results.material.topology.cell.volume",
+        "results.material.topology.chemical_formula_anonymous",
+        "results.material.topology.chemical_formula_descriptive",
+        "results.material.topology.chemical_formula_hill",
+        "results.material.topology.chemical_formula_iupac",
+        "results.material.topology.chemical_formula_reduced",
+        "results.material.topology.description",
+        "results.material.topology.dimensionality",
+        "results.material.topology.elemental_composition",
+        "results.material.topology.elemental_composition.atomic_fraction",
+        "results.material.topology.elemental_composition.element",
+        "results.material.topology.elemental_composition.mass",
+        "results.material.topology.elemental_composition.mass_fraction",
+        "results.material.topology.elements",
+        "results.material.topology.label",
+        "results.material.topology.n_atoms",
+        "results.material.topology.structural_type",
+        "results.material.topology.symmetry",
+        "results.material.topology.symmetry.bravais_lattice",
+        "results.material.topology.symmetry.crystal_system",
+        "results.material.topology.symmetry.point_group",
+        "results.material.topology.symmetry.space_group_number",
+        "results.material.topology.symmetry.space_group_symbol",
+        "results.material.topology.system_id",
+        "results.properties"
+      ],
+      "references": [],
+      "reviewer_groups": [],
+      "reviewers": [],
+      "sections": [
+        "nomad.datamodel.datamodel.EntryArchive",
+        "nomad.datamodel.datamodel.EntryMetadata",
+        "nomad.datamodel.datamodel.RFC3161Timestamp",
+        "nomad.datamodel.metainfo.system.Atoms",
+        "nomad.datamodel.results.Cell",
+        "nomad.datamodel.results.ElementalComposition",
+        "nomad.datamodel.results.Material",
+        "nomad.datamodel.results.Properties",
+        "nomad.datamodel.results.Results",
+        "nomad.datamodel.results.SymmetryNew",
+        "nomad.datamodel.results.System",
+        "nomad_crystallm.schemas.schema.CrystaLLMInferenceResult",
+        "nomad_crystallm.schemas.schema.InferenceSettings"
+      ],
+      "text_search_contents": [
+        "nomad_crystallm.actions:crystallm_inference-2a497944-a042-45d1-9ec5-cd450c3d8950-db229aef-07a6-4f25-9f38-2f2c6268d7f6",
+        "bfloat16",
+        "nomad_crystallm.actions:crystallm_inference-2a497944-a042-45d1-9ec5-cd450c3d8950-db229aef-07a6-4f25-9f38-2f2c6268d7f6/composition_66_YbCeS3/YbCeS3_1.cif",
+        "crystallm_v1_large",
+        "data_Yb4Ce4S12"
+      ],
+      "upload_create_time": "2025-10-02T14:35:27.533000+00:00",
+      "upload_id": "rAGhkvDaTgyQPb_k3NcFbg",
+      "upload_name": "CrystaLLM inference for chacogenide perovskites",
+      "with_embargo": false,
+      "entry_timestamp": {
+        "timestamp": "2025-10-04T16:19:00+00:00",
+        "token": "MIIERAYJKoZIhvcNAQcCoIIENTCCBDECAQMxDTALBglghkgBZQMEAgEwfQYLKoZIhvcNAQkQAQSgbgRsMGoCAQEGDCsGAQQBga0hgiwWATAvMAsGCWCGSAFlAwQCAQQg5dDG6xyB0dEIg8PD30h6XPrmbwEnpFBvrquh++JA98QCFQCyy8CLpn3/ZqpQtKxNUDGW7K2/OxgPMjAyNTEwMDQxNjE5MDBaMYIDnDCCA5gCAQEwgZ4wgY0xCzAJBgNVBAYTAkRFMUUwQwYDVQQKDDxWZXJlaW4genVyIEZvZXJkZXJ1bmcgZWluZXMgRGV1dHNjaGVuIEZvcnNjaHVuZ3NuZXR6ZXMgZS4gVi4xEDAOBgNVBAsMB0RGTi1QS0kxJTAjBgNVBAMMHERGTi1WZXJlaW4gR2xvYmFsIElzc3VpbmcgQ0ECDCkC1XMzD3ji9J60uTALBglghkgBZQMEAgGggdEwGgYJKoZIhvcNAQkDMQ0GCyqGSIb3DQEJEAEEMBwGCSqGSIb3DQEJBTEPFw0yNTEwMDQxNjE5MDBaMCsGCSqGSIb3DQEJNDEeMBwwCwYJYIZIAWUDBAIBoQ0GCSqGSIb3DQEBCwUAMC8GCSqGSIb3DQEJBDEiBCDycG5fMihi2zlc6bwWPCrM2GwWAC7iJ2JsGLPp6J0/STA3BgsqhkiG9w0BCRACLzEoMCYwJDAiBCC2CI293QiY00kHjXwjMqdOzIQUDKCDWfAjVyVGz26C5DANBgkqhkiG9w0BAQsFAASCAgCWOUVcCqsKC4HiqX2ff4WsQIvQjKIfui6Su07nl1L7OBtPnFhNxFDJ+MNo/pcCjS8WKBxuQB73my007sPiXgPx0QE7BA1o3klwn9Fi0Sd8kFvxvoy32LXXV9WR95RQK4+aX3YwnKLlPs+nYeZJ1zzXCYfOZB2qsM60lQbdy7KsyJWyAFVtb3EaCnPIdtNdiKmF90406QnilTGYeY0q6oLk3KDAxncGsTKRu3Z12mPUrJso1Loe/Z6n51Ndt8cxsDOX/v7/qSxsFwwOlU4c2Yx78PLyxNuIKn5Isn7Lrcy0SnWsIZzHmDtgWFitW+qFwbPvb+azbFEMVQHpWfJ6Rbwe2g9rL/uac70hgha+47FmjqbcSfBrQTNOFqNN1x3uCRRzw4LblIJ1s0l8JMoixm7OgNcSUp7gH9DU2UJm+4dvUBi0xQSm+8c8DrsuoC9SYsIPM8iIlhcvnUJlEmoUjnBEYcxzKBfQDBqKAhWdg3ZH0fHrAJe6IxHEOeIGwT5bfwPIQPsk2KwWFTLWHlUVCRcWgJSXOxA8q1lhAILr3HESVZk8PG+DPcIjpH3zXP7iJbdnyJnPfnK3xagQSUR2NwvoDfLRi6c8X9/1lVWXA+xcyJxY05r8oj0Og43LaHXHMbdCG2tt1P7eq3DlXH0EsQh+2VAI4oqTVtky3lfaac1Yyg==",
+        "token_seed": "HqbnVvEL2XnR_aCa-apCSI95DI27",
+        "tsa_server": "http://zeitstempel.dfn.de"
+      },
+      "search_quantities": [
+        {
+          "definition": "nomad_crystallm.schemas.schema.CrystaLLMInferenceResult.action_instance_id",
+          "id": "data.action_instance_id#nomad_crystallm.schemas.schema.CrystaLLMInferenceResult",
+          "path_archive": "data.action_instance_id",
+          "str_value": "nomad_crystallm.actions:crystallm_inference-2a497944-a042-45d1-9ec5-cd450c3d8950-db229aef-07a6-4f25-9f38-2f2c6268d7f6"
+        },
+        {
+          "definition": "nomad_crystallm.schemas.schema.CrystaLLMInferenceResult.prompt",
+          "id": "data.prompt#nomad_crystallm.schemas.schema.CrystaLLMInferenceResult",
+          "path_archive": "data.prompt",
+          "str_value": "data_Yb4Ce4S12\n"
+        },
+        {
+          "bool_value": false,
+          "definition": "nomad_crystallm.schemas.schema.InferenceSettings.compile",
+          "id": "data.inference_settings.compile#nomad_crystallm.schemas.schema.CrystaLLMInferenceResult",
+          "path_archive": "data.inference_settings.compile"
+        },
+        {
+          "definition": "nomad_crystallm.schemas.schema.InferenceSettings.dtype",
+          "id": "data.inference_settings.dtype#nomad_crystallm.schemas.schema.CrystaLLMInferenceResult",
+          "path_archive": "data.inference_settings.dtype",
+          "str_value": "bfloat16"
+        },
+        {
+          "definition": "nomad_crystallm.schemas.schema.InferenceSettings.max_new_tokens",
+          "id": "data.inference_settings.max_new_tokens#nomad_crystallm.schemas.schema.CrystaLLMInferenceResult",
+          "int_value": 3000,
+          "path_archive": "data.inference_settings.max_new_tokens"
+        },
+        {
+          "definition": "nomad_crystallm.schemas.schema.InferenceSettings.model",
+          "id": "data.inference_settings.model#nomad_crystallm.schemas.schema.CrystaLLMInferenceResult",
+          "path_archive": "data.inference_settings.model",
+          "str_value": "crystallm_v1_large"
+        },
+        {
+          "definition": "nomad_crystallm.schemas.schema.InferenceSettings.num_samples",
+          "id": "data.inference_settings.num_samples#nomad_crystallm.schemas.schema.CrystaLLMInferenceResult",
+          "int_value": 1,
+          "path_archive": "data.inference_settings.num_samples"
+        },
+        {
+          "definition": "nomad_crystallm.schemas.schema.InferenceSettings.seed",
+          "id": "data.inference_settings.seed#nomad_crystallm.schemas.schema.CrystaLLMInferenceResult",
+          "int_value": 1337,
+          "path_archive": "data.inference_settings.seed"
+        },
+        {
+          "definition": "nomad_crystallm.schemas.schema.InferenceSettings.temperature",
+          "float_value": 0.8,
+          "id": "data.inference_settings.temperature#nomad_crystallm.schemas.schema.CrystaLLMInferenceResult",
+          "path_archive": "data.inference_settings.temperature"
+        },
+        {
+          "definition": "nomad_crystallm.schemas.schema.InferenceSettings.top_k",
+          "id": "data.inference_settings.top_k#nomad_crystallm.schemas.schema.CrystaLLMInferenceResult",
+          "int_value": 10,
+          "path_archive": "data.inference_settings.top_k"
+        }
+      ],
+      "section_defs": [
+        {
+          "definition_id": "a4fc26727b8b3b1711ff8cea9896ac1910987509",
+          "definition_qualified_name": "nomad.datamodel.data.ArchiveSection",
+          "used_directly": true
+        },
+        {
+          "definition_id": "486f476f18785f5f4bcbac10db7304d7de35636b",
+          "definition_qualified_name": "nomad.datamodel.data.EntryData",
+          "used_directly": true
+        },
+        {
+          "definition_id": "2908ca7fb601905eb74ffcfe77558fa9ef07e079",
+          "definition_qualified_name": "nomad.datamodel.datamodel.EntryArchive",
+          "used_directly": true
+        },
+        {
+          "definition_id": "3d906ed6d017ecf9178e267d0ae9a3d616810cc9",
+          "definition_qualified_name": "nomad.datamodel.datamodel.EntryMetadata",
+          "used_directly": true
+        },
+        {
+          "definition_id": "58ed24fdb4ad4ba6f185d4a0160fb0cde5586ebe",
+          "definition_qualified_name": "nomad.datamodel.datamodel.RFC3161Timestamp",
+          "used_directly": true
+        },
+        {
+          "definition_id": "a173e6190ff167bcf2edc9717d0e7a451abfa436",
+          "definition_qualified_name": "nomad.datamodel.metainfo.system.Atoms",
+          "used_directly": true
+        },
+        {
+          "definition_id": "8c229bd111146f4eb588bc811f076664c38d94cb",
+          "definition_qualified_name": "nomad.datamodel.results.Cell",
+          "used_directly": true
+        },
+        {
+          "definition_id": "0a1f8eff90ff1ebfe7d60dd6e68a96168245922e",
+          "definition_qualified_name": "nomad.datamodel.results.ElementalComposition",
+          "used_directly": true
+        },
+        {
+          "definition_id": "ab318383f231f73cb51497c38d79f9c6a691cab1",
+          "definition_qualified_name": "nomad.datamodel.results.Material",
+          "used_directly": true
+        },
+        {
+          "definition_id": "ac6ff5b917789fe0bd62c5baa33ec90dd97488e4",
+          "definition_qualified_name": "nomad.datamodel.results.Properties",
+          "used_directly": true
+        },
+        {
+          "definition_id": "b7cd981d237152b92d8690fe8ab2a9ad8343ce3f",
+          "definition_qualified_name": "nomad.datamodel.results.Results",
+          "used_directly": true
+        },
+        {
+          "definition_id": "e4f67092e6263b26847158aebc9d0b54ee7bd15f",
+          "definition_qualified_name": "nomad.datamodel.results.SymmetryNew",
+          "used_directly": true
+        },
+        {
+          "definition_id": "bdf6db6c58725424e687d7f04721a053d1185f47",
+          "definition_qualified_name": "nomad.datamodel.results.System",
+          "used_directly": true
+        },
+        {
+          "definition_id": "205aae79f578d2fe20aeb832662c524f89fc0dfe",
+          "definition_qualified_name": "nomad_crystallm.schemas.schema.CrystaLLMInferenceResult",
+          "used_directly": true
+        },
+        {
+          "definition_id": "9ab44c314c55e266e8634a81e3e106cf42382e10",
+          "definition_qualified_name": "nomad_crystallm.schemas.schema.InferenceSettings",
+          "used_directly": true
+        }
+      ]
+    },
+    "results": {
+      "material": {
+        "elements": [
+          "S",
+          "Ce",
+          "Yb"
+        ],
+        "topology": [
+          {
+            "chemical_formula_anonymous": "A3BC",
+            "chemical_formula_descriptive": "YbCeS3",
+            "chemical_formula_hill": "Ce4S12Yb4",
+            "chemical_formula_iupac": "YbCeS3",
+            "chemical_formula_reduced": "CeS3Yb",
+            "description": "Structure generated by CrystaLLM with action_id: \"nomad_crystallm.actions:crystallm_inference-2a497944-a042-45d1-9ec5-cd450c3d8950-db229aef-07a6-4f25-9f38-2f2c6268d7f6\"",
+            "dimensionality": "3D",
+            "elements": [
+              "Ce",
+              "S",
+              "Yb"
+            ],
+            "label": "Ce4S12Yb4-62",
+            "n_atoms": 20,
+            "structural_type": "bulk",
+            "system_id": "results/material/topology/0",
+            "atoms": {
+              "m_def": "nomad.datamodel.metainfo.system.Atoms",
+              "m_def_id": "a173e6190ff167bcf2edc9717d0e7a451abfa436",
+              "atomic_numbers": [
+                70,
+                70,
+                70,
+                70,
+                58,
+                58,
+                58,
+                58,
+                16,
+                16,
+                16,
+                16,
+                16,
+                16,
+                16,
+                16,
+                16,
+                16,
+                16,
+                16
+              ],
+              "labels": [
+                "Yb",
+                "Yb",
+                "Yb",
+                "Yb",
+                "Ce",
+                "Ce",
+                "Ce",
+                "Ce",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S",
+                "S"
+              ],
+              "lattice_vectors": [
+                [
+                  7.7207e-10,
+                  0.0,
+                  0.0
+                ],
+                [
+                  0.0,
+                  8.952000000000001e-10,
+                  0.0
+                ],
+                [
+                  0.0,
+                  0.0,
+                  7.1645e-10
+                ]
+              ],
+              "periodic": [
+                true,
+                true,
+                true
+              ],
+              "positions": [
+                [
+                  0.0,
+                  4.4760000000000004e-10,
+                  3.58225e-10
+                ],
+                [
+                  0.0,
+                  0.0,
+                  3.58225e-10
+                ],
+                [
+                  3.86035e-10,
+                  0.0,
+                  0.0
+                ],
+                [
+                  3.86035e-10,
+                  4.4760000000000004e-10,
+                  3.977096429963467e-26
+                ],
+                [
+                  6.95171828e-10,
+                  2.2380000000000002e-10,
+                  1.7696315000000123e-11
+                ],
+                [
+                  3.09136828e-10,
+                  2.2380000000000002e-10,
+                  3.4052868499999994e-10
+                ],
+                [
+                  4.6293317199999997e-10,
+                  6.714000000000001e-10,
+                  3.7592131500000015e-10
+                ],
+                [
+                  7.6898172e-11,
+                  6.714000000000001e-10,
+                  6.987536849999999e-10
+                ],
+                [
+                  6.23755353e-10,
+                  5.210959200000001e-10,
+                  5.817574000000001e-10
+                ],
+                [
+                  6.23755353e-10,
+                  8.217040799999999e-10,
+                  5.817574000000001e-10
+                ],
+                [
+                  2.377203530000001e-10,
+                  8.217040799999999e-10,
+                  4.929176e-10
+                ],
+                [
+                  5.34349647e-10,
+                  3.7410408e-10,
+                  2.2353240000000004e-10
+                ],
+                [
+                  1.4831464699999998e-10,
+                  7.349592e-11,
+                  1.3469259999999998e-10
+                ],
+                [
+                  5.34349647e-10,
+                  7.349592e-11,
+                  2.2353240000000004e-10
+                ],
+                [
+                  2.377203530000001e-10,
+                  5.210959200000001e-10,
+                  4.929176e-10
+                ],
+                [
+                  1.4831464699999998e-10,
+                  3.7410408e-10,
+                  1.3469259999999998e-10
+                ],
+                [
+                  7.046682890000001e-10,
+                  6.714000000000001e-10,
+                  2.2381898000000004e-10
+                ],
+                [
+                  3.18633289e-10,
+                  6.714000000000001e-10,
+                  1.3440602e-10
+                ],
+                [
+                  4.53436711e-10,
+                  2.2380000000000002e-10,
+                  5.8204398e-10
+                ],
+                [
+                  6.7401711e-11,
+                  2.2380000000000002e-10,
+                  4.926310200000001e-10
+                ]
+              ],
+              "species": [
+                70,
+                70,
+                70,
+                70,
+                58,
+                58,
+                58,
+                58,
+                16,
+                16,
+                16,
+                16,
+                16,
+                16,
+                16,
+                16,
+                16,
+                16,
+                16,
+                16
+              ]
+            },
+            "cell": {
+              "a": 7.7207e-10,
+              "alpha": 1.5707963267948966,
+              "atomic_density": 4.0389395902413e28,
+              "b": 8.952000000000001e-10,
+              "beta": 1.5707963267948966,
+              "c": 7.1645e-10,
+              "gamma": 1.5707963267948966,
+              "mass_density": 5491.072271441813,
+              "volume": 4.951794785028001e-28
+            },
+            "elemental_composition": [
+              {
+                "atomic_fraction": 0.2,
+                "element": "Yb",
+                "mass": 2.873629280328817e-25,
+                "mass_fraction": 0.4227376546602666
+              },
+              {
+                "atomic_fraction": 0.2,
+                "element": "Ce",
+                "mass": 2.326680921807947e-25,
+                "mass_fraction": 0.34227645255456624
+              },
+              {
+                "atomic_fraction": 0.6,
+                "element": "S",
+                "mass": 5.32451852449198e-26,
+                "mass_fraction": 0.23498589278516727
+              }
+            ],
+            "symmetry": {
+              "bravais_lattice": "oP",
+              "crystal_system": "orthorhombic",
+              "point_group": "mmm",
+              "space_group_number": 62,
+              "space_group_symbol": "Pnma"
+            }
+          }
+        ]
+      },
+      "properties": {}
+    },
+    "m_ref_archives": {}
+  }
+}
