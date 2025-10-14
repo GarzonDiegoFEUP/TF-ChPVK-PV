@@ -1,0 +1,3 @@
+,target,reactants,reaction_energy(eV/atom),inverse_hull_energy(eV/atom),reaction,competing phases
+0,UCdS3,"['CdS2', 'US']",-0.33174311799999423,-0.024162808500014066,CdS2 + US -> UCdS3,"[['US3', 'CdS'], ['US2', 'CdS'], ['U3S5', 'CdS'], ['U2S3', 'CdS'], ['U2S3', 'Cd']]"
+1,UCdS3,"['CdS', 'US2']",-0.00020000000000450763,-0.00020000000000486295,CdS + US2 -> UCdS3,[]

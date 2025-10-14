@@ -1,0 +1,3 @@
+,target,reactants,reaction_energy(eV/atom),inverse_hull_energy(eV/atom),reaction,competing phases
+0,PrInS3,"['PrS2', 'InS']",-0.05473922787500099,-0.041622509400005114,PrS2 + InS -> PrInS3,"[['Pr10S19', 'In2S3'], ['Pr2S3', 'In2S3']]"
+1,PrInS3,"['In2S3', 'Pr2S3']",-0.0001999999999810597,-0.00019999999998088214,0.5 In2S3 + 0.5 Pr2S3 -> PrInS3,[]

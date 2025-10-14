@@ -1,0 +1,3 @@
+,target,reactants,reaction_energy(eV/atom),inverse_hull_energy(eV/atom),reaction,competing phases
+0,SmYSe3,"['YSe2', 'SmSe']",-0.23376119824998862,-0.08508411258337567,YSe2 + SmSe -> SmYSe3,"[['Sm10Se19', 'Y2Se3'], ['Sm2Se3', 'Y2Se3']]"
+1,SmYSe3,"['Y2Se3', 'Sm2Se3']",-0.0001999999999810597,-0.00019999999998177032,0.5 Y2Se3 + 0.5 Sm2Se3 -> SmYSe3,[]
