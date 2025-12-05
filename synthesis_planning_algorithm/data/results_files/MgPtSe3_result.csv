@@ -1,3 +1,0 @@
-,target,reactants,reaction_energy(eV/atom),inverse_hull_energy(eV/atom),reaction,competing phases
-0,MgPtSe3,"['Se', 'MgPt']",-0.732486620406251,-0.05877005936363844,3 Se + MgPt -> MgPtSe3,"[['MgSe2', 'PtSe2'], ['PtSe2', 'MgSe'], ['Pt5Se4', 'MgSe'], ['MgPt3', 'MgSe']]"
-1,MgPtSe3,"['PtSe2', 'MgSe']",-0.00020000000000166548,-0.00020000000000219842,PtSe2 + MgSe -> MgPtSe3,[]

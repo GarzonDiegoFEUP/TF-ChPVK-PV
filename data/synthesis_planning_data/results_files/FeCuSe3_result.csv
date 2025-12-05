@@ -1,0 +1,2 @@
+,target,reactants,reaction_energy(eV/atom),inverse_hull_energy(eV/atom),reaction,competing phases
+0,FeCuSe3,"['FeSe2', 'CuSe']",-0.00020000000000521822,-0.00020000000000486295,FeSe2 + CuSe -> FeCuSe3,[]

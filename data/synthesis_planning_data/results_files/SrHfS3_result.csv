@@ -1,0 +1,2 @@
+,target,reactants,reaction_energy(eV/atom),inverse_hull_energy(eV/atom),reaction,competing phases
+0,SrHfS3,"['HfS2', 'SrS']",-0.00750904049999974,-0.007509040499999564,HfS2 + SrS -> SrHfS3,[]

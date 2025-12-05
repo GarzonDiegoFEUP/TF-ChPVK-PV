@@ -1,3 +1,0 @@
-,target,reactants,reaction_energy(eV/atom),inverse_hull_energy(eV/atom),reaction,competing phases
-0,GdInS3,"['InS', 'GdS2']",-0.068060743125001,-0.051022549450013166,InS + GdS2 -> GdInS3,"[['Gd2S3', 'In2S3'], ['Gd10S19', 'In2S3']]"
-1,GdInS3,"['In2S3', 'Gd2S3']",-0.00019999999996826994,-0.00019999999996844764,0.5 In2S3 + 0.5 Gd2S3 -> GdInS3,[]

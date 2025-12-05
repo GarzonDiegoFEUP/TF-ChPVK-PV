@@ -1,2 +1,0 @@
-,target,reactants,reaction_energy(eV/atom),inverse_hull_energy(eV/atom),reaction,competing phases
-0,CaZrS3,"['CaS', 'ZrS2']",-0.00019999999998674415,-0.00019999999998709939,CaS + ZrS2 -> CaZrS3,[]

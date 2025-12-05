@@ -1,3 +1,0 @@
-,target,reactants,reaction_energy(eV/atom),inverse_hull_energy(eV/atom),reaction,competing phases
-0,ZnPtSe3,"['Se', 'ZnPt']",-0.5758760974062519,-0.13971458112500112,3 Se + ZnPt -> ZnPtSe3,"[['ZnSe2', 'PtSe2'], ['PtSe2', 'ZnSe']]"
-1,ZnPtSe3,"['ZnSe', 'PtSe2']",-0.00020000000000166556,-0.00020000000000131024,ZnSe + PtSe2 -> ZnPtSe3,[]

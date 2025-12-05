@@ -1,3 +1,0 @@
-,target,reactants,reaction_energy(eV/atom),inverse_hull_energy(eV/atom),reaction,competing phases
-0,SmInS3,"['InS', 'SmS2']",-0.06633126325000374,-0.05066472967498026,InS + SmS2 -> SmInS3,"[['Sm3InS6', 'In2S3'], ['Sm10S19', 'In2S3']]"
-1,SmInS3,"['In2S3', 'Sm3InS6']",-0.0002000000000030864,-0.0002000000000030866,0.3333 In2S3 + 0.3333 Sm3InS6 -> SmInS3,[]

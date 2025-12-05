@@ -1,4 +1,0 @@
-,target,reactants,reaction_energy(eV/atom),inverse_hull_energy(eV/atom),reaction,competing phases
-0,BaHfS3,"['HfS', 'BaS2']",-0.3849322024999971,-0.3849322024999964,HfS + BaS2 -> BaHfS3,[]
-1,BaHfS3,"['BaS', 'HfS2']",-0.06091738250003265,-0.020429242500049405,BaS + HfS2 -> BaHfS3,['Ba2HfS4']
-2,BaHfS3,"['HfS2', 'Ba2HfS4']",-0.020429242499936624,-0.020429242499936606,0.5 HfS2 + 0.5 Ba2HfS4 -> BaHfS3,[]

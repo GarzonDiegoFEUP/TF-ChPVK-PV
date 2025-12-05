@@ -1,3 +1,0 @@
-,target,reactants,reaction_energy(eV/atom),inverse_hull_energy(eV/atom),reaction,competing phases
-0,DyInS3,"['InS', 'DyS2']",-0.1080506403749993,-0.10805064037499879,InS + DyS2 -> DyInS3,"[['Dy2S3', 'In2S3']]"
-1,DyInS3,"['In2S3', 'Dy2S3']",-0.0001999999999810597,-0.00019999999998177032,0.5 In2S3 + 0.5 Dy2S3 -> DyInS3,[]

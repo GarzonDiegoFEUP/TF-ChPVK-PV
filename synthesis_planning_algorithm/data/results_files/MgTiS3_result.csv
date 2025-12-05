@@ -1,3 +1,0 @@
-,target,reactants,reaction_energy(eV/atom),inverse_hull_energy(eV/atom),reaction,competing phases
-0,MgTiS3,"['TiS', 'MgS2']",-0.24909177800000387,-0.020089358444458583,TiS + MgS2 -> MgTiS3,"[['Ti2S3', 'MgS'], ['Ti5S8', 'MgS'], ['Ti7S12', 'MgS'], ['TiS2', 'MgS'], ['TiS3', 'MgS']]"
-1,MgTiS3,"['MgS', 'TiS2']",-0.00020000000002511347,-0.00020000000002440288,MgS + TiS2 -> MgTiS3,[]

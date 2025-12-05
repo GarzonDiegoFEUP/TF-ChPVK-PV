@@ -1,3 +1,0 @@
-,target,reactants,reaction_energy(eV/atom),inverse_hull_energy(eV/atom),reaction,competing phases
-0,EuTiS3,"['EuS2', 'TiS']",-0.20191389899999443,-0.014416058545462462,EuS2 + TiS -> EuTiS3,"[['Eu3S4', 'TiS3'], ['TiS2', 'Eu3S4'], ['TiS2', 'EuS'], ['Ti7S12', 'EuS'], ['Ti5S8', 'EuS'], ['Ti2S3', 'EuS']]"
-1,EuTiS3,"['EuS', 'TiS2']",-0.00019999999996400677,-0.00019999999996400675,EuS + TiS2 -> EuTiS3,[]

@@ -1,0 +1,3 @@
+,target,reactants,reaction_energy(eV/atom),inverse_hull_energy(eV/atom),reaction,competing phases
+0,PrAlS3,"['PrAl', 'S']",-1.7258263548379582,-0.10526720048675742,PrAl + 3 S -> PrAlS3,"[['PrAl2', 'PrS'], ['PrAl3', 'PrS'], ['Pr3Al11', 'PrS'], ['Al', 'PrS'], ['Pr2S3', 'Al'], ['Pr9Al5S21', 'Al'], ['Pr9Al5S21', 'Al2S3'], ['PrS2', 'Al2S3']]"
+1,PrAlS3,"['Al2S3', 'Pr9Al5S21']",-0.00020000000002369219,-0.0002000000000235147,0.2222 Al2S3 + 0.1111 Pr9Al5S21 -> PrAlS3,[]

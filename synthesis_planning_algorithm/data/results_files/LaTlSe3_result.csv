@@ -1,2 +1,0 @@
-,target,reactants,reaction_energy(eV/atom),inverse_hull_energy(eV/atom),reaction,competing phases
-0,LaTlSe3,"['TlSe', 'LaSe2']",-0.00019999999999669168,-0.00019999999999598117,TlSe + LaSe2 -> LaTlSe3,[]

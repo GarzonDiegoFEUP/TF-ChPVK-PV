@@ -1,2 +1,0 @@
-,target,reactants,reaction_energy(eV/atom),inverse_hull_energy(eV/atom),reaction,competing phases
-0,MgRuS3,"['MgS', 'RuS2']",-0.00020000000000521827,-0.00020000000000575113,MgS + RuS2 -> MgRuS3,[]

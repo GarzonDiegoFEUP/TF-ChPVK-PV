@@ -1,2 +1,0 @@
-,target,reactants,reaction_energy(eV/atom),inverse_hull_energy(eV/atom),reaction,competing phases
-0,TbInSe3,"['In2Se3', 'Tb2Se3']",-0.00019999999998319133,-0.00019999999998354667,0.5 In2Se3 + 0.5 Tb2Se3 -> TbInSe3,[]

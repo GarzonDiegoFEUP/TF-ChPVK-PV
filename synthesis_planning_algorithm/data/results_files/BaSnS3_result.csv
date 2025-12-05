@@ -1,4 +1,0 @@
-,target,reactants,reaction_energy(eV/atom),inverse_hull_energy(eV/atom),reaction,competing phases
-0,BaSnS3,"['BaS2', 'SnS']",-0.08347072161110841,-0.035919427611111665,BaS2 + SnS -> BaSnS3,"[['Ba2SnS4', 'BaS3'], ['Ba3Sn2S7', 'BaS3'], ['Ba6Sn7S20', 'Ba3Sn2S7']]"
-1,BaSnS3,"['BaSn2S3', 'BaS3']",-0.08120666561111492,-0.03591942761103706,0.5 BaSn2S3 + 0.5 BaS3 -> BaSnS3,"[['Ba8Sn4S15', 'SnS'], ['Ba2SnS4', 'SnS'], ['Ba3Sn2S7', 'SnS'], ['Ba6Sn7S20', 'Ba3Sn2S7']]"
-2,BaSnS3,"['Ba3Sn2S7', 'Ba6Sn7S20']",-0.0001999999998247401,-0.00019999999982456274,0.1111 Ba3Sn2S7 + 0.1111 Ba6Sn7S20 -> BaSnS3,[]

@@ -1,0 +1,2 @@
+,target,reactants,reaction_energy(eV/atom),inverse_hull_energy(eV/atom),reaction,competing phases
+0,TbCuS3,"['TbS2', 'CuS']",-0.0001999999999959811,-0.000199999999995093,TbS2 + CuS -> TbCuS3,[]

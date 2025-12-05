@@ -1,3 +1,0 @@
-,target,reactants,reaction_energy(eV/atom),inverse_hull_energy(eV/atom),reaction,competing phases
-0,LaInS3,"['LaS2', 'InS']",-0.054188107416668865,-0.05418810741666835,LaS2 + InS -> LaInS3,"[['La3InS6', 'In2S3']]"
-1,LaInS3,"['In2S3', 'La3InS6']",-0.0002000000000030864,-0.0002000000000030866,0.3333 In2S3 + 0.3333 La3InS6 -> LaInS3,[]

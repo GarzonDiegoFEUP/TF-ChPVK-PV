@@ -1,0 +1,3 @@
+,target,reactants,reaction_energy(eV/atom),inverse_hull_energy(eV/atom),reaction,competing phases
+0,EuNbS3,"['Nb3S5', 'Eu3S4']",-0.011867015500003224,-0.002507644040028012,0.3333 Nb3S5 + 0.3333 Eu3S4 -> EuNbS3,"[['Nb25S48', 'EuS'], ['NbS2', 'EuS']]"
+1,EuNbS3,"['EuS', 'NbS2']",-0.0002000000000080605,-0.00020000000000841567,EuS + NbS2 -> EuNbS3,[]

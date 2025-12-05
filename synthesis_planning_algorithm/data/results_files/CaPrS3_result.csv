@@ -1,2 +1,0 @@
-,target,reactants,reaction_energy(eV/atom),inverse_hull_energy(eV/atom),reaction,competing phases
-0,CaPrS3,"['CaS', 'PrS2']",-0.00020000000001587642,-0.0002000000000155211,CaS + PrS2 -> CaPrS3,[]

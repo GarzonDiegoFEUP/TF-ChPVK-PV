@@ -1,2 +1,0 @@
-,target,reactants,reaction_energy(eV/atom),inverse_hull_energy(eV/atom),reaction,competing phases
-0,ScMnSe3,"['MnSe2', 'Sc2MnSe4']",-0.00020000000000806043,-0.00020000000000841567,0.5 MnSe2 + 0.5 Sc2MnSe4 -> ScMnSe3,[]

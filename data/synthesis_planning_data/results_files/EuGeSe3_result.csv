@@ -1,0 +1,3 @@
+,target,reactants,reaction_energy(eV/atom),inverse_hull_energy(eV/atom),reaction,competing phases
+0,EuGeSe3,"['GeSe', 'EuSe2']",-0.07461183724999924,-0.07461183724999998,GeSe + EuSe2 -> EuGeSe3,"[['GeSe2', 'EuSe']]"
+1,EuGeSe3,"['GeSe2', 'EuSe']",-0.0002000000000002444,-0.00020000000000042206,GeSe2 + EuSe -> EuGeSe3,[]

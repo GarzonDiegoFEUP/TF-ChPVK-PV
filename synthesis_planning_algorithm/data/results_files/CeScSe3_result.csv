@@ -1,2 +1,0 @@
-,target,reactants,reaction_energy(eV/atom),inverse_hull_energy(eV/atom),reaction,competing phases
-0,CeScSe3,"['Ce2Se3', 'Sc2Se3']",-0.00019999999999527067,-0.0001999999999942048,0.5 Ce2Se3 + 0.5 Sc2Se3 -> CeScSe3,[]

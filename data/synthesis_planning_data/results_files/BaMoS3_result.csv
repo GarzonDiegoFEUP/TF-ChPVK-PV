@@ -1,0 +1,4 @@
+,target,reactants,reaction_energy(eV/atom),inverse_hull_energy(eV/atom),reaction,competing phases
+0,BaMoS3,"['Ba(Mo3S4)2', 'BaS2']",-0.19420171399999475,-0.16118536757142454,0.1667 Ba(Mo3S4)2 + 0.8333 BaS2 -> BaMoS3,"[['Ba2(Mo2S3)3', 'MoS2'], ['MoS2', 'BaS']]"
+1,BaMoS3,"['Mo', 'BaS3']",-0.5051462099999953,-0.1327761850588276,Mo + BaS3 -> BaMoS3,"[['Ba2(Mo2S3)3', 'BaS'], ['MoS2', 'BaS'], ['BaS2', 'MoS2']]"
+2,BaMoS3,"['MoS2', 'BaS']",-0.00020000000001516578,-0.00020000000001463292,MoS2 + BaS -> BaMoS3,[]

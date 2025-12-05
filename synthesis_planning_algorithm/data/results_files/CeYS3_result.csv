@@ -1,3 +1,0 @@
-,target,reactants,reaction_energy(eV/atom),inverse_hull_energy(eV/atom),reaction,competing phases
-0,CeYS3,"['CeS2', 'YS']",-0.22388275016666334,-0.05855781883333133,CeS2 + YS -> CeYS3,"[['Ce(YS2)3', 'Ce2S3'], ['Ce(YS2)3', 'CeS'], ['Y2S3', 'CeS'], ['Y5S7', 'CeS']]"
-1,CeYS3,"['Ce(YS2)3', 'Ce2S3']",-0.00019999999996116443,-0.00019999999995956586,0.3333 Ce(YS2)3 + 0.3333 Ce2S3 -> CeYS3,[]

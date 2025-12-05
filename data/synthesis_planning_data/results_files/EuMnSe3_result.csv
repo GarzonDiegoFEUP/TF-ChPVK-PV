@@ -1,0 +1,3 @@
+,target,reactants,reaction_energy(eV/atom),inverse_hull_energy(eV/atom),reaction,competing phases
+0,EuMnSe3,"['MnSe', 'EuSe2']",-0.03856657449999686,-0.03856657449999634,MnSe + EuSe2 -> EuMnSe3,"[['MnSe2', 'EuSe']]"
+1,EuMnSe3,"['EuSe', 'MnSe2']",-0.0002000000000094816,-0.00020000000000841567,EuSe + MnSe2 -> EuMnSe3,[]

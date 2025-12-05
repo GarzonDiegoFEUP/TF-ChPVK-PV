@@ -1,0 +1,3 @@
+,target,reactants,reaction_energy(eV/atom),inverse_hull_energy(eV/atom),reaction,competing phases
+0,EuMnS3,"['MnS', 'EuS2']",-0.16457141499999176,-0.02591724200000467,MnS + EuS2 -> EuMnS3,"[['Mn2S3', 'EuS'], ['MnS2', 'EuS'], ['Eu3S4', 'MnS2']]"
+1,EuMnS3,"['EuS', 'MnS2']",-0.00020000000000095508,-0.00020000000000131024,EuS + MnS2 -> EuMnS3,[]

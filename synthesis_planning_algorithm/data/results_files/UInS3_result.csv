@@ -1,3 +1,0 @@
-,target,reactants,reaction_energy(eV/atom),inverse_hull_energy(eV/atom),reaction,competing phases
-0,UInS3,"['In2S3', 'U2S3']",-0.01495659937497606,-0.00652537508329587,0.5 In2S3 + 0.5 U2S3 -> UInS3,"[['US2', 'InS'], ['U3S5', 'InS']]"
-1,UInS3,"['US2', 'InS']",-0.00020000000002227118,-0.00020000000002085017,US2 + InS -> UInS3,[]

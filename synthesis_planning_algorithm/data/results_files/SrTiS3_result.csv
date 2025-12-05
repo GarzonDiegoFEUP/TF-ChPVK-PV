@@ -1,3 +1,0 @@
-,target,reactants,reaction_energy(eV/atom),inverse_hull_energy(eV/atom),reaction,competing phases
-0,SrTiS3,"['Sr8(TiS3)7', 'TiS3']",-0.008938195625007955,-0.008938195625008305,0.125 Sr8(TiS3)7 + 0.125 TiS3 -> SrTiS3,"[['TiS2', 'SrS']]"
-1,SrTiS3,"['TiS2', 'SrS']",-0.00020000000000308657,-0.0002000000000030866,TiS2 + SrS -> SrTiS3,[]
