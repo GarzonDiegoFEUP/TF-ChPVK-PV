@@ -1,0 +1,4 @@
+,target,reactants,reaction_energy(eV/atom),inverse_hull_energy(eV/atom),reaction,competing phases
+0,PdPbSe3,"['PdSe', 'PbSe2']",-0.07172258200000176,-0.07172258200000226,PdSe + PbSe2 -> PdPbSe3,"[['PdSe2', 'PbSe']]"
+1,PdPbSe3,"['PdPb', 'Se']",-0.5722560207812462,-0.03596129099999246,PdPb + 3 Se -> PdPbSe3,"[['Pd3Pb', 'PbSe'], ['Pd3(PbSe)2', 'PbSe'], ['Pd17Se15', 'PbSe'], ['PbSe', 'PdSe'], ['PdSe2', 'PbSe'], ['PbSe2', 'PdSe2']]"
+2,PdPbSe3,"['PbSe', 'PdSe2']",-0.00019999999999669165,-0.00019999999999598117,PbSe + PdSe2 -> PdPbSe3,[]

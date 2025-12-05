@@ -1,0 +1,3 @@
+,target,reactants,reaction_energy(eV/atom),inverse_hull_energy(eV/atom),reaction,competing phases
+0,LaScS3,"['ScS', 'LaS2']",-0.21281249800003238,-0.21281249800003188,ScS + LaS2 -> LaScS3,[]
+1,LaScS3,"['Sc2S3', 'La2S3']",-0.025083054250021136,-0.025083054250021775,0.5 Sc2S3 + 0.5 La2S3 -> LaScS3,[]

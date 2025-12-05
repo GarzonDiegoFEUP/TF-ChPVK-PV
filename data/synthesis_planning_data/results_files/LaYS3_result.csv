@@ -1,0 +1,4 @@
+,target,reactants,reaction_energy(eV/atom),inverse_hull_energy(eV/atom),reaction,competing phases
+0,LaYS3,"['LaS2', 'YS']",-0.23765545149999515,-0.07736534616667168,LaS2 + YS -> LaYS3,"[['La(YS2)3', 'LaS']]"
+1,LaYS3,"['La2S3', 'Y2S3']",-0.019591864000038695,-0.007517603833341546,0.5 La2S3 + 0.5 Y2S3 -> LaYS3,['La(YS2)3']
+2,LaYS3,"['La(YS2)3', 'La2S3']",-0.007517603833305484,-0.007517603833305131,0.3333 La(YS2)3 + 0.3333 La2S3 -> LaYS3,[]

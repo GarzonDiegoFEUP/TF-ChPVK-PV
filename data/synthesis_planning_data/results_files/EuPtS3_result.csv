@@ -1,0 +1,2 @@
+,target,reactants,reaction_energy(eV/atom),inverse_hull_energy(eV/atom),reaction,competing phases
+0,EuPtS3,"['EuS', 'PtS2']",-0.00020000000000521833,-0.00020000000000575113,EuS + PtS2 -> EuPtS3,[]

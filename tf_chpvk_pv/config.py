@@ -16,9 +16,9 @@ RAW_DATA_DIR = DATA_DIR / "raw"
 INTERIM_DATA_DIR = DATA_DIR / "interim"
 PROCESSED_DATA_DIR = DATA_DIR / "processed"
 EXTERNAL_DATA_DIR = DATA_DIR / "external"
-
-MODNET_DIR = PROJ_ROOT / "modnet"
-CRABNET_DIR = PROJ_ROOT / "crabnet"
+CRYSTALLM_DATA_DIR = DATA_DIR / "crystaLLM"
+SYNTHESIS_DATA_DIR = DATA_DIR / "synthesis_planning_data"
+SUSTAINABILITY_DATA_DIR = DATA_DIR / "sustainability_data"
 
 MODELS_DIR = PROJ_ROOT / "models"
 TREES_DIR = MODELS_DIR / "trees"
@@ -27,6 +27,11 @@ RESULTS_DIR = MODELS_DIR/ "results"
 REPORTS_DIR = PROJ_ROOT / "reports"
 FIGURES_DIR = REPORTS_DIR / "figures"
 RESULTS_DIR = MODELS_DIR/ "results"
+SYNTHESIS_FIG_DIR = FIGURES_DIR / "synthesis_planning"
+
+NOTEBOOKS_DIR = PROJ_ROOT / "notebooks"
+MODEL_CRABNET_DIR = NOTEBOOKS_DIR / "models"
+TRAINED_MODELS = MODEL_CRABNET_DIR / "trained_models"
 
 # Random seed
 RANDOM_SEED = 187636123

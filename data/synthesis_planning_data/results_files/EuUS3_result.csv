@@ -1,0 +1,4 @@
+,target,reactants,reaction_energy(eV/atom),inverse_hull_energy(eV/atom),reaction,competing phases
+0,EuUS3,"['EuS2', 'US']",-0.2986181749999986,-0.024162808499994526,EuS2 + US -> EuUS3,"[['Eu3S4', 'US3'], ['US3', 'EuS'], ['US2', 'EuS'], ['U3S5', 'EuS'], ['U2S3', 'EuS']]"
+1,EuUS3,"['U3S5', 'Eu3S4']",-0.046560692000004185,-0.024162808499994526,0.3333 U3S5 + 0.3333 Eu3S4 -> EuUS3,"[['US2', 'EuS'], ['US3', 'EuS']]"
+2,EuUS3,"['EuS', 'US2']",-0.0002000000000080605,-0.00020000000000841567,EuS + US2 -> EuUS3,[]

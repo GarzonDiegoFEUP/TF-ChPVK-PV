@@ -1,0 +1,4 @@
+,target,reactants,reaction_energy(eV/atom),inverse_hull_energy(eV/atom),reaction,competing phases
+0,BaPtS3,"['BaPt2S3', 'BaS3']",-0.030785168500003835,-0.012527468333336067,0.5 BaPt2S3 + 0.5 BaS3 -> BaPtS3,"[['PtS2', 'BaS'], ['BaS2', 'PtS2']]"
+1,BaPtS3,"['PtS', 'BaS2']",-0.02749139199999816,-0.012527468333332514,PtS + BaS2 -> BaPtS3,"[['BaPt2S3', 'PtS2'], ['PtS2', 'BaS']]"
+2,BaPtS3,"['PtS2', 'BaS']",-0.0001999999999988233,-0.00019999999999953388,PtS2 + BaS -> BaPtS3,[]

@@ -1,0 +1,3 @@
+,target,reactants,reaction_energy(eV/atom),inverse_hull_energy(eV/atom),reaction,competing phases
+0,BaPtSe3,"['Pt', 'BaSe3']",-0.22184766299999978,-0.06481371962500315,Pt + BaSe3 -> BaPtSe3,"[['Pt5Se4', 'BaSe'], ['PtSe2', 'BaSe'], ['BaSe2', 'PtSe2']]"
+1,BaPtSe3,"['PtSe2', 'BaSe']",-0.00019999999999953386,-0.00019999999999953388,PtSe2 + BaSe -> BaPtSe3,[]

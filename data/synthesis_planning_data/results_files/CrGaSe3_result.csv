@@ -1,0 +1,3 @@
+,target,reactants,reaction_energy(eV/atom),inverse_hull_energy(eV/atom),reaction,competing phases
+0,CrGaSe3,"['CrSe2', 'GaSe']",-0.06967084749998648,-0.06967084749998698,CrSe2 + GaSe -> CrGaSe3,[]
+1,CrGaSe3,"['Cr2Se3', 'Ga2Se3']",-0.022475747500017525,-0.022475747500017462,0.5 Cr2Se3 + 0.5 Ga2Se3 -> CrGaSe3,[]

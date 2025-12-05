@@ -1,0 +1,4 @@
+,target,reactants,reaction_energy(eV/atom),inverse_hull_energy(eV/atom),reaction,competing phases
+0,BaZrS3,"['ZrS', 'BaS2']",-0.3821495170000028,-0.13427631885000668,ZrS + BaS2 -> BaZrS3,"[['Zr3S4', 'BaS'], ['Ba3Zr2S7', 'Zr3S4']]"
+1,BaZrS3,"['Ba3Zr2S7', 'ZrS2']",-0.01851394500014156,-0.018513945000141696,0.3333 Ba3Zr2S7 + 0.3333 ZrS2 -> BaZrS3,[]
+2,BaZrS3,"['BaS', 'ZrS2']",-0.06688641500000754,-0.01851394500000758,BaS + ZrS2 -> BaZrS3,['Ba3Zr2S7']

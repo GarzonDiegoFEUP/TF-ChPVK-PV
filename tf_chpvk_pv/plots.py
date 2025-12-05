@@ -41,6 +41,8 @@ def platt_scaling_plot(t = 't_sisso', train_input_path: Path = RESULTS_DIR / "pr
 
     threshold_t_sisso = tolerance_factor_dict[t][1]
 
+    
+
     if concat_input_path.exists():
         concat = pd.read_csv(concat_input_path)
     else:
@@ -52,10 +54,15 @@ def platt_scaling_plot(t = 't_sisso', train_input_path: Path = RESULTS_DIR / "pr
         plt.figure(figsize=(8,8))
         plot1=sns.scatterplot(x=t, y='p_' + t, data=concat,hue='exp_label', style='dataset',
                     palette=['red','blue'], markers=['s','o'], s=80)
+        
+        #Set x lims
+        import numpy as np
+        x_lims = [min([np.min(concat[t])-0.1,threshold_t_sisso-0.5]), max([np.max(concat[t])+0.1,threshold_t_sisso+0.5])]
+
         plot1.set_xlabel("$t_{sisso}$", fontsize=20)
         plot1.set_ylabel("$P(t_{sisso})$", fontsize=20)
         plot1.tick_params(labelsize=20)
-        plt.xlim(threshold_t_sisso-0.5, threshold_t_sisso+0.5)
+        plt.xlim(x_lims[0], x_lims[1])
         plt.axvline(tolerance_factor_dict[t][1])
         plt.axhline(0.5,linestyle='--')
         plt.savefig(output_path, dpi=600)

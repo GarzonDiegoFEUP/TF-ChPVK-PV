@@ -31,7 +31,9 @@ def main():
 
 def create_dataset(input_path: Path = RAW_DATA_DIR / "shuffled_dataset_chalcogenide_pvk.csv",
                    output_path: Path = PROCESSED_DATA_DIR / "chpvk_dataset.csv",
-                   new_radii_path: Path = RAW_DATA_DIR / "Expanded_Shannon_Effective_Ionic_Radii.csv"):
+                   new_radii_path: Path = RAW_DATA_DIR / "Expanded_Shannon_Effective_Ionic_Radii.csv",
+                   turnley_radii_path: Path = RAW_DATA_DIR / "Turnley_Ionic_Radii.xlsx",
+                   use_turnley_radii: bool = False):
     
     from pymatgen.core import Composition, periodic_table
 
@@ -40,70 +42,115 @@ def create_dataset(input_path: Path = RAW_DATA_DIR / "shuffled_dataset_chalcogen
     #load data
     df = pd.read_csv(input_path, index_col=0)
 
-    #correct radii values
-    new_radii = pd.read_csv(new_radii_path) 
-
     #get atomic_features
     atomic_features = pd.read_csv(RAW_DATA_DIR / "atomic_features.csv")
 
-    for idx in df.index:
-    
-        nA = df.loc[idx, 'nA']
-        nB = df.loc[idx, 'nB']
-        nX = df.loc[idx, 'nX']
+    if use_turnley_radii:
+        #load radii from Turnley
+        df_radii = pd.read_excel(turnley_radii_path)
 
-        A = df.loc[idx, 'A']
-        B = df.loc[idx, 'B']
-        X = df.loc[idx, 'X']
+        df['rA_S'] = df.rA.copy()
+        df['rB_S'] = df.rB.copy()
 
-        """if nA > 0:
-            nA_ = '+' + str(round(nA))
-        else:
-            nA_ = str(round(nA))
+        for ion in df.A.unique():
+            if ion in df_radii.Ion.unique():
+                df_t = df[df['A'] == ion]
+                for x in df_t.X:
+                    if x in ['Br', 'I', 'S', 'Se']:
+                        if 12 in df_radii.loc[df_radii['Ion'] == ion, 'CN'].values:
+                            if df_t.nA.values[0] in df_radii.loc[df_radii['Ion'] == ion, 'Charge'].values:
+                                df.loc[(df['A'] == ion) & (df['X'] == x), 'rA_S'] = df_radii.loc[df_radii['Ion'] == ion].loc[df_radii['Charge'] == df_t.nA.values[0]].loc[df_radii['CN'] == 12, 'rS (Å)'].values[0]
+                        elif 6 in df_radii.loc[df_radii['Ion'] == ion, 'CN'].values:
+                            if df_t.nA.values[0] in df_radii.loc[df_radii['Ion'] == ion, 'Charge'].values:
+                                df.loc[(df['A'] == ion) & (df['X'] == x), 'rA_S'] = df_radii.loc[df_radii['Ion'] == ion].loc[df_radii['Charge'] == df_t.nA.values[0]].loc[df_radii['CN'] == 6, 'rS (Å)'].values[0]
 
-        if nB > 0:
-            nB_ = '+' + str(round(nB))
-        else:
-            nB_ = str(round(nB))
+        for ion in df.B.unique():
+            if ion in df_radii.Ion.unique():
+                df_t = df[df['B'] == ion]
+                for x in df_t.X:
+                    if x in ['Br', 'I', 'S', 'Se']:
+                        if 6 in df_radii.loc[df_radii['Ion'] == ion, 'CN'].values:
+                            if df_t.nB.values[0] in df_radii.loc[df_radii['Ion'] == ion, 'Charge'].values:
+                                df.loc[(df['B'] == ion) & (df['X'] == x), 'rB_S'] = df_radii.loc[df_radii['Ion'] == ion].loc[df_radii['Charge'] == df_t.nB.values[0]].loc[df_radii['CN'] == 6, 'rS (Å)'].values[0]
+                        elif 12 in df_radii.loc[df_radii['Ion'] == ion, 'CN'].values:
+                            if df_t.nB.values[0] in df_radii.loc[df_radii['Ion'] == ion, 'Charge'].values:
+                                df.loc[(df['B'] == ion) & (df['X'] == x), 'rB_S'] = df_radii.loc[df_radii['Ion'] == ion].loc[df_radii['Charge'] == df_t.nB.values[0]].loc[df_radii['CN'] == 12, 'rS (Å)'].values[0]
+                        
 
-        if nX > 0:
-            nX_ = '+' + str(round(nX))
-        else:
-            nX_ = str(round(nX))"""
-
-        Z_A = periodic_table.Element(A).Z
-        Z_B = periodic_table.Element(B).Z
-        Z_X = periodic_table.Element(X).Z
-
-        #rA_ = radii.loc[(radii.ION  == A + ' ' + nA_ ) & (radii['Coord. #'] == 12), 'Ionic Radius'].values
-        rA_ = new_radii.loc[(new_radii["Atomic Number"] == Z_A) & (new_radii["Oxidation State"] == nA) &(new_radii['Coordination Number'] == 12), 'Mean'].values
+        #Use the Turnley data for compounds with 'Br', 'I', 'S', 'Se'
+        df.drop(columns=['rA', 'rB'], inplace=True)
+        df.rename(columns={'rA_S':'rA',
+                        'rB_S':'rB'}, inplace=True)
         
-        #if np.shape(rA_)[0] == 0:
-            #rA_ = radii.loc[(radii.ION  == A + nA_ ) & (radii['Coord. #'] == 12), 'Ionic Radius'].values
+        #multiply for 100 to have the radii in pm
+        df['rA'] *= 100
+        df['rB'] *= 100
+        df['rX'] *= 100
+    
+    else:
+        #correct radii values
+        new_radii = pd.read_csv(new_radii_path) 
 
-        if np.shape(rA_)[0] == 0:
-            #rA_ = radii.loc[(radii.ION  == A + nA_ ) & (radii['Coord. #'] == 8), 'Ionic Radius'].values
-            rA_ = new_radii.loc[(new_radii["Atomic Number"] == Z_A) & (new_radii["Oxidation State"] == nA) & (new_radii['Coordination Number'] == 8), 'Mean'].values
 
-        if np.shape(rA_)[0] > 0:  
-            df.loc[idx, 'rA'] = rA_
 
-        #rB_ = radii.loc[(radii.ION  == B + ' ' + nB_ ) & (radii['Coord. #'] == 6), 'Ionic Radius'].values
-        rB_ = new_radii.loc[(new_radii["Atomic Number"] == Z_B) & (new_radii["Oxidation State"] == nB) & (new_radii['Coordination Number'] == 6), 'Mean'].values
+        for idx in df.index:
+        
+            nA = df.loc[idx, 'nA']
+            nB = df.loc[idx, 'nB']
+            nX = df.loc[idx, 'nX']
 
-        #if np.shape(rB_)[0] == 0:
-        #    rB_ = radii.loc[(radii.ION  == B + nB_ ) & (radii['Coord. #'] == 6), 'Ionic Radius'].values
+            A = df.loc[idx, 'A']
+            B = df.loc[idx, 'B']
+            X = df.loc[idx, 'X']
 
-        if np.shape(rB_)[0] > 0:  
-            try:
-                df.loc[idx, 'rB'] = rB_
+            """if nA > 0:
+                nA_ = '+' + str(round(nA))
+            else:
+                nA_ = str(round(nA))
 
-            except:
-                df.loc[idx, 'rB'] = rB_[0]
+            if nB > 0:
+                nB_ = '+' + str(round(nB))
+            else:
+                nB_ = str(round(nB))
 
-        #rX_ = radii.loc[radii.ION  == X + nX_, 'Ionic Radius'].values
-        rX_ = new_radii.loc[(new_radii["Atomic Number"] == Z_X) & (new_radii["Oxidation State"] == nX) & (new_radii['Coordination Number'] == 6), 'Mean'].values
-        df.loc[idx, 'rX'] = rX_
+            if nX > 0:
+                nX_ = '+' + str(round(nX))
+            else:
+                nX_ = str(round(nX))"""
+
+            Z_A = periodic_table.Element(A).Z
+            Z_B = periodic_table.Element(B).Z
+            Z_X = periodic_table.Element(X).Z
+
+            #rA_ = radii.loc[(radii.ION  == A + ' ' + nA_ ) & (radii['Coord. #'] == 12), 'Ionic Radius'].values
+            rA_ = new_radii.loc[(new_radii["Atomic Number"] == Z_A) & (new_radii["Oxidation State"] == nA) &(new_radii['Coordination Number'] == 12), 'Mean'].values
+            
+            #if np.shape(rA_)[0] == 0:
+                #rA_ = radii.loc[(radii.ION  == A + nA_ ) & (radii['Coord. #'] == 12), 'Ionic Radius'].values
+
+            if np.shape(rA_)[0] == 0:
+                #rA_ = radii.loc[(radii.ION  == A + nA_ ) & (radii['Coord. #'] == 8), 'Ionic Radius'].values
+                rA_ = new_radii.loc[(new_radii["Atomic Number"] == Z_A) & (new_radii["Oxidation State"] == nA) & (new_radii['Coordination Number'] == 8), 'Mean'].values
+
+            if np.shape(rA_)[0] > 0:  
+                df.loc[idx, 'rA'] = rA_
+
+            #rB_ = radii.loc[(radii.ION  == B + ' ' + nB_ ) & (radii['Coord. #'] == 6), 'Ionic Radius'].values
+            rB_ = new_radii.loc[(new_radii["Atomic Number"] == Z_B) & (new_radii["Oxidation State"] == nB) & (new_radii['Coordination Number'] == 6), 'Mean'].values
+
+            #if np.shape(rB_)[0] == 0:
+            #    rB_ = radii.loc[(radii.ION  == B + nB_ ) & (radii['Coord. #'] == 6), 'Ionic Radius'].values
+
+            if np.shape(rB_)[0] > 0:  
+                try:
+                    df.loc[idx, 'rB'] = rB_
+
+                except:
+                    df.loc[idx, 'rB'] = rB_[0]
+
+            #rX_ = radii.loc[radii.ION  == X + nX_, 'Ionic Radius'].values
+            rX_ = new_radii.loc[(new_radii["Atomic Number"] == Z_X) & (new_radii["Oxidation State"] == nX) & (new_radii['Coordination Number'] == 6), 'Mean'].values
+            df.loc[idx, 'rX'] = rX_
 
 
     #add rX_rB_ratio feature to the dataframe
@@ -119,8 +166,10 @@ def create_dataset(input_path: Path = RAW_DATA_DIR / "shuffled_dataset_chalcogen
 
     df['chi_AX_ratio'] = df['delta_chi_AX'] / df['delta_chi_AO']
     df['chi_BX_ratio'] = df['delta_chi_BX'] / df['delta_chi_BO']
+    df['chi_diff'] = 1/5 * (3 * df['chiX'] - df['chiA'] - df['chiB'])
 
     df['log_rA_rB_ratio'] = np.log(df['rA_rB_ratio'])
+    df.drop_duplicates(inplace=True)
 
     atomic_features.rename(columns={'atomic_homo':'HOMO_',
                             'atomic_lumo':'LUMO_',
@@ -215,7 +264,9 @@ def train_test_split_(ratio_splitting=0.8,
 
 def generate_compositions(element_symbols, cation_oxidation_states=[2, 3, 4], anions=["S", "Se"],
                           dict_tol_factors_path: Path = INTERIM_DATA_DIR / "tolerance_factors.pkl",
-                          output_path: Path = PROCESSED_DATA_DIR / "valid_new_compositions.csv",):
+                          output_path: Path = PROCESSED_DATA_DIR / "valid_new_compositions.csv",
+                          turnley_radii_path: Path = RAW_DATA_DIR / "Turnley_Ionic_Radii.xlsx",
+                          use_turnley_radii: bool = False):
     """
     Generate valid compositions for perovskite materials.
 
@@ -255,6 +306,7 @@ def generate_compositions(element_symbols, cation_oxidation_states=[2, 3, 4], an
     electronegativities_path: Path = RAW_DATA_DIR / "electronegativities.csv"
     radii_path: Path = RAW_DATA_DIR / "Shannon_Effective_Ionic_Radii.csv"
     new_radii_path: Path = RAW_DATA_DIR / "Expanded_Shannon_Effective_Ionic_Radii.csv"
+    df_radii = pd.read_excel(turnley_radii_path)
     
     df = pd.DataFrame()
 
@@ -323,9 +375,11 @@ def generate_compositions(element_symbols, cation_oxidation_states=[2, 3, 4], an
         df.loc[idx, 'chi_B'] = electronegativities.loc[electronegativities.H == B, '2.2' ].values
         df.loc[idx, 'chi_X'] = electronegativities.loc[electronegativities.H == X, '2.2' ].values
 
+        df.loc[idx, 'chi_diff'] = 1/5 * (3 * df.loc[idx, 'chi_X'] - df.loc[idx, 'chi_A'] - df.loc[idx, 'chi_B'])       
+
         #rA_ = radii.loc[(radii.ION  == A + ' ' + nA_ ) & (radii['Coord. #'] == 12), 'Ionic Radius'].values
         rA_ = new_radii.loc[(new_radii["Atomic Number"] == Z_A) & (new_radii["Oxidation State"] == nA) &(new_radii['Coordination Number'] == 12), 'Mean'].values
-        
+    
         #if np.shape(rA_)[0] == 0:
             #rA_ = radii.loc[(radii.ION  == A + nA_ ) & (radii['Coord. #'] == 12), 'Ionic Radius'].values
 
@@ -356,6 +410,34 @@ def generate_compositions(element_symbols, cation_oxidation_states=[2, 3, 4], an
         if nA not in cation_oxidation_states or nB not in cation_oxidation_states:
             df.drop(index=idx, inplace=True)
             print(f"Invalid composition: {idx}")
+
+    if use_turnley_radii:
+        df['rA_S'] = df.rA.copy()
+        df['rB_S'] = df.rB.copy()
+
+        for ion in df.A.unique():
+            if ion in df_radii.Ion.unique():
+                df_t = df[df['A'] == ion]
+                if df_t.nA.values[0] in df_radii.loc[df_radii['Ion'] == ion, 'Charge'].values:
+                    if 12 in df_radii.loc[df_radii['Ion'] == ion].loc[df_radii['Charge'] == df_t.nA.values[0]]['CN'].values:
+                        df.loc[(df['A'] == ion), 'rA_S'] = df_radii.loc[df_radii['Ion'] == ion].loc[df_radii['Charge'] == df_t.nA.values[0]].loc[df_radii['CN'] == 12, 'rS (Å)'].values[0] * 100
+                    elif 6 in df_radii.loc[df_radii['Ion'] == ion].loc[df_radii['Charge'] == df_t.nA.values[0]]['CN'].values:
+                        df.loc[(df['A'] == ion), 'rA_S'] = df_radii.loc[df_radii['Ion'] == ion].loc[df_radii['Charge'] == df_t.nA.values[0]].loc[df_radii['CN'] == 6, 'rS (Å)'].values[0] * 100
+
+        for ion in df.B.unique():
+            if ion in df_radii.Ion.unique():
+                df_t = df[df['B'] == ion]
+                if df_t.nB.values[0] in df_radii.loc[df_radii['Ion'] == ion, 'Charge'].values:
+                    if 6 in df_radii.loc[df_radii['Ion'] == ion].loc[df_radii['Charge'] == df_t.nB.values[0]]['CN'].values:
+                        df.loc[(df['B'] == ion), 'rB_S'] = df_radii.loc[df_radii['Ion'] == ion].loc[df_radii['Charge'] == df_t.nB.values[0]].loc[df_radii['CN'] == 6, 'rS (Å)'].values[0] * 100
+                    elif 12 in df_radii.loc[df_radii['Ion'] == ion].loc[df_radii['Charge'] == df_t.nB.values[0]]['CN'].values:
+                        df.loc[(df['B'] == ion), 'rB_S'] = df_radii.loc[df_radii['Ion'] == ion].loc[df_radii['Charge'] == df_t.nB.values[0]].loc[df_radii['CN'] == 12, 'rS (Å)'].values[0] * 100
+
+        #Use the Turnley data for compounds with 'Br', 'I', 'S', 'Se'
+        df.drop(columns=['rA', 'rB'], inplace=True)
+        df.rename(columns={'rA_S':'rA',
+                            'rB_S':'rB'}, inplace=True)
+            
 
     df['delta_chi_AX'] = df['chi_A'] - df['chi_X']
     df['delta_chi_BX'] = df['chi_B'] - df['chi_X']

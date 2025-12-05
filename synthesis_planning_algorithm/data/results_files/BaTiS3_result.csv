@@ -1,3 +1,0 @@
-,target,reactants,reaction_energy(eV/atom),inverse_hull_energy(eV/atom),reaction,competing phases
-0,BaTiS3,"['BaS2', 'TiS']",-0.21242814499999405,-0.010144679222215736,BaS2 + TiS -> BaTiS3,"[['Ba2TiS4', 'BaS3'], ['Ba2TiS4', 'TiS3'], ['TiS2', 'Ba2TiS4'], ['Ba2TiS4', 'Ti7S12'], ['Ti5S8', 'Ba2TiS4'], ['Ti2S3', 'Ba2TiS4']]"
-1,BaTiS3,"['Ba2TiS4', 'TiS2']",-0.00020000000000024447,-0.00020000000000042206,0.5 Ba2TiS4 + 0.5 TiS2 -> BaTiS3,[]
