@@ -58,11 +58,14 @@ def save_processed_data(df: pd.DataFrame,
 
 def get_petiffor_features(df_grouped_formula,
                           input_petiffor_path: Path = RAW_DATA_DIR / 'petiffor_embedding.csv',
-                          train=True):
+                          train=True,
+                          original_df: pd.DataFrame = None,):
    
   # Add petifor embedding
   from pymatgen.core import Composition
   from ase.atom import Atom
+  from sklearn.model_selection import train_test_split
+
 
   petiffor = pd.read_csv(input_petiffor_path, index_col=0)
 
@@ -88,13 +91,35 @@ def get_petiffor_features(df_grouped_formula,
   df.drop(columns=['petiffor'], inplace=True)
 
   if train:
-    train_df, val_df, test_df = np.split(
+
+    #add_source to do the separation
+    if 'source' not in df.columns and original_df is not None:
+     for formula in df['formula']:
+        df.loc[df['formula'] == formula, 'source'] = original_df.loc[original_df['formula'] == formula, 'source'].values[0]
+
+    try:
+      # First split: 80% train, 20% temp (val+test), stratified by source
+      train_df, temp_df = train_test_split(
+        df, test_size=0.2, stratify=df['source'], random_state=42
+      )
+      # Second split: split temp into 50/50 -> 10% val, 10% test, stratified by source
+      val_df, test_df = train_test_split(
+        temp_df, test_size=0.5, stratify=temp_df['source'], random_state=42
+      )
+    except ValueError:
+      # Fallback to non-stratified shuffle split if stratification is not possible
+      train_df, val_df, test_df = np.split(
         df.sample(frac=1, random_state=42),
         [
             int(0.8 * len(df)),
             int(0.9 * len(df))
         ]
-    )
+      )
+    
+    if 'source' in train_df.columns:
+      train_df.drop(columns=['source'], inplace=True)
+      val_df.drop(columns=['source'], inplace=True)
+      test_df.drop(columns=['source'], inplace=True)
 
     return train_df, val_df, test_df, feature_names
   else:
@@ -117,6 +142,26 @@ def load_model(model_path: Path = TRAINED_MODELS / 'perovskite_bg_prediction.pth
     crabnet_model.to('cuda')
 
     return crabnet_model
+
+def get_test_r2_score_by_source_data(df, original_df,
+                                     feature_names,
+                                     crabnet_bandgap = None,
+                                     model_path: Path = TRAINED_MODELS / 'perovskite_bg_prediction.pth',):
+
+    for formula in df['formula']:
+        df.loc[df['formula'] == formula, 'source'] = original_df.loc[original_df['formula'] == formula, 'source'].values[0]
+
+    sources = original_df['source'].unique().tolist()
+    for source in sources:
+        df_source = df[df['source'] == source]
+        print(f'\nResults for source: {source} with data size {df_source.shape[0]}')
+        if df_source.shape[0] > 0:
+            test_r2_score(df_source,
+                          feature_names,
+                          crabnet_bandgap=crabnet_bandgap,
+                          model_path=model_path)
+        else:
+            print('No data available for this source.')
 
 def test_r2_score(df,
                   feature_names,

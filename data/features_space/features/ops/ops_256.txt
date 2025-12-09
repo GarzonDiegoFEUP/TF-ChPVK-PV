@@ -1,1 +1,0 @@
-['abs_diff', 'sq', 'cb', 'sqrt']

@@ -130,8 +130,8 @@ def train_tree_sis_features_Ch(
     feature_df = pd.read_csv(features_path, index_col=0)
     
     sample_weights = train_df['rX'].to_numpy()
-    sample_weights = np.where(sample_weights == 198.4, 2, sample_weights)
-    sample_weights = np.where(sample_weights == 184.40, 2, sample_weights)
+    sample_weights = np.where(sample_weights == 198, 2, sample_weights)
+    sample_weights = np.where(sample_weights == 184, 2, sample_weights)
     sample_weights = np.where(sample_weights != 2, 1, sample_weights)
 
     #depth of the classification tree - user has to choose
@@ -339,8 +339,8 @@ def test_tolerance_factor_Ch(t, train_df, test_df, tolerance_factor_dict, df_acc
     labels_test=test_df["exp_label"].to_numpy()
 
     sample_weights = train_df['rX'].to_numpy()
-    sample_weights = np.where(sample_weights == 198.4, 2, sample_weights)
-    sample_weights = np.where(sample_weights == 184.40, 2, sample_weights)
+    sample_weights = np.where(sample_weights == 198, 2, sample_weights)
+    sample_weights = np.where(sample_weights == 184, 2, sample_weights)
     sample_weights = np.where(sample_weights != 2, 1, sample_weights)
     
     if len(df_acc.columns) == 0:
@@ -416,6 +416,7 @@ def test_tolerance_factor_Ch(t, train_df, test_df, tolerance_factor_dict, df_acc
         
         acc_train_ch = clf1_model.score(x_train_ch.reshape(-1,1),labels_train_ch)
         acc_test_ch = metrics.accuracy_score(labels_test_ch, labels_pred_ch)
+        
         
         df_acc.loc['train_data_' + dict_ch[rx], t] = acc_train_ch
         df_acc.loc['test_data_' + dict_ch[rx], t] = acc_test_ch 
