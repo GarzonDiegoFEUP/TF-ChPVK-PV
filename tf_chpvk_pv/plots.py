@@ -240,18 +240,18 @@ def plot_p_t_sisso_tf(tf, train_input_path: Path = RESULTS_DIR / "processed_chpv
 
 
 def graph_periodic_table(stable_candidates_t_sisso, t='t_sisso', save_plot=True):
-    from pymatviz import count_elements, ptable_heatmap
+    from pymatviz import count_elements,  ptable_heatmap_plotly
     import re
 
     element_counts = count_elements([re.sub(r'\d+', '', x) for x in stable_candidates_t_sisso])
 
     # Plot the periodic table heatmap
-    ptable_heatmap(element_counts, log=False, cbar_title='Element Prevalence', return_type="figure")#, plot_kwargs={"fontsize": 12})#, return_type="figure")# cmap="RdYlBu", cbar_title="Element Prevalence", log=True)
-    #plt.title("Element Prevalence in Extracted Formulas for Valid Perovskites")
+    fig = ptable_heatmap_plotly(element_counts, log=False, heat_mode='value', show_values=True)
+    #fig.update_layout(title=dict(text="<b>Elements in the chemical space</b>", x=0.36, y=0.9))
+    fig.show()
     if save_plot:
-        txt_save = 'element_prevalence_heatmap_' + t + '.png'
-        plt.savefig(FIGURES_DIR / txt_save, dpi=600)
-    plt.show()
+      txt_title = "periodic_table_heatmap_" + t + ".png"
+      fig.write_image(FIGURES_DIR / txt_title)
 
 
 def spider_plot(df, title):
