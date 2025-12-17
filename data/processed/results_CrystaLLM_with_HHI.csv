@@ -1,72 +1,72 @@
 material,HHI,SR,AR,Warning
-LaScS3,0.5883702703679718,0.3323489621168656,0.999702819956616,"Warning: Not all elements found in HHI data for the compound LaScS3, the elements found are: [list(['La', 'Ce', 'Pr', 'Nd', 'Pm', 'Sm', 'Eu', 'Gd', 'Tb', 'Dy', 'Ho', 'Er', 'Tm', 'Yb', 'Lu', 'Y'])
+SrUSe3,0.6434247975027304,0.3661644083419562,0.9997324295010847,"Warning: Not all elements found in HHI data for the compound SrUSe3, the elements found are: ['Se' 'Sr']"
+UCdS3,0.3044608414018962,0.16504007599500023,0.9997468185104844,"Warning: Not all elements found in HHI data for the compound UCdS3, the elements found are: ['Cd' 'S']"
+TmEuS3,1.075820153965853,0.609332209484492,0.9997451048445408,
+BaPrS3,0.782737734342092,0.44483549910687553,0.9994329718004339,
+ZrCdS3,0.4940513525244321,0.25107050845332557,0.9996275126536515,
+EuYS3,1.075820153965853,0.609332209484492,0.9997216196673898,
+YbSmS3,1.075820153965853,0.609332209484492,0.9997395155459147,
+CeCdS3,0.7919107249997773,0.4420233233626266,0.9996987346348517,
+SrZrS3,0.6274223365211933,0.3388845763789671,0.9993600867678958,
+BaZrS3,0.4848783618667468,0.2538826841975744,0.9993203181489515,
+CeScS3,0.5883702703679718,0.33234896211686565,0.9996829356471438,"Warning: Not all elements found in HHI data for the compound CeScS3, the elements found are: [list(['La', 'Ce', 'Pr', 'Nd', 'Pm', 'Sm', 'Eu', 'Gd', 'Tb', 'Dy', 'Ho', 'Er', 'Tm', 'Yb', 'Lu', 'Y'])
  'S']"
-BaSnS3,0.43861920208501176,0.2513823776924671,0.9994325379609544,
-ZrCdS3,0.4940513525244321,0.2510705084533255,0.9996275126536515,
-TmEuS3,1.075820153965853,0.6093322094844918,0.9997451048445409,
-UInS3,0.5950999134771179,0.3317475378433574,0.9997467462039046,"Warning: Not all elements found in HHI data for the compound UInS3, the elements found are: ['In' 'S']"
-TbSmSe3,1.2814131260699257,0.7226424739058063,0.9999939985538684,
-UEuSe3,0.7939632424720449,0.44565922653818,0.999998517715112,"Warning: Not all elements found in HHI data for the compound UEuSe3, the elements found are: [list(['La', 'Ce', 'Pr', 'Nd', 'Pm', 'Sm', 'Eu', 'Gd', 'Tb', 'Dy', 'Ho', 'Er', 'Tm', 'Yb', 'Lu', 'Y'])
+UCeSe3,0.7939632424720449,0.4456592265381801,0.9999518799710773,"Warning: Not all elements found in HHI data for the compound UCeSe3, the elements found are: [list(['La', 'Ce', 'Pr', 'Nd', 'Pm', 'Sm', 'Eu', 'Gd', 'Tb', 'Dy', 'Ho', 'Er', 'Tm', 'Yb', 'Lu', 'Y'])
  'Se']"
-SmScS3,0.5883702703679718,0.3323489621168656,0.9997259219088938,"Warning: Not all elements found in HHI data for the compound SmScS3, the elements found are: [list(['La', 'Ce', 'Pr', 'Nd', 'Pm', 'Sm', 'Eu', 'Gd', 'Tb', 'Dy', 'Ho', 'Er', 'Tm', 'Yb', 'Lu', 'Y'])
+TbEuS3,1.075820153965853,0.609332209484492,0.9997446131597975,
+BaUSe3,0.500880822848284,0.2811625161605636,0.9996926608821403,"Warning: Not all elements found in HHI data for the compound BaUSe3, the elements found are: ['Ba' 'Se']"
+TbScS3,0.5883702703679718,0.33234896211686565,0.9997301518438179,"Warning: Not all elements found in HHI data for the compound TbScS3, the elements found are: [list(['La', 'Ce', 'Pr', 'Nd', 'Pm', 'Sm', 'Eu', 'Gd', 'Tb', 'Dy', 'Ho', 'Er', 'Tm', 'Yb', 'Lu', 'Y'])
  'S']"
-LuEuS3,1.075820153965853,0.6093322094844918,0.9997449023861171,
+CaCeS3,1.8050610754499763,1.0228364635043223,0.9696916124367317,
+SmYSe3,1.2814131260699257,0.7226424739058064,0.9999710050614605,
+SrUS3,0.4378318253986574,0.25285414392064176,0.9994793926247288,"Warning: Not all elements found in HHI data for the compound SrUS3, the elements found are: ['Sr' 'S']"
+EuScS3,0.5883702703679718,0.33234896211686565,0.9997295733911785,"Warning: Not all elements found in HHI data for the compound EuScS3, the elements found are: [list(['La', 'Ce', 'Pr', 'Nd', 'Pm', 'Sm', 'Eu', 'Gd', 'Tb', 'Dy', 'Ho', 'Er', 'Tm', 'Yb', 'Lu', 'Y'])
+ 'S']"
+LaScS3,0.5883702703679718,0.33234896211686565,0.999702819956616,"Warning: Not all elements found in HHI data for the compound LaScS3, the elements found are: [list(['La', 'Ce', 'Pr', 'Nd', 'Pm', 'Sm', 'Eu', 'Gd', 'Tb', 'Dy', 'Ho', 'Er', 'Tm', 'Yb', 'Lu', 'Y'])
+ 'S']"
+BaCeS3,0.782737734342092,0.44483549910687553,0.9993915401301519,
+CaZrS3,1.5072017029746312,0.8318836485950215,0.9696203904555314,
+CaHfS3,1.5072017029746312,0.8318836485950215,0.9697375271149675,
+CaUS3,1.3176111918520952,0.7458532161366962,0.9697396963123645,
+GdEuS3,1.075820153965853,0.609332209484492,0.9997409978308026,
+CeYS3,1.075820153965853,0.609332209484492,0.9996749819233551,
+PrZrS3,0.7779607814905077,0.41837939457519097,0.9996209689081706,
+DyScS3,0.5883702703679718,0.33234896211686565,0.9997272595806218,"Warning: Not all elements found in HHI data for the compound DyScS3, the elements found are: [list(['La', 'Ce', 'Pr', 'Nd', 'Pm', 'Sm', 'Eu', 'Gd', 'Tb', 'Dy', 'Ho', 'Er', 'Tm', 'Yb', 'Lu', 'Y'])
+ 'S']"
+YbEuS3,1.075820153965853,0.609332209484492,0.9997431670281997,
+SrPrS3,0.9252817089965384,0.5298373912882681,0.9994727404193782,
 CeInS3,1.0825497970749989,0.6087307852109838,0.9996986623282719,
-CeYS3,1.075820153965853,0.6093322094844918,0.9996749819233551,
-ErEuS3,1.075820153965853,0.6093322094844918,0.9997429501084598,
-EuPrS3,1.075820153965853,0.6093322094844918,0.9997388286334057,
-USmSe3,0.7939632424720449,0.44565922653818,0.9999948662328272,"Warning: Not all elements found in HHI data for the compound USmSe3, the elements found are: [list(['La', 'Ce', 'Pr', 'Nd', 'Pm', 'Sm', 'Eu', 'Gd', 'Tb', 'Dy', 'Ho', 'Er', 'Tm', 'Yb', 'Lu', 'Y'])
- 'Se']"
-LaTlS3,0.5883702703679718,0.3323489621168656,0.9997181127982646,"Warning: Not all elements found in HHI data for the compound LaTlS3, the elements found are: [list(['La', 'Ce', 'Pr', 'Nd', 'Pm', 'Sm', 'Eu', 'Gd', 'Tb', 'Dy', 'Ho', 'Er', 'Tm', 'Yb', 'Lu', 'Y'])
+UInS3,0.5950999134771179,0.33174753784335753,0.9997467462039046,"Warning: Not all elements found in HHI data for the compound UInS3, the elements found are: ['In' 'S']"
+YbCeS3,1.075820153965853,0.609332209484492,0.999696529284165,
+SmScS3,0.5883702703679718,0.33234896211686565,0.9997259219088938,"Warning: Not all elements found in HHI data for the compound SmScS3, the elements found are: [list(['La', 'Ce', 'Pr', 'Nd', 'Pm', 'Sm', 'Eu', 'Gd', 'Tb', 'Dy', 'Ho', 'Er', 'Tm', 'Yb', 'Lu', 'Y'])
+ 'S']"
+BaUS3,0.29528785074421093,0.16785225173924914,0.9994396240057846,"Warning: Not all elements found in HHI data for the compound BaUS3, the elements found are: ['Ba' 'S']"
+TbLaS3,1.075820153965853,0.609332209484492,0.999717859725235,
+DyEuS3,1.075820153965853,0.609332209484492,0.9997417208966016,
+LaInS3,1.0825497970749989,0.6087307852109838,0.9997185466377441,
+LaTlS3,0.5883702703679718,0.33234896211686565,0.9997181127982646,"Warning: Not all elements found in HHI data for the compound LaTlS3, the elements found are: [list(['La', 'Ce', 'Pr', 'Nd', 'Pm', 'Sm', 'Eu', 'Gd', 'Tb', 'Dy', 'Ho', 'Er', 'Tm', 'Yb', 'Lu', 'Y'])
  'S']"
 PrInS3,1.0825497970749989,0.6087307852109838,0.9997400939985539,
-EuScS3,0.5883702703679718,0.3323489621168656,0.9997295733911785,"Warning: Not all elements found in HHI data for the compound EuScS3, the elements found are: [list(['La', 'Ce', 'Pr', 'Nd', 'Pm', 'Sm', 'Eu', 'Gd', 'Tb', 'Dy', 'Ho', 'Er', 'Tm', 'Yb', 'Lu', 'Y'])
+UEuS3,0.5883702703679718,0.33234896211686565,0.9997454808387563,"Warning: Not all elements found in HHI data for the compound UEuS3, the elements found are: [list(['La', 'Ce', 'Pr', 'Nd', 'Pm', 'Sm', 'Eu', 'Gd', 'Tb', 'Dy', 'Ho', 'Er', 'Tm', 'Yb', 'Lu', 'Y'])
  'S']"
-SmYSe3,1.2814131260699257,0.7226424739058063,0.9999710050614606,
-TbEuS3,1.075820153965853,0.6093322094844918,0.9997446131597975,
-TbInS3,1.0825497970749989,0.6087307852109838,0.9997458785249457,
-SrUSe3,0.6434247975027304,0.3661644083419562,0.9997324295010847,"Warning: Not all elements found in HHI data for the compound SrUSe3, the elements found are: ['Se' 'Sr']"
-CeScS3,0.5883702703679718,0.3323489621168656,0.9996829356471438,"Warning: Not all elements found in HHI data for the compound CeScS3, the elements found are: [list(['La', 'Ce', 'Pr', 'Nd', 'Pm', 'Sm', 'Eu', 'Gd', 'Tb', 'Dy', 'Ho', 'Er', 'Tm', 'Yb', 'Lu', 'Y'])
- 'S']"
-LaInS3,1.0825497970749989,0.6087307852109838,0.9997185466377441,
-BaZrS3,0.4848783618667468,0.2538826841975744,0.9993203181489516,
-YbCeS3,1.075820153965853,0.6093322094844918,0.999696529284165,
-UEuS3,0.5883702703679718,0.3323489621168656,0.9997454808387563,"Warning: Not all elements found in HHI data for the compound UEuS3, the elements found are: [list(['La', 'Ce', 'Pr', 'Nd', 'Pm', 'Sm', 'Eu', 'Gd', 'Tb', 'Dy', 'Ho', 'Er', 'Tm', 'Yb', 'Lu', 'Y'])
- 'S']"
-CaHfS3,1.5072017029746312,0.8318836485950213,0.9697375271149675,
-SrUS3,0.4378318253986574,0.25285414392064176,0.9994793926247288,"Warning: Not all elements found in HHI data for the compound SrUS3, the elements found are: ['Sr' 'S']"
-BaUSe3,0.500880822848284,0.28116251616056354,0.9996926608821403,"Warning: Not all elements found in HHI data for the compound BaUSe3, the elements found are: ['Ba' 'Se']"
-CeCdS3,0.7919107249997773,0.4420233233626265,0.9996987346348517,
-DyScS3,0.5883702703679718,0.3323489621168656,0.9997272595806219,"Warning: Not all elements found in HHI data for the compound DyScS3, the elements found are: [list(['La', 'Ce', 'Pr', 'Nd', 'Pm', 'Sm', 'Eu', 'Gd', 'Tb', 'Dy', 'Ho', 'Er', 'Tm', 'Yb', 'Lu', 'Y'])
- 'S']"
-EuHfS3,0.7779607814905077,0.4183793945751909,0.9997433116413594,
-DyEuS3,1.075820153965853,0.6093322094844918,0.9997417208966016,
-EuZrS3,0.7779607814905077,0.4183793945751909,0.9996261749819233,
-PrZrS3,0.7779607814905077,0.4183793945751909,0.9996209689081706,
-UCdS3,0.3044608414018962,0.1650400759950002,0.9997468185104844,"Warning: Not all elements found in HHI data for the compound UCdS3, the elements found are: ['Cd' 'S']"
-SrZrS3,0.6274223365211933,0.3388845763789671,0.9993600867678959,
-YbSmS3,1.075820153965853,0.6093322094844918,0.9997395155459147,
-GdScS3,0.5883702703679718,0.3323489621168656,0.9997265365148228,"Warning: Not all elements found in HHI data for the compound GdScS3, the elements found are: [list(['La', 'Ce', 'Pr', 'Nd', 'Pm', 'Sm', 'Eu', 'Gd', 'Tb', 'Dy', 'Ho', 'Er', 'Tm', 'Yb', 'Lu', 'Y'])
- 'S']"
-UScS3,0.10092038677009077,0.055365714749239264,0.9997310195227765,"Warning: Not all elements found in HHI data for the compound UScS3, the elements found are: ['S']"
-EuYS3,1.075820153965853,0.6093322094844918,0.9997216196673898,
-SrPrS3,0.9252817089965384,0.529837391288268,0.9994727404193782,
-CaCeS3,1.8050610754499763,1.0228364635043223,0.9696916124367317,
-CaUS3,1.3176111918520952,0.745853216136696,0.9697396963123645,
-BaUS3,0.29528785074421093,0.16785225173924911,0.9994396240057846,"Warning: Not all elements found in HHI data for the compound BaUS3, the elements found are: ['Ba' 'S']"
-LuSmS3,1.075820153965853,0.6093322094844918,0.9997412509038323,
-BaCeS3,0.782737734342092,0.44483549910687536,0.9993915401301519,
-BaPrS3,0.782737734342092,0.44483549910687536,0.9994329718004339,
-TbScS3,0.5883702703679718,0.3323489621168656,0.9997301518438179,"Warning: Not all elements found in HHI data for the compound TbScS3, the elements found are: [list(['La', 'Ce', 'Pr', 'Nd', 'Pm', 'Sm', 'Eu', 'Gd', 'Tb', 'Dy', 'Ho', 'Er', 'Tm', 'Yb', 'Lu', 'Y'])
- 'S']"
-YbEuS3,1.075820153965853,0.6093322094844918,0.9997431670281997,
-YbEuSe3,1.2814131260699257,0.7226424739058063,0.9999962039045553,
-GdEuS3,1.075820153965853,0.6093322094844918,0.9997409978308026,
-SmZrS3,0.7779607814905077,0.4183793945751909,0.9996225234996384,
-TbLaS3,1.075820153965853,0.6093322094844918,0.999717859725235,
-PrScS3,0.5883702703679718,0.3323489621168656,0.9997243673174259,"Warning: Not all elements found in HHI data for the compound PrScS3, the elements found are: [list(['La', 'Ce', 'Pr', 'Nd', 'Pm', 'Sm', 'Eu', 'Gd', 'Tb', 'Dy', 'Ho', 'Er', 'Tm', 'Yb', 'Lu', 'Y'])
- 'S']"
-CaZrS3,1.5072017029746312,0.8318836485950213,0.9696203904555315,
-UCeSe3,0.7939632424720449,0.44565922653818,0.9999518799710773,"Warning: Not all elements found in HHI data for the compound UCeSe3, the elements found are: [list(['La', 'Ce', 'Pr', 'Nd', 'Pm', 'Sm', 'Eu', 'Gd', 'Tb', 'Dy', 'Ho', 'Er', 'Tm', 'Yb', 'Lu', 'Y'])
+UEuSe3,0.7939632424720449,0.4456592265381801,0.999998517715112,"Warning: Not all elements found in HHI data for the compound UEuSe3, the elements found are: [list(['La', 'Ce', 'Pr', 'Nd', 'Pm', 'Sm', 'Eu', 'Gd', 'Tb', 'Dy', 'Ho', 'Er', 'Tm', 'Yb', 'Lu', 'Y'])
  'Se']"
-HoEuS3,1.075820153965853,0.6093322094844918,0.9997445408532176,
+TbSmSe3,1.2814131260699257,0.7226424739058064,0.9999939985538684,
+TbInS3,1.0825497970749989,0.6087307852109838,0.9997458785249457,
+EuHfS3,0.7779607814905077,0.41837939457519097,0.9997433116413593,
+USmSe3,0.7939632424720449,0.4456592265381801,0.9999948662328272,"Warning: Not all elements found in HHI data for the compound USmSe3, the elements found are: [list(['La', 'Ce', 'Pr', 'Nd', 'Pm', 'Sm', 'Eu', 'Gd', 'Tb', 'Dy', 'Ho', 'Er', 'Tm', 'Yb', 'Lu', 'Y'])
+ 'Se']"
+EuZrS3,0.7779607814905077,0.41837939457519097,0.9996261749819233,
+HoEuS3,1.075820153965853,0.609332209484492,0.9997445408532176,
+LuEuS3,1.075820153965853,0.609332209484492,0.9997449023861171,
+ErEuS3,1.075820153965853,0.609332209484492,0.9997429501084598,
+PrScS3,0.5883702703679718,0.33234896211686565,0.9997243673174259,"Warning: Not all elements found in HHI data for the compound PrScS3, the elements found are: [list(['La', 'Ce', 'Pr', 'Nd', 'Pm', 'Sm', 'Eu', 'Gd', 'Tb', 'Dy', 'Ho', 'Er', 'Tm', 'Yb', 'Lu', 'Y'])
+ 'S']"
+YbEuSe3,1.2814131260699257,0.7226424739058064,0.9999962039045553,
+SmZrS3,0.7779607814905077,0.41837939457519097,0.9996225234996384,
+EuPrS3,1.075820153965853,0.609332209484492,0.9997388286334057,
+LuSmS3,1.075820153965853,0.609332209484492,0.9997412509038323,
+BaSnS3,0.43861920208501176,0.25138237769246713,0.9994325379609544,
+UScS3,0.10092038677009077,0.05536571474923928,0.9997310195227765,"Warning: Not all elements found in HHI data for the compound UScS3, the elements found are: ['S']"
+GdScS3,0.5883702703679718,0.33234896211686565,0.9997265365148228,"Warning: Not all elements found in HHI data for the compound GdScS3, the elements found are: [list(['La', 'Ce', 'Pr', 'Nd', 'Pm', 'Sm', 'Eu', 'Gd', 'Tb', 'Dy', 'Ho', 'Er', 'Tm', 'Yb', 'Lu', 'Y'])
+ 'S']"

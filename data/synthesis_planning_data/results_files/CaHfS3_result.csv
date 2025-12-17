@@ -1,2 +1,2 @@
 ,target,reactants,reaction_energy(eV/atom),inverse_hull_energy(eV/atom),reaction,competing phases
-0,CaHfS3,"['HfS2', 'CaS']",-0.0002000000000037971,-0.00020000000000219842,HfS2 + CaS -> CaHfS3,[]
+0,CaHfS3,"['HfS2', 'CaS']",-0.00020000000000095497,-0.00019999999999953388,HfS2 + CaS -> CaHfS3,[]

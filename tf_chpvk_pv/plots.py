@@ -240,18 +240,20 @@ def plot_p_t_sisso_tf(tf, train_input_path: Path = RESULTS_DIR / "processed_chpv
 
 
 def graph_periodic_table(stable_candidates_t_sisso, t='t_sisso', save_plot=True):
-    from pymatviz import count_elements,  ptable_heatmap_plotly
+    from pymatviz import count_elements,  ptable_heatmap_plotly, ptable_heatmap
+    import matplotlib.pyplot as plt
     import re
 
     element_counts = count_elements([re.sub(r'\d+', '', x) for x in stable_candidates_t_sisso])
 
     # Plot the periodic table heatmap
-    fig = ptable_heatmap_plotly(element_counts, log=False, heat_mode='value', show_values=True)
+    ptable_heatmap(element_counts, log=False, heat_mode='value')#, show_values=True)
     #fig.update_layout(title=dict(text="<b>Elements in the chemical space</b>", x=0.36, y=0.9))
-    fig.show()
     if save_plot:
       txt_title = "periodic_table_heatmap_" + t + ".png"
-      fig.write_image(FIGURES_DIR / txt_title)
+      plt.savefig(FIGURES_DIR / txt_title, dpi=600)
+
+    plt.show()
 
 
 def spider_plot(df, title):

@@ -146,7 +146,7 @@ def train_tree_sis_features_Ch(
             else:
                 clf = tree.DecisionTreeClassifier(max_depth=depth, class_weight='balanced', criterion='entropy')
                 
-                clf_cv = cross_validate(clf, x.reshape(-1,1), labels, scoring='f1', params={'sample_weight': sample_weights})
+                clf_cv = cross_validate(clf, x.reshape(-1,1), labels, scoring='f1', fit_params={'sample_weight': sample_weights})
                 clf_cv_score = np.mean(clf_cv['test_score'])
                 
                 #clf = clf.fit(x.reshape(-1,1), labels)                     # Build a decision-tree classifier from the training set (X, y). X is the values of features (for each for iteration on column) and Y is the target value, here exp_label

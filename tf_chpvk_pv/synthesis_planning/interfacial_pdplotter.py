@@ -107,10 +107,15 @@ class Inter_PDPlotter(PDPlotter):
         """
         
         filename = kwargs.pop('filename', None)
-        #print(*args)
-        #print(**kwargs)
+        print(*args)
+        print(**kwargs)
 
         fig = self.get_plot(*args, **kwargs)
+
+        if self.backend != "plotly" and to_show:
+            import matplotlib.pyplot as plt
+            plt.show()
+            return
         
         if self.emphasize_entries:
             for target_entry in self.emphasize_entries:
