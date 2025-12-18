@@ -38,7 +38,8 @@ def check_stable_compositions(t,
 
     df_out = df[df[t] < tolerance_factor_dict[t][1]]
 
-    df_out.to_csv(output_path, index=False)
+    if t == 't_sisso':
+        df_out.to_csv(output_path, index=False)
 
     return stable_candidates_t_sisso, df_out
 

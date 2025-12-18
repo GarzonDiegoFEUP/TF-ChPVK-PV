@@ -327,5 +327,123 @@ def spider_plot(df, title):
     plt.savefig(FIGURES_DIR / txt_title, bbox_inches='tight')
 
 
+def plot_tau_star_histogram(threshold, df):
+  
+  import matplotlib.pyplot as plt
+  import seaborn as sns
+
+  fig = plt.figure(figsize=(8, 6))
+
+  df_ = df.copy()
+  df_.loc[df_['exp_label'] == 1, 'exp_label_'] = 'Perovskite'
+  df_.loc[df_['exp_label'] == 0, 'exp_label_'] = 'Nonperovskite'
+
+
+  sns.set_context('talk')
+  ax = sns.histplot(data=df_, x='tau*', hue='exp_label_',
+                    multiple='dodge', element='bars', bins=25,
+                    hue_order=['Perovskite', 'Nonperovskite'])
+
+  # Add axvspan calls with labels
+  ax.axvspan(xmin=threshold, xmax=1.6, color='red', alpha=0.15, label='$\\tau$*' + f' > {threshold}')
+  ax.axvspan(xmin=0, xmax=threshold, color='green', alpha=0.15, label= '$\\tau$*' + f' < {threshold}')
+
+  # Get all handles and labels from the axis. This should include both histplot and axvspan.
+  if ax.legend_ is not None:
+      ax.legend_.set_title(None)
+
+  # Create a unified legend from the collected handles and labels, without a title.
+  # This will overwrite any default legend created by seaborn.
+  #ax.legend(handles=handles, labels=labels, title=None)
+
+  plt.xlim([0, 1.6])
+  plt.xlabel('$\\tau$*')
+  plt.ylabel('Counts')
+  plt.tight_layout()
+
+  plt.savefig(FIGURES_DIR / 'tau_star_histogram.png', dpi=600, bbox_inches='tight')
+
+  plt.show()
+
+def plot_t_star_histogram(thresholds, df):
+
+    fig = plt.figure(figsize=(8, 6))
+
+    df_ = df.copy()
+    df_.loc[df_['exp_label'] == 1, 'exp_label_'] = 'Perovskite'
+    df_.loc[df_['exp_label'] == 0, 'exp_label_'] = 'Nonperovskite'
+
+
+    sns.set_context('talk')
+    ax = sns.histplot(data=df_, x='t*', hue='exp_label_',
+                        multiple='dodge', element='bars', bins=25,
+                        hue_order=['Perovskite', 'Nonperovskite']
+                        )
+
+    # Add axvspan calls with labels
+    ax.axvspan(xmin=0.3, xmax=thresholds[0], color='red', alpha=0.15, )
+    ax.axvspan(xmin=thresholds[1], xmax=2.2, color='red', alpha=0.15,)
+
+    ax.axvspan(xmin=thresholds[0], xmax=thresholds[1], color='green', alpha=0.15, )
+
+    # Get all handles and labels from the axis. This should include both histplot and axvspan.
+    if ax.legend_ is not None:
+        ax.legend_.set_title(None)
+
+    # Create a unified legend from the collected handles and labels, without a title.
+    # This will overwrite any default legend created by seaborn.
+    #ax.legend(handles=handles, labels=labels, title=None)
+
+    plt.xlim([0.3, 2.2])
+    plt.xlabel('t*')
+    plt.ylabel('Counts')
+    plt.tight_layout()
+
+    plt.savefig(FIGURES_DIR / 't_star_histogram.png', dpi=600, bbox_inches='tight')
+
+    plt.show()
+
+def plot_t_star_vs_p_t_sisso(df, thresholds):
+    plt.figure(figsize=(8, 6))
+
+    # Create a copy and map exp_label for better legend labels
+    df_plot = df.copy()
+    df_plot['exp_label_'] = df_plot['exp_label'].map({0: 'Nonperovskite', 1: 'Perovskite'})
+
+    markers = {"Nonperovskite": "X", "Perovskite": "o"}
+
+    ax = sns.scatterplot(
+        data=df_plot,
+        x='t*',
+        y='p_tau*',
+        hue='exp_label_',
+        style='exp_label_',
+        s=100, # size of the points
+        alpha=1, # transparency
+        hue_order=['Perovskite', 'Nonperovskite'],
+        markers=markers,
+    )
+
+    ax.axvspan(xmin=0.3, xmax=thresholds[0], color='red', alpha=0.15, )
+    ax.axvspan(xmin=thresholds[1], xmax=2.2, color='red', alpha=0.15,)
+
+    ax.axvspan(xmin=thresholds[0], xmax=thresholds[1], color='green', alpha=0.15, )
+
+    ax.set_xlabel('t*')
+    ax.set_ylabel('P($\\tau$*)')
+
+    # Remove title from legend
+    if ax.legend_ is not None:
+        ax.legend_.set_title(None)
+        sns.move_legend(ax, loc='upper right')
+
+    plt.xlim([0.3, 2.2])
+    plt.tight_layout()
+
+    plt.savefig(FIGURES_DIR / 'P_tau_t_star_scatter.png', dpi=600, bbox_inches='tight')
+
+    plt.show()
+
+
 if __name__ == "__main__":
     app()
