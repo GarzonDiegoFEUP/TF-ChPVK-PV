@@ -444,6 +444,134 @@ def plot_t_star_vs_p_t_sisso(df, thresholds):
 
     plt.show()
 
+def colormap_radii(df, exp_df, clf_proba=None):
+
+    import numpy as np
+    import matplotlib.pyplot as plt
+    import seaborn as sns
+
+    if clf_proba is None:
+        from tf_chpvk_pv.modeling.train import train_platt_scaling
+
+        train_df = pd.read_csv(RESULTS_DIR / "processed_chpvk_train_dataset.csv")
+        test_df = pd.read_csv(RESULTS_DIR / "processed_chpvk_test_dataset.csv")
+        
+        with open(INTERIM_DATA_DIR / "tolerance_factor_classifiers.pkl", 'rb') as file:
+            clfs = pickle.load(file)
+
+        train_df, test_df, clf_proba = train_platt_scaling(train_df, test_df, clfs['t_sisso'])
+
+    rA_range = [df.rA.min()-10, df.rA.max()+10]
+    rB_range = [df.rB.min()-10, df.rB.max()+10]
+    rX_range = [df.rX.min(), df.rX.max()]
+
+    def calculate_t_sisso(rA, rB, rX):
+        #(|((rA_rX_ratio + rB_rX_ratio) + (|rB_rX_ratio - log_rA_rB_ratio|)) - (rA_rX_ratio**3)|)
+        #return np.abs( (np.abs( (rA/rX * rB/rX) - (np.exp(rB/rX)) )) - (np.abs( np.abs(rB/rX - np.log(rA/rB)) - (rA/rX) ) ) )
+        return np.abs( ( (rA/rX + rB/rX) + (np.abs(rB/rX - np.log(rA/rB)) )) - (rA/rX)**3 )
+
+    #All the radii in pm
+    rA = np.linspace(rA_range[0], rA_range[1], 1000)
+    rB = np.linspace(rB_range[0], rB_range[1], 1000)
+
+    xv, yv = np.meshgrid(rA, rB)
+
+    t_sisso_S = calculate_t_sisso(xv, yv, rX_range[0])
+    t_sisso_Se = calculate_t_sisso(xv, yv, rX_range[1])
+
+    p_t_sisso_S = clf_proba.predict_proba(t_sisso_S.reshape(-1,1))[:,1]
+    p_t_sisso_Se = clf_proba.predict_proba(t_sisso_Se.reshape(-1,1))[:,1]
+
+    sns.set_context('talk')
+
+    # Create a figure with two subplots
+    fig, axes = plt.subplots(1, 2, figsize=(20, 8))
+    plt.subplots_adjust(wspace=0.2) # Increased wspace
+
+    color_map = 'coolwarm_r'
+
+    rA_range = [110, 180]
+    rB_range = [50, 120]
+
+    # Plot for S anion (rX_range[0])
+    scatter_s = axes[0].scatter(xv, yv, c=p_t_sisso_S, cmap=color_map, vmin=0, vmax=1)
+    axes[0].set_xlabel('$r_A$ (pm)')
+    axes[0].set_ylabel('$r_B$ (pm)')
+    axes[0].set_xlim(rA_range)
+    axes[0].set_ylim(rB_range)
+    axes[1].tick_params(left=True, right=True)
+    axes[0].set_title('ABS$_3$ compounds')
+
+    # Plot for Se anion (rX_range[1])
+    axes[1].scatter(xv, yv, c=p_t_sisso_Se, cmap=color_map, vmin=0, vmax=1)
+    axes[1].set_xlabel('$r_A$ (pm)')
+    axes[1].set_xlim(rA_range)
+    axes[1].set_ylim(rB_range)
+    axes[1].set_yticklabels([])
+    axes[1].tick_params(left=True, right=True)
+    axes[1].set_title('ABSe$_3$ compounds')
+
+    # Add a single color bar for both subplots
+    fig.colorbar(scatter_s, ax=axes.ravel().tolist(), label='$P(\\tau*)$')
+
+    #remove non-chalcogenides from exp_df
+    exp_df = exp_df[exp_df.rX.isin(rX_range)]
+    #delete rX = 196 pm (Br) from exp_df
+    exp_df = exp_df[exp_df.rX != 196]
+
+    #Add experimentally observed compounds
+    for idx in exp_df.index:
+        d = exp_df.loc[idx]
+        rA_ = d.rA
+        rB_ = d.rB
+        X = d.rX
+        if d.exp_label == 1:
+            if X == rX_range[0]:
+                axes[0].scatter(rA_, rB_, marker='s', color='black', s=50)
+            elif X == rX_range[1]:
+                axes[1].scatter(rA_, rB_, marker='s', color='black', s=50)
+        else:
+            if X == rX_range[0]:
+                axes[0].scatter(rA_, rB_, marker='^', color='black', s=50)
+            elif X == rX_range[1]:
+                axes[1].scatter(rA_, rB_, marker='^', color='black', s=50)
+
+    plt.savefig(FIGURES_DIR / 'p_t_sisso color_map radii.png', dpi=600)
+    plt.show()
+
+
+def confusion_matrix_plot(df, test=True):
+
+
+    from sklearn.metrics import confusion_matrix
+    import matplotlib.pyplot as plt
+    import seaborn as sns
+    import numpy as np
+
+    sns.set_context('talk')
+
+    y_true = df['exp_label'].values
+
+    y_pred = np.zeros_like(y_true)
+
+    y_pred[df['p_t_sisso'] >= 0.5] = 1
+
+    cm = confusion_matrix(y_true, y_pred)
+
+    plt.figure(figsize=(6, 4))
+    sns.heatmap(cm, annot=True, fmt='d', cmap='Blues',
+                xticklabels=['Negative', 'Positive'],
+                yticklabels=['Negative', 'Positive'])
+
+    plt.xlabel('Predicted')
+    plt.ylabel('Actual')
+    if test:
+        plt.title('Confusion Matrix - Test Set')
+    else:
+        plt.title('Confusion Matrix - Train Set')
+
+    plt.savefig(FIGURES_DIR / f'confusion_matrix_{"test" if test else "train"}.png', dpi=600)
+    plt.show()
 
 if __name__ == "__main__":
     app()

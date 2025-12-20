@@ -33,7 +33,7 @@ def create_dataset(input_path: Path = RAW_DATA_DIR / "shuffled_dataset_chalcogen
                    output_path: Path = PROCESSED_DATA_DIR / "chpvk_dataset.csv",
                    new_radii_path: Path = RAW_DATA_DIR / "Expanded_Shannon_Effective_Ionic_Radii.csv",
                    turnley_radii_path: Path = RAW_DATA_DIR / "Turnley_Ionic_Radii.xlsx",
-                   use_turnley_radii: bool = False):
+                   use_turnley_radii: bool = True):
     
     from pymatgen.core import Composition, periodic_table
 
@@ -266,7 +266,7 @@ def generate_compositions(element_symbols, cation_oxidation_states=[2, 3, 4], an
                           dict_tol_factors_path: Path = INTERIM_DATA_DIR / "tolerance_factors.pkl",
                           output_path: Path = PROCESSED_DATA_DIR / "valid_new_compositions.csv",
                           turnley_radii_path: Path = RAW_DATA_DIR / "Turnley_Ionic_Radii.xlsx",
-                          use_turnley_radii: bool = False):
+                          use_turnley_radii: bool = True):
     """
     Generate valid compositions for perovskite materials.
 
@@ -412,6 +412,19 @@ def generate_compositions(element_symbols, cation_oxidation_states=[2, 3, 4], an
             print(f"Invalid composition: {idx}")
 
     if use_turnley_radii:
+
+        #correct rX values
+
+        dict_ch = {'F':133,
+                   'Cl':181,
+                   'Se':198,
+                   'Br':196.0,
+                   'S':184.0,
+                   'I':220.00000000000003
+                   }
+
+        df['rX'] = df['X'].map(dict_ch)
+
         df['rA_S'] = df.rA.copy()
         df['rB_S'] = df.rB.copy()
 
