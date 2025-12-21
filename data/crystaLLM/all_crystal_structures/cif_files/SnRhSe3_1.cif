@@ -1,0 +1,38 @@
+data_Sn4Rh4Se12
+_symmetry_space_group_name_H-M Pnma
+_cell_length_a 9.3313
+_cell_length_b 3.8970
+_cell_length_c 13.1940
+_cell_angle_alpha 90.0000
+_cell_angle_beta 90.0000
+_cell_angle_gamma 90.0000
+_symmetry_Int_Tables_number 62
+_chemical_formula_structural SnRhSe3
+_chemical_formula_sum 'Sn4 Rh4 Se12'
+_cell_volume 483.0216
+_cell_formula_units_Z 4
+loop_
+ _symmetry_equiv_pos_site_id
+ _symmetry_equiv_pos_as_xyz
+  1  '-x, y+1/2, -z'
+  2  '-x, -y, -z'
+  3  '-x+1/2, -y, z+1/2'
+  4  'x+1/2, -y+1/2, -z+1/2'
+  5  'x, y, z'
+  6  'x-1/2, y, -z-1/2'
+  7  '-x-1/2, y-1/2, z-1/2'
+  8  'x, -y-1/2, z'
+loop_
+_atom_site_type_symbol
+_atom_site_label
+_atom_site_symmetry_multiplicity
+_atom_site_fract_x
+_atom_site_fract_y
+_atom_site_fract_z
+_atom_site_occupancy
+Sn Sn0 4 0.0025 0.2500 0.6710 1
+Rh Rh1 4 0.1656 0.7500 0.9547 1
+Se Se2 4 0.0135 0.7500 0.0933 1
+Se Se3 4 0.1785 0.7500 0.5026 1
+Se Se4 4 0.2169 0.2500 0.2856 1
+
