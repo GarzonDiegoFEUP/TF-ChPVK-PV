@@ -38,16 +38,37 @@ def get_raw_data(input_path_pvk: Path = RAW_DATA_DIR / "perovskite_bandgap_devic
     df_pvk = pd.read_csv(input_path_pvk)
     df_chalcogenides = pd.read_csv(input_path_chalcogenides)
     df_chalc_semicon = pd.read_csv(input_path_chalc_semicon)
+
     for df_, sc in zip([df_pvk, df_chalcogenides, df_chalc_semicon], ['pvk', 'chalcogenides', 'chalc_semicon']):
         df_['source'] = sc
-    df = pd.concat([df_pvk, df_chalcogenides, df_chalc_semicon])
+    df = pd.concat([df_pvk, df_chalcogenides, df_chalc_semicon]).reset_index(drop=True)
     sources = (x*100/df.shape[0] for x in [df_pvk.shape[0], df_chalcogenides.shape[0], df_chalc_semicon.shape[0]])
     txt = 'The data comes from the following sources:\n{0:.2f} % from halide perovskites,\n{1:.4f} % from chalcogenides perovskites,\n{2:.2f} % from chalcogenide semiconductors'.format(*sources)
     print(txt)
 
     df = df[df['bandgap'].notna()]
     df = df[df['reduced_formulas'].notna()]
+    df = df[df['bandgap'] > 1.0]
 
+    #delete outliers with values below the median - 0.3
+    from crabnet.utils.data import groupby_formula
+
+    df_ = df.copy()
+
+    # Rename the column 'bandgap' to 'target', and 'reduced_formula' to 'formula'
+    df_.rename(columns={'bandgap': 'target'}, inplace=True)
+    df_.rename(columns={'reduced_formulas': 'formula'}, inplace=True)
+
+    # Group repeated formulas and take the median of the target
+    df_grouped_formula = groupby_formula(df_, how='median')
+
+    for idx in df_grouped_formula['index']:
+      df.loc[idx, 'median_bandgap'] = df_grouped_formula.loc[df_grouped_formula['index'] == idx, 'target'].values[0]
+
+    df['difference_from_median'] = abs(df['median_bandgap'] - df['bandgap'])
+    df = df[df['difference_from_median'] <= 0.3]
+    df.drop(columns=['median_bandgap', 'difference_from_median'], inplace=True)
+    
     return df
 
 def save_processed_data(df: pd.DataFrame,
