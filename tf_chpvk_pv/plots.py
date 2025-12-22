@@ -573,5 +573,123 @@ def confusion_matrix_plot(df, test=True):
     plt.savefig(FIGURES_DIR / f'confusion_matrix_{"test" if test else "train"}.png', dpi=600)
     plt.show()
 
+
+
+def plot_matrix(df_out, df_crystal, anion='S', parameter='Eg', clf_proba=None):
+
+
+    import matplotlib.pyplot as plt
+    from matplotlib.markers import MarkerStyle
+    from tf_chpvk_pv.config import FIGURES_DIR
+
+    import numpy as np
+    import seaborn as sns
+
+    element_to_number = {
+    "H": 1, "He": 2, "Li": 3, "Be": 4, "B": 5, "C": 6, "N": 7, "O": 8, "F": 9, "Ne": 10,
+    "Na": 11, "Mg": 12, "Al": 13, "Si": 14, "P": 15, "S": 16, "Cl": 17, "Ar": 18, "K": 19, "Ca": 20,
+    "Sc": 21, "Ti": 22, "V": 23, "Cr": 24, "Mn": 25, "Fe": 26, "Co": 27, "Ni": 28, "Cu": 29, "Zn": 30,
+    "Ga": 31, "Ge": 32, "As": 33, "Se": 34, "Br": 35, "Kr": 36, "Rb": 37, "Sr": 38, "Y": 39, "Zr": 40,
+    "Nb": 41, "Mo": 42, "Tc": 43, "Ru": 44, "Rh": 45, "Pd": 46, "Ag": 47, "Cd": 48, "In": 49, "Sn": 50,
+    "Sb": 51, "Te": 52, "I": 53, "Xe": 54, "Cs": 55, "Ba": 56, "La": 57, "Ce": 58, "Pr": 59, "Nd": 60,
+    "Pm": 61, "Sm": 62, "Eu": 63, "Gd": 64, "Tb": 65, "Dy": 66, "Ho": 67, "Er": 68, "Tm": 69, "Yb": 70,
+    "Lu": 71, "Hf": 72, "Ta": 73, "W": 74, "Re": 75, "Os": 76, "Ir": 77, "Pt": 78, "Au": 79, "Hg": 80,
+    "Tl": 81, "Pb": 82, "Bi": 83, "Po": 84, "At": 85, "Rn": 86, "Fr": 87, "Ra": 88, "Ac": 89, "Th": 90,
+    "Pa": 91, "U": 92, "Np": 93, "Pu": 94, "Am": 95, "Cm": 96, "Bk": 97, "Cf": 98, "Es": 99, "Fm": 100,
+    "Md": 101, "No": 102, "Lr": 103, "Rf": 104, "Db": 105, "Sg": 106, "Bh": 107, "Hs": 108, "Mt": 109,
+    "Ds": 110, "Rg": 111, "Cn": 112, "Nh": 113, "Fl": 114, "Mc": 115, "Lv": 116, "Ts": 117, "Og": 118
+    }
+
+    if parameter == 'p_t_sisso' and clf_proba is None:
+        from tf_chpvk_pv.modeling.train import train_platt_scaling
+
+        train_df = pd.read_csv(RESULTS_DIR / "processed_chpvk_train_dataset.csv")
+        test_df = pd.read_csv(RESULTS_DIR / "processed_chpvk_test_dataset.csv")
+        
+        with open(INTERIM_DATA_DIR / "tolerance_factor_classifiers.pkl", 'rb') as file:
+            clfs = pickle.load(file)
+
+        train_df, test_df, clf_proba = train_platt_scaling(train_df, test_df, clfs['t_sisso'])
+        df_out['p_t_sisso'] = clf_proba.predict_proba(df_out['t_sisso'].values.reshape(-1,1))[:,1]     
+
+    df_sisso = df_out[df_out['formula'].isin(df_crystal['formula'])]
+    
+    df_out = df_out[df_out['X'] == anion].copy()
+    if parameter in ['Eg']:
+        df_out = df_out[df_out[parameter] > 0].copy()
+    df_out['Z_A'] = df_out.A.map(element_to_number)
+    df_out['Z_B'] = df_out.B.map(element_to_number)
+    df_out.sort_values(by=['Z_A', 'Z_B'], inplace=True, ascending=False)
+
+    df_sisso = df_sisso[df_sisso['X'] == anion].copy()
+    if parameter in ['Eg']:
+        df_sisso = df_sisso[df_sisso[parameter] > 0].copy()
+    df_sisso['Z_A'] = df_sisso.A.map(element_to_number)
+    df_sisso['Z_B'] = df_sisso.B.map(element_to_number)
+    df_sisso.sort_values(by=['Z_A', 'Z_B'], inplace=True, ascending=False)
+
+
+    sns.set_theme(style="whitegrid")
+    sns.set_context('talk')
+
+    df_crab = df_sisso
+
+    size_markers = 200
+
+    if parameter == 'Eg':
+        if anion == 'S':
+            fsize = df_out.nunique()['A'] / 2.8
+        elif anion == 'Se':
+            fsize = df_out.nunique()['A'] / 2.6
+    elif parameter == 'p_t_sisso':
+        fsize = df_out.nunique()['A'] / 3
+
+    fig, ax = plt.subplots(figsize=(fsize+3, fsize))
+
+
+    
+
+    if parameter == 'Eg':
+        vmin_, vmax_ = 0.5, 3.5
+        cmap_ = 'jet'
+    elif parameter == 'p_t_sisso':
+        vmin_, vmax_ = 0.0, 1.0
+        cmap_ = 'coolwarm_r'
+    else:
+        vmin_, vmax_ = df_out[parameter].min(), df_out[parameter].max()
+
+        
+    im1 = ax.scatter(df_out.B, df_out.A, c=df_out[parameter], marker='s',
+                vmin=vmin_, vmax=vmax_, cmap=cmap_, s=size_markers)
+    
+    ax.scatter(df_crab.B, df_crab.A, marker='s',
+                edgecolor="black", color="None", s=size_markers)
+
+    cbar1 = plt.colorbar(im1, ax=ax)
+    if parameter == 'Eg':
+        cbar1.set_label("Bandgap (eV) ", rotation=90)
+    elif parameter == 'p_t_sisso':
+        cbar1.set_label(r"$P(\tau*)$ ", rotation=90)
+
+
+    plt.title('')
+
+    # Tweak the figure to finalize
+    ax.set(xlabel="Cation B", ylabel="Cation A", aspect="equal")
+
+    plt.xticks(rotation=90)
+    #plt.grid(color='None', linestyle='-')
+    ax.set_frame_on(False)
+    ax.grid(False)
+
+    if parameter == 'Eg':
+        name_file = 'matrix_' + f'{parameter.lower()}_crabnet_' + anion + '.png'
+    elif parameter == 'p_t_sisso':
+        name_file = 'matrix_' + f'{parameter.lower()}_' + anion + '.png'
+
+    plt.savefig(FIGURES_DIR / name_file, dpi=600, bbox_inches='tight')
+
+    plt.show()
+
 if __name__ == "__main__":
     app()
