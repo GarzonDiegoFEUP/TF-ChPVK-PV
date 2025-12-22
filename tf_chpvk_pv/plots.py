@@ -619,17 +619,17 @@ def plot_matrix(df_out, df_crystal, anion='S', parameter='Eg', clf_proba=None):
         df_out = df_out[df_out[parameter] > 0].copy()
     df_out['Z_A'] = df_out.A.map(element_to_number)
     df_out['Z_B'] = df_out.B.map(element_to_number)
-    df_out.sort_values(by=['Z_A', 'Z_B'], inplace=True, ascending=False)
+    df_out.sort_values(by=['Z_A', 'Z_B'], inplace=True, ascending=[True, True])
 
     df_sisso = df_sisso[df_sisso['X'] == anion].copy()
     if parameter in ['Eg']:
         df_sisso = df_sisso[df_sisso[parameter] > 0].copy()
     df_sisso['Z_A'] = df_sisso.A.map(element_to_number)
     df_sisso['Z_B'] = df_sisso.B.map(element_to_number)
-    df_sisso.sort_values(by=['Z_A', 'Z_B'], inplace=True, ascending=False)
+    df_sisso.sort_values(by=['Z_A', 'Z_B'], inplace=True, ascending=[True, True])
 
 
-    sns.set_theme(style="whitegrid")
+    #sns.set_theme(style="whitegrid")
     sns.set_context('talk')
 
     df_crab = df_sisso
@@ -679,7 +679,7 @@ def plot_matrix(df_out, df_crystal, anion='S', parameter='Eg', clf_proba=None):
 
     plt.xticks(rotation=90)
     #plt.grid(color='None', linestyle='-')
-    ax.set_frame_on(False)
+    #ax.set_frame_on(False)
     ax.grid(False)
 
     if parameter == 'Eg':
