@@ -444,7 +444,7 @@ def plot_t_star_vs_p_t_sisso(df, thresholds):
 
     plt.show()
 
-def colormap_radii(df, exp_df, clf_proba=None):
+def colormap_radii(df, exp_df, clf_proba=None, t_sisso=False):
 
     import numpy as np
     import matplotlib.pyplot as plt
@@ -488,13 +488,19 @@ def colormap_radii(df, exp_df, clf_proba=None):
     fig, axes = plt.subplots(1, 2, figsize=(20, 8))
     plt.subplots_adjust(wspace=0.2) # Increased wspace
 
-    color_map = 'coolwarm_r'
+    if t_sisso:
+        color_map = 'Pastel1'
+    else:
+        color_map = 'coolwarm_r'
 
     rA_range = [110, 180]
     rB_range = [50, 120]
 
     # Plot for S anion (rX_range[0])
-    scatter_s = axes[0].scatter(xv, yv, c=p_t_sisso_S, cmap=color_map, vmin=0, vmax=1)
+    if t_sisso:
+        scatter_s = axes[0].scatter(xv, yv, c=t_sisso_S, cmap=color_map, vmin=0.5, vmax=2.5)
+    else:
+        scatter_s = axes[0].scatter(xv, yv, c=p_t_sisso_S, cmap=color_map, vmin=0, vmax=1)
     axes[0].set_xlabel('$r_A$ (pm)')
     axes[0].set_ylabel('$r_B$ (pm)')
     axes[0].set_xlim(rA_range)
@@ -503,7 +509,10 @@ def colormap_radii(df, exp_df, clf_proba=None):
     axes[0].set_title('ABS$_3$ compounds')
 
     # Plot for Se anion (rX_range[1])
-    axes[1].scatter(xv, yv, c=p_t_sisso_Se, cmap=color_map, vmin=0, vmax=1)
+    if t_sisso:
+        axes[1].scatter(xv, yv, c=t_sisso_Se, cmap=color_map, vmin=0.5, vmax=2.5)
+    else:
+        axes[1].scatter(xv, yv, c=p_t_sisso_Se, cmap=color_map, vmin=0, vmax=1)
     axes[1].set_xlabel('$r_A$ (pm)')
     axes[1].set_xlim(rA_range)
     axes[1].set_ylim(rB_range)
@@ -512,7 +521,10 @@ def colormap_radii(df, exp_df, clf_proba=None):
     axes[1].set_title('ABSe$_3$ compounds')
 
     # Add a single color bar for both subplots
-    fig.colorbar(scatter_s, ax=axes.ravel().tolist(), label='$P(\\tau*)$')
+    if t_sisso:
+        fig.colorbar(scatter_s, ax=axes.ravel().tolist(), label='$\\tau*$')
+    else:
+        fig.colorbar(scatter_s, ax=axes.ravel().tolist(), label='$P(\\tau*)$')
 
     #remove non-chalcogenides from exp_df
     exp_df = exp_df[exp_df.rX.isin(rX_range)]
@@ -536,7 +548,10 @@ def colormap_radii(df, exp_df, clf_proba=None):
             elif X == rX_range[1]:
                 axes[1].scatter(rA_, rB_, marker='^', color='black', s=50)
 
-    plt.savefig(FIGURES_DIR / 'p_t_sisso color_map radii.png', dpi=600)
+    if t_sisso:
+        plt.savefig(FIGURES_DIR / 't_sisso color_map radii.png', dpi=600)
+    else:
+        plt.savefig(FIGURES_DIR / 'p_t_sisso color_map radii.png', dpi=600)
     plt.show()
 
 
@@ -573,7 +588,24 @@ def confusion_matrix_plot(df, test=True):
     plt.savefig(FIGURES_DIR / f'confusion_matrix_{"test" if test else "train"}.png', dpi=600)
     plt.show()
 
+def normalize_abx3(formula):
+    import re
+    from collections import Counter
+    tokens = re.findall(r'([A-Z][a-z]?)(\d*)', formula)
+    counts = Counter({el: int(num) if num else 1 for el, num in tokens})
 
+    # X has stoichiometry 3
+    X = [el for el, c in counts.items() if c == 3]
+    if len(X) != 1:
+        return None  # or raise error if you prefer
+    X = X[0]
+
+    # A and B are the remaining elements
+    AB = sorted(el for el in counts if el != X)
+    if len(AB) != 2:
+        return None
+
+    return f"{AB[0]}{AB[1]}{X}3"
 
 def plot_matrix(df_out, df_crystal, anion='S', parameter='Eg', clf_proba=None):
 
@@ -612,7 +644,10 @@ def plot_matrix(df_out, df_crystal, anion='S', parameter='Eg', clf_proba=None):
         train_df, test_df, clf_proba = train_platt_scaling(train_df, test_df, clfs['t_sisso'])
         df_out['p_t_sisso'] = clf_proba.predict_proba(df_out['t_sisso'].values.reshape(-1,1))[:,1]     
 
-    df_sisso = df_out[df_out['formula'].isin(df_crystal['formula'])]
+    #Normalize formulas to ABX3 format for matching
+    df_out["norm_formula"] = df_out["formula"].apply(normalize_abx3)
+    df_crystal["norm_formula"] = df_crystal["formula"].apply(normalize_abx3)
+    df_sisso = df_out[df_out['norm_formula'].isin(df_crystal['norm_formula'])]
     
     df_out = df_out[df_out['X'] == anion].copy()
     if parameter in ['Eg']:
