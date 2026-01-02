@@ -43,7 +43,7 @@
   "Mercury": "Hg",
   "Mica (Natural)": "K",
   "Molybdenum ": "Mo",
-  "Nickel": "Ni",
+  "Nickel": ["Ni", "Sc"],
   "Niobium": "Nb",
   "Nitrogen(fixed) - Ammonia": "N",
   "Peat ": "C",
@@ -75,7 +75,8 @@
     "Tm",
     "Yb",
     "Lu",
-    "Y"
+    "Y",
+    "Sc"
   ],
   "Rhenium": "Re",
   "Salt ": "Na",
@@ -92,7 +93,7 @@
   "Tellurium": "Te",
   "Tin": "Sn",
   "Titanium & titanium dioxide": "Ti",
-  "Titanium Mineral Concentrates": "Ti",
+  "Titanium Mineral Concentrates": ["Ti", "Sc"],
   "Tungsten ": "W",
   "Vanadium": "V",
   "Vermiculite": "Mg",
