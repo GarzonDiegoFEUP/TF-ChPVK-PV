@@ -726,5 +726,67 @@ def plot_matrix(df_out, df_crystal, anion='S', parameter='Eg', clf_proba=None):
 
     plt.show()
 
+def pareto_front_plot(df, variable, Eg_ref=1.34,
+                  plot_names=False, ax=None,
+                  same_y_axis=False):
+
+    import matplotlib.pyplot as plt
+    import seaborn as sns
+    import numpy as np
+    import pandas as pd
+
+    sns.set_context('talk')
+
+    df = df[df['B'] != 'U']
+    df = df[df['A'] != 'U'].reset_index(drop=True)
+    cols = [variable, 'Eg_dev']
+    df["Eg_dev"] = abs(Eg_ref - df["bandgap"])
+    is_pareto = np.ones(len(df), dtype=bool)
+    for i, point in df[cols].iterrows():
+        if is_pareto[i]:
+            is_pareto[is_pareto] = ~(
+                (df.loc[is_pareto, cols] >= point).all(axis=1) &
+                (df.loc[is_pareto, cols] > point).any(axis=1)
+            )
+            is_pareto[i] = True
+
+    df_pareto = df[is_pareto]
+    
+    if ax is None:
+        plt.figure(figsize=(6, 6))
+        ax = plt.gca()
+    
+
+    #set_scatter_colors
+    df['color'] = 'black'
+    df.loc[df['Eg_dev'] / Eg_ref <= 0.10, 'color'] = 'blue'
+    df.loc[( df[variable]-df[variable].min() ) / (df[variable].max() - df[variable].min()) <= 0.10, 'color'] = 'blue'
+    df.loc[is_pareto, 'color'] = 'red'
+
+    ax.scatter(df["Eg_dev"], df[variable], color=df['color'], alpha=0.7)
+    ax.scatter(df_pareto["Eg_dev"], df_pareto[variable],
+                color="red", label="Pareto front")
+    
+    
+    if plot_names:
+        for _, row in df.iterrows():
+            ax.text(row["Eg_dev"], row[variable], row["formula"].replace("3", "$_3$"))
+    
+    variable_title = {'HHI': 'Herfindahl-Hirschman Index (HHI)',
+                       'SR': 'Sustainability Risk (SR)'}
+
+    ax.set_xlabel("|{0:0.2f} - $E_g$| (eV)".format(Eg_ref))
+    if not same_y_axis:
+        ax.set_ylabel(variable_title[variable])
+    else:
+        ax.set_ylabel(None)
+        ax.set_yticklabels([])
+    
+    ax.set_xlim(-0.05, max(df["Eg_dev"])*1.1)
+    ax.set_ylim(0.1, max(df[variable])*1.1)
+    
+    if ax is None:
+        plt.show()
+
 if __name__ == "__main__":
     app()
