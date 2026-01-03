@@ -773,7 +773,7 @@ def pareto_front_plot(df, variable, Eg_ref=1.34,
             ax.text(row["Eg_dev"], row[variable], row["formula"].replace("3", "$_3$"))
     
     variable_title = {'HHI': 'Herfindahl-Hirschman Index (HHI)',
-                       'SR': 'Sustainability Risk (SR)'}
+                       'SR': 'Supply Risk (SR)'}
 
     ax.set_xlabel("|{0:0.2f} - $E_g$| (eV)".format(Eg_ref))
     if not same_y_axis:
