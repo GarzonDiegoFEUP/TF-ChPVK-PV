@@ -788,5 +788,80 @@ def pareto_front_plot(df, variable, Eg_ref=1.34,
     if ax is None:
         plt.show()
 
+def plot_PCA(df_scaled, df_pca, original_df, component_loadings, pca, pc1 = 1, pc2 = 2):
+
+  import matplotlib.pyplot as plt
+  import numpy as np
+  import seaborn as sns
+  from tf_chpvk_pv.config import FIGURES_DIR
+
+  dict_values = {'nA':'$n_A$',
+                'nB':'$n_B$',
+                'nX':'$n_X$',
+                'chi_A':r'$\chi_A$',
+                'chi_B':r'$\chi_B$',
+                'chi_X':r'$\chi_X$',
+                'rX':'$r_X$',
+                'rA':'$r_A$',
+                'rB':'$r_B$',
+                'bandgap': '$E_g$'}
+
+  sns.set_context('talk')
+
+  # Transform the scaled data to get the principal components scores
+  pca_scores = pca.transform(df_scaled)
+
+  # Get the loadings for PC1 and PC2
+  loadings_pc1 = component_loadings['PC' + str(pc1)]
+  loadings_pc2 = component_loadings['PC' + str(pc2)]
+
+  # Scale the loadings for better visualization if needed (e.g., by explained variance or just a constant factor)
+  # For simplicity, we'll scale by the square root of explained variance to make them proportional to the component's importance
+  scale_pc1 = np.sqrt(pca.explained_variance_[pc1-1])
+  scale_pc2 = np.sqrt(pca.explained_variance_[pc2-1])
+
+  plt.figure(figsize=(10, 8))
+
+  # Plot the data points (PCA scores), color-coded by 'bandgap'
+  scatter = plt.scatter(pca_scores[:, pc1-1], pca_scores[:, pc2-1],
+                        c=df_pca['bandgap'], cmap='jet', vmin=0.5, vmax=3.5,
+                        alpha=0.75, edgecolors=original_df['color_edge'], s=df_pca['rB'])
+
+  # Add a colorbar for the bandgap values
+  plt.colorbar(scatter, label='Bandgap (eV)')
+
+  # Plot the feature loadings as vectors
+  for i, feature in enumerate(df_scaled.columns):
+      # Adjust the length of the loading vectors for better visibility
+      # Here, scaling by a factor relative to the component's variance and the range of scores
+      # Using .iloc to avoid FutureWarning
+      col = 'red'
+      if feature == 'bandgap':
+          col = 'blue'
+      plt.arrow(0, 0, loadings_pc1.iloc[i] * scale_pc1 * 3, loadings_pc2.iloc[i] * scale_pc2 * 3,
+                head_width=0.05, head_length=0.05, fc=col, ec=col, linewidth=1.5)
+
+      # Highlight 'bandgap' specifically
+      if feature == 'bandgap':
+          plt.text(loadings_pc1.iloc[i] * scale_pc1 * 3 * 1.2, loadings_pc2.iloc[i] * scale_pc2 * 3 * 1.2,
+                  dict_values[feature], color='blue', ha='center', va='center', fontweight='bold')
+      else:
+          plt.text(loadings_pc1.iloc[i] * scale_pc1 * 3 * 1.2, loadings_pc2.iloc[i] * scale_pc2 * 3 * 1.2,
+                  dict_values[feature], color='red', ha='center', va='center')
+
+  plt.xlabel(f'PC {pc1} ({pca.explained_variance_ratio_[pc1-1]*100:.1f}% variance)')
+  plt.ylabel(f'PC {pc2} ({pca.explained_variance_ratio_[pc2-1]*100:.1f}% variance)')
+  plt.axhline(0, color='k', linewidth=2)
+  plt.axvline(0, color='k', linewidth=2)
+  plt.xlim([-4.2,4.2])
+  plt.ylim([-4.2,4.2])
+
+  name_file = f'PCA_PC{pc1}_PC{pc2}_plot.png'
+
+  plt.savefig(FIGURES_DIR / name_file, dpi=600, bbox_inches='tight')
+
+  plt.show()
+
+
 if __name__ == "__main__":
     app()

@@ -229,6 +229,31 @@ def create_features_SISSO(df_units, inputs,
     feature_df=pd.DataFrame(index=index_id,data=np.array(vals),columns=features)   # make a data frame of the features and values of the features for different materials
     feature_df.to_csv(output_path)
 
+
+def perform_pca(df, variables, target):
+
+  from sklearn.preprocessing import StandardScaler
+  from sklearn.decomposition import PCA
+
+  selected_columns = variables + target
+  df_pca = df[selected_columns]
+  df_pca = df_pca.select_dtypes(include=['number'])
+  df_pca.dropna(inplace=True)
+
+  scaler = StandardScaler()
+  df_scaled = scaler.fit_transform(df_pca)
+  df_scaled = pd.DataFrame(df_scaled, columns=df_pca.columns)
+
+  pca = PCA()
+  pca.fit(df_scaled)
+
+  component_loadings = pd.DataFrame(pca.components_.T, columns=[f'PC{i+1}' for i in range(len(pca.components_))], index=df_scaled.columns)
+
+  explained_variance_ratio = pd.DataFrame({'Principal Component': [f'PC{i+1}' for i in range(len(pca.explained_variance_ratio_))], 'Explained Variance Ratio': pca.explained_variance_ratio_})
+
+  return df_scaled, df_pca, component_loadings, explained_variance_ratio, pca
+
+
 if __name__ == "__main__":
     app()
 
