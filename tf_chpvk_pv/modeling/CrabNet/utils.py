@@ -185,7 +185,7 @@ def get_test_r2_score_by_source_data(df, original_df,
             print('No data available for this source.')
 
 def test_r2_score(df,
-                  feature_names,
+                  feature_names=None,
                   crabnet_bandgap = None,
                   model_path: Path = TRAINED_MODELS / 'perovskite_bg_prediction.pth',):
   
@@ -199,7 +199,10 @@ def test_r2_score(df,
 
   # Train data
   df_zeros = pd.DataFrame({"formula": df['formula'], "target": [0.0]*len(df['formula']),})
-  df_zeros = pd.concat([df_zeros, df[feature_names]], axis=1)
+  if feature_names:
+     df_zeros = pd.concat([df_zeros, df[feature_names]], axis=1)
+  else:
+     print('No feature names provided, using only formula and target columns.')
 
   df_predicted, df_predicted_sigma = crabnet_bandgap.predict(df_zeros, return_uncertainty=True)
 
