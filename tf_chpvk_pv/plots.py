@@ -345,8 +345,8 @@ def plot_tau_star_histogram(threshold, df):
                     hue_order=['Perovskite', 'Nonperovskite'])
 
   # Add axvspan calls with labels
-  ax.axvspan(xmin=threshold, xmax=1.6, color='red', alpha=0.15, label='$\\tau$*' + f' > {threshold}')
-  ax.axvspan(xmin=0, xmax=threshold, color='green', alpha=0.15, label= '$\\tau$*' + f' < {threshold}')
+  ax.axvspan(xmin=threshold, xmax=1.6, color='darkred', alpha=0.25, label='$\\tau$*' + f' > {threshold}')
+  ax.axvspan(xmin=0, xmax=threshold, color='limegreen', alpha=0.25, label= '$\\tau$*' + f' < {threshold}')
 
   # Get all handles and labels from the axis. This should include both histplot and axvspan.
   if ax.legend_ is not None:
@@ -381,10 +381,10 @@ def plot_t_star_histogram(thresholds, df):
                         )
 
     # Add axvspan calls with labels
-    ax.axvspan(xmin=0.3, xmax=thresholds[0], color='red', alpha=0.15, )
-    ax.axvspan(xmin=thresholds[1], xmax=2.2, color='red', alpha=0.15,)
+    ax.axvspan(xmin=0.3, xmax=thresholds[0], color='darkred', alpha=0.25,)
+    ax.axvspan(xmin=thresholds[1], xmax=2.2, color='darkred', alpha=0.25,)
 
-    ax.axvspan(xmin=thresholds[0], xmax=thresholds[1], color='green', alpha=0.15, )
+    ax.axvspan(xmin=thresholds[0], xmax=thresholds[1], color='limegreen', alpha=0.25, )
 
     # Get all handles and labels from the axis. This should include both histplot and axvspan.
     if ax.legend_ is not None:
@@ -424,10 +424,10 @@ def plot_t_star_vs_p_t_sisso(df, thresholds):
         markers=markers,
     )
 
-    ax.axvspan(xmin=0.3, xmax=thresholds[0], color='red', alpha=0.15, )
-    ax.axvspan(xmin=thresholds[1], xmax=2.2, color='red', alpha=0.15,)
+    ax.axvspan(xmin=0.3, xmax=thresholds[0], color='darkred', alpha=0.25, )
+    ax.axvspan(xmin=thresholds[1], xmax=2.2, color='darkred', alpha=0.25,)
 
-    ax.axvspan(xmin=thresholds[0], xmax=thresholds[1], color='green', alpha=0.15, )
+    ax.axvspan(xmin=thresholds[0], xmax=thresholds[1], color='limegreen', alpha=0.25, )
 
     ax.set_xlabel('t*')
     ax.set_ylabel('P($\\tau$*)')
@@ -539,14 +539,14 @@ def colormap_radii(df, exp_df, clf_proba=None, t_sisso=False):
         X = d.rX
         if d.exp_label == 1:
             if X == rX_range[0]:
-                axes[0].scatter(rA_, rB_, marker='s', color='black', s=50)
+                axes[0].scatter(rA_, rB_, marker='s', color='lightgray', s=50, edgecolor='black')
             elif X == rX_range[1]:
-                axes[1].scatter(rA_, rB_, marker='s', color='black', s=50)
+                axes[1].scatter(rA_, rB_, marker='s', color='lightgray', s=50, edgecolor='black')
         else:
             if X == rX_range[0]:
-                axes[0].scatter(rA_, rB_, marker='^', color='black', s=50)
+                axes[0].scatter(rA_, rB_, marker='^', color='lightgray', s=50, edgecolor='black')
             elif X == rX_range[1]:
-                axes[1].scatter(rA_, rB_, marker='^', color='black', s=50)
+                axes[1].scatter(rA_, rB_, marker='^', color='lightgray', s=50, edgecolor='black')
 
     if t_sisso:
         plt.savefig(FIGURES_DIR / 't_sisso color_map radii.png', dpi=600)
