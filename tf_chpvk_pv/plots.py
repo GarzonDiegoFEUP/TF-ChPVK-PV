@@ -770,7 +770,7 @@ def pareto_front_plot(df, variable, Eg_ref=1.34,
     
     if plot_names:
         for _, row in df.iterrows():
-            ax.text(row["Eg_dev"], row[variable], row["formula"].replace("3", "$_3$"))
+            ax.text(row["Eg_dev"], row[variable], row["formula"].replace("3", "$_3$"), fontdict={'fontsize':8})
     
     variable_title = {'HHI': 'Herfindahl-Hirschman Index (HHI)',
                        'SR': 'Supply Risk (SR)',
@@ -848,6 +848,8 @@ def plot_pareto_3fronts(df, print_tables=False, plot_names=False, FIGURES_DIR=FI
     ax.set_ylabel("Supply Risk (SR)")
 
     if plot_names:
+        for _, row in df_.iterrows():
+            ax.text(row["CL score"], row["SR"], row["formula"].replace("3", "$_3$"), fontdict={'fontsize':8})
         for _, row in df_pareto_SJ.iterrows():
             ax.text(row["CL score"], row["SR"], row["formula"].replace("3", "$_3$"))
         for _, row in df_pareto_T.iterrows():
