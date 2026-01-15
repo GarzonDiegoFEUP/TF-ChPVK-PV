@@ -854,9 +854,9 @@ def plot_pareto_3fronts(df, print_tables=False, plot_names=False, FIGURES_DIR=FI
             ax.text(row["CL score"], row["SR"], row["formula"].replace("3", "$_3$"))
         for _, row in df_pareto_T.iterrows():
             ax.text(row["CL score"], row["SR"], row["formula"].replace("3", "$_3$"))
-        fig.savefig(FIGURES_DIR / "pareto_front_CL_score_SR_Eg_with_names.png", dpi=300)
+        fig.savefig(FIGURES_DIR / "pareto_front_CL_score_SR_Eg_with_names.png", dpi=300, bbox_inches='tight')
     else:
-        fig.savefig(FIGURES_DIR / "pareto_front_CL_score_SR_Eg.png", dpi=300)
+        fig.savefig(FIGURES_DIR / "pareto_front_CL_score_SR_Eg.png", dpi=300, bbox_inches='tight')
     
     plt.show()  
 
