@@ -773,7 +773,8 @@ def pareto_front_plot(df, variable, Eg_ref=1.34,
             ax.text(row["Eg_dev"], row[variable], row["formula"].replace("3", "$_3$"))
     
     variable_title = {'HHI': 'Herfindahl-Hirschman Index (HHI)',
-                       'SR': 'Supply Risk (SR)'}
+                       'SR': 'Supply Risk (SR)',
+                       '1-CL score': '1 - Crystal-likeness Score (CLS)',}
 
     ax.set_xlabel("|{0:0.2f} - $E_g$| (eV)".format(Eg_ref))
     if not same_y_axis:
@@ -783,10 +784,80 @@ def pareto_front_plot(df, variable, Eg_ref=1.34,
         ax.set_yticklabels([])
     
     ax.set_xlim(-0.05, max(df["Eg_dev"])*1.1)
-    ax.set_ylim(0.1, max(df[variable])*1.1)
+    if '1-CL' in variable:
+        ax.set_ylim(0, max(df[variable])*1.1)
+    else:
+        ax.set_ylim(0.1, max(df[variable])*1.1)
+    
     
     if ax is None:
         plt.show()
+
+def plot_pareto_3fronts(df, print_tables=False, plot_names=False, FIGURES_DIR=FIGURES_DIR):
+
+    import matplotlib.pyplot as plt
+    import seaborn as sns
+
+    sns.set_context('talk')
+
+    def pareto_front_3obj(df, objectives):
+
+        import numpy as np
+
+        is_pareto = np.ones(len(df), dtype=bool)
+        for i, point in df[objectives].iterrows():
+            if is_pareto[i]:
+                is_pareto[is_pareto] = ~(
+                    (df.loc[is_pareto, objectives] >= point).all(axis=1) &
+                    (df.loc[is_pareto, objectives] > point).any(axis=1)
+                )
+                is_pareto[i] = True
+        return df[is_pareto]
+    
+
+    df = df[df['B'] != 'U']
+    df = df[df['A'] != 'U'].reset_index(drop=True)
+
+    df['Eg_dev_SJ'] = abs(df['bandgap'] - 1.34)
+    df['Eg_dev_T'] = abs(df['bandgap'] - 1.71)
+    df['1-CL score'] = 1 - df['CL score']
+
+    objectives = ['Eg_dev_SJ', 'SR', '1-CL score']
+    df_pareto_SJ = pareto_front_3obj(df, objectives)
+
+    objectives = ['Eg_dev_T', 'SR', '1-CL score']
+    df_pareto_T = pareto_front_3obj(df, objectives)
+
+    if print_tables:
+        print("Pareto front for Single Junction bandgap (1.34 eV):")
+        print(df_pareto_SJ[['formula', 'bandgap', 'bandgap_sigma', 'SR', 'CL score', 'CL score std']])
+        print("\nPareto front for Tandem configuration bandgap (1.71 eV):")
+        print(df_pareto_T[['formula', 'bandgap', 'bandgap_sigma', 'SR', 'CL score', 'CL score std']])
+
+    fig, ax = plt.subplots(figsize=(8, 6))
+    df_ = df[~df['formula'].isin(df_pareto_SJ['formula'].tolist() + df_pareto_T['formula'].tolist())]
+    sc = ax.scatter(df_["CL score"], df_["SR"], c=df_["bandgap"], cmap="jet", vmin=0.5, vmax=3.5, s=100, edgecolors='darkgray')
+    df_pareto_SJ_ = df_pareto_SJ[df_pareto_SJ['bandgap'] < 1.51]
+    ax.scatter(df_pareto_SJ_["CL score"], df_pareto_SJ_["SR"], c=df_pareto_SJ_["bandgap"], cmap="jet", vmin=0.5, vmax=3.5, marker='^', edgecolors='black', s=100)
+    df_pareto_T_ = df_pareto_T[df_pareto_T['bandgap'] >= 1.51]
+    ax.scatter(df_pareto_T_["CL score"], df_pareto_T_["SR"], c=df_pareto_T_["bandgap"], cmap="jet", vmin=0.5, vmax=3.5, marker='s', edgecolors='black', s=100)
+    
+    
+    plt.colorbar(sc, label="Bandgap (eV)")
+    ax.set_xlabel("Crystal-likeness Score (CLS)")
+    ax.set_ylabel("Supply Risk (SR)")
+
+    if plot_names:
+        for _, row in df_pareto_SJ.iterrows():
+            ax.text(row["CL score"], row["SR"], row["formula"].replace("3", "$_3$"))
+        for _, row in df_pareto_T.iterrows():
+            ax.text(row["CL score"], row["SR"], row["formula"].replace("3", "$_3$"))
+        fig.savefig(FIGURES_DIR / "pareto_front_CL_score_SR_Eg_with_names.png", dpi=300)
+    else:
+        fig.savefig(FIGURES_DIR / "pareto_front_CL_score_SR_Eg.png", dpi=300)
+    
+    plt.show()  
+
 
 def plot_PCA(df_scaled, df_pca, original_df, component_loadings, pca, pc1 = 1, pc2 = 2):
 
