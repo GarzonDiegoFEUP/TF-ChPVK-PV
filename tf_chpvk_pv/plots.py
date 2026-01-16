@@ -247,7 +247,7 @@ def graph_periodic_table(stable_candidates_t_sisso, t='t_sisso', save_plot=True)
     element_counts = count_elements([re.sub(r'\d+', '', x) for x in stable_candidates_t_sisso])
 
     # Plot the periodic table heatmap
-    ptable_heatmap(element_counts, log=False, heat_mode='value')#, show_values=True)
+    ptable_heatmap(element_counts, log=False, heat_mode='value', cmap="RdYlBu")#, show_values=True)
     #fig.update_layout(title=dict(text="<b>Elements in the chemical space</b>", x=0.36, y=0.9))
     if save_plot:
       txt_title = "periodic_table_heatmap_" + t + ".png"
@@ -345,7 +345,7 @@ def plot_tau_star_histogram(threshold, df):
                     hue_order=['Perovskite', 'Nonperovskite'])
 
   # Add axvspan calls with labels
-  ax.axvspan(xmin=threshold, xmax=1.6, color='darkred', alpha=0.25, label='$\\tau$*' + f' > {threshold}')
+  ax.axvline(x=threshold, color='k', label='$\\tau$*' + f' > {threshold}')
   ax.axvspan(xmin=0, xmax=threshold, color='limegreen', alpha=0.25, label= '$\\tau$*' + f' < {threshold}')
 
   # Get all handles and labels from the axis. This should include both histplot and axvspan.
@@ -381,8 +381,8 @@ def plot_t_star_histogram(thresholds, df):
                         )
 
     # Add axvspan calls with labels
-    ax.axvspan(xmin=0.3, xmax=thresholds[0], color='darkred', alpha=0.25,)
-    ax.axvspan(xmin=thresholds[1], xmax=2.2, color='darkred', alpha=0.25,)
+    ax.axvline(x=thresholds[0], color='k')
+    ax.axvline(x=thresholds[1], color='k')
 
     ax.axvspan(xmin=thresholds[0], xmax=thresholds[1], color='limegreen', alpha=0.25, )
 
@@ -424,8 +424,8 @@ def plot_t_star_vs_p_t_sisso(df, thresholds):
         markers=markers,
     )
 
-    ax.axvspan(xmin=0.3, xmax=thresholds[0], color='darkred', alpha=0.25, )
-    ax.axvspan(xmin=thresholds[1], xmax=2.2, color='darkred', alpha=0.25,)
+    ax.axvline(x=thresholds[0], color='k')
+    ax.axvline(x=thresholds[1], color='k')
 
     ax.axvspan(xmin=thresholds[0], xmax=thresholds[1], color='limegreen', alpha=0.25, )
 
