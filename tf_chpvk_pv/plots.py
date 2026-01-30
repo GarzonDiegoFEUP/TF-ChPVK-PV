@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import pickle
 
-from tf_chpvk_pv.config import FIGURES_DIR, PROCESSED_DATA_DIR, RESULTS_DIR, INTERIM_DATA_DIR
+from tf_chpvk_pv.config import FIGURES_DIR, PROCESSED_DATA_DIR, RAW_DATA_DIR, RESULTS_DIR, INTERIM_DATA_DIR
 
 app = typer.Typer()
 
@@ -728,7 +728,10 @@ def plot_matrix(df_out, df_crystal, anion='S', parameter='Eg', clf_proba=None):
 
 def pareto_front_plot(df, variable, Eg_ref=1.34,
                   plot_names=False, ax=None,
-                  same_y_axis=False):
+                  same_y_axis=False, 
+                  plot_PCE=False,
+                  sj_limit_path = RAW_DATA_DIR / "SJ_limit.csv",
+                  dj_limit_path = RAW_DATA_DIR / "DJ_limit.csv"):
 
     import matplotlib.pyplot as plt
     import seaborn as sns
@@ -763,9 +766,44 @@ def pareto_front_plot(df, variable, Eg_ref=1.34,
     df.loc[( df[variable]-df[variable].min() ) / (df[variable].max() - df[variable].min()) <= 0.10, 'color'] = 'blue'
     df.loc[is_pareto, 'color'] = 'red'
 
-    ax.scatter(df["Eg_dev"], df[variable], color=df['color'], alpha=0.7)
-    ax.scatter(df_pareto["Eg_dev"], df_pareto[variable],
-                color="red", label="Pareto front")
+    df_black = df[df['color'] == 'black']
+    df_blue = df[df['color'] == 'blue']
+    df_red = df[df['color'] == 'red']
+
+    ax.scatter(df_black["Eg_dev"], df_black[variable], color='black',
+               edgecolor='k', marker='o', alpha=0.7)
+
+    ax.scatter(df_blue["Eg_dev"], df_blue[variable], color='blue',
+               edgecolor='k', marker='s', alpha=0.7)
+
+    ax.scatter(df_red["Eg_dev"], df_red[variable], color='red',
+               edgecolor='k', marker='^')
+    
+    xlims = [-0.05, max(df["Eg_dev"])*1.1]
+
+    if '1-CL' in variable:
+        ylims = [0, max(df[variable])*1.1]
+    else:
+        ylims = [0.1, max(df[variable])*1.1]
+
+    if plot_PCE:
+        # Load Shockley-Queisser limit data
+        sj_limit = pd.read_csv(sj_limit_path)
+        dj_limit = pd.read_csv(dj_limit_path)
+
+        if Eg_ref == 1.34:
+            pcolor = ax.pcolorfast(xlims, ylims, sj_limit[ 'PCE (%)'].values.reshape(1, -1),
+                                   vmin=0, vmax=35,
+                                   cmap='BuGn', alpha=0.45, label='SJ Limit (1.34 eV)')
+            cbar = plt.colorbar(pcolor, ax=ax, label='PCE theoretical limit (%)', location='top')
+            cbar.ax.invert_xaxis()
+        elif Eg_ref == 1.71:
+            pcolor = ax.pcolorfast(xlims, ylims, dj_limit[ 'PCE (%)'].values.reshape(1, -1),
+                                   vmin=29, vmax=45,
+                                   cmap='PuBu', alpha=0.45, label='DJ Limit (1.71 eV)')
+            cbar = plt.colorbar(pcolor, ax=ax, label='PCE theoretical limit (%)', location='top')
+            cbar.ax.invert_xaxis()
+        
     
     
     if plot_names:
@@ -783,12 +821,8 @@ def pareto_front_plot(df, variable, Eg_ref=1.34,
         ax.set_ylabel(None)
         ax.set_yticklabels([])
     
-    ax.set_xlim(-0.05, max(df["Eg_dev"])*1.1)
-    if '1-CL' in variable:
-        ax.set_ylim(0, max(df[variable])*1.1)
-    else:
-        ax.set_ylim(0.1, max(df[variable])*1.1)
-    
+    ax.set_xlim(xlims)
+    ax.set_ylim(ylims)
     
     if ax is None:
         plt.show()
