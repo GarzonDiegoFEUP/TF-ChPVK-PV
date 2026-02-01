@@ -395,7 +395,7 @@ def plot_t_star_histogram(thresholds, df):
     #ax.legend(handles=handles, labels=labels, title=None)
 
     plt.xlim([0.3, 2.2])
-    plt.xlabel('t*')
+    plt.xlabel('Jess et al. tolerance factor (t*)')
     plt.ylabel('Counts')
     plt.tight_layout()
 
@@ -429,7 +429,7 @@ def plot_t_star_vs_p_t_sisso(df, thresholds):
 
     ax.axvspan(xmin=thresholds[0], xmax=thresholds[1], color='limegreen', alpha=0.25, )
 
-    ax.set_xlabel('t*')
+    ax.set_xlabel('Jess et al. tolerance factor (t*)')
     ax.set_ylabel('P($\\tau$*)')
 
     # Remove title from legend
