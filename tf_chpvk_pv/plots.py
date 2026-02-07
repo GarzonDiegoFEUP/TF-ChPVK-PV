@@ -239,7 +239,7 @@ def plot_p_t_sisso_tf(tf, train_input_path: Path = RESULTS_DIR / "processed_chpv
         logger.error(f"P(t_sisso) as a function of {tf} plot cannot be generated as the required columns are not present in the dataframes.")
 
 
-def graph_periodic_table(stable_candidates_t_sisso, t='t_sisso', save_plot=True):
+def graph_periodic_table(stable_candidates_t_sisso, t='t_sisso', save_plot=True, cmap_='turbo'):
     from pymatviz import count_elements,  ptable_heatmap_plotly, ptable_heatmap
     import matplotlib.pyplot as plt
     import re
@@ -247,7 +247,7 @@ def graph_periodic_table(stable_candidates_t_sisso, t='t_sisso', save_plot=True)
     element_counts = count_elements([re.sub(r'\d+', '', x) for x in stable_candidates_t_sisso])
 
     # Plot the periodic table heatmap
-    ptable_heatmap(element_counts, log=False, heat_mode='value', cmap="RdYlBu")#, show_values=True)
+    ptable_heatmap(element_counts, log=False, heat_mode='value', cmap=cmap_)#, show_values=True)
     #fig.update_layout(title=dict(text="<b>Elements in the chemical space</b>", x=0.36, y=0.9))
     if save_plot:
       txt_title = "periodic_table_heatmap_" + t + ".png"
