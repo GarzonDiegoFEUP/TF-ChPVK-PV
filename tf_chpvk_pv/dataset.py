@@ -611,5 +611,79 @@ def curated_bandgap_db_semicon(input_path: Path = BANDGAP_DATA_DIR / 'Bandgap.cs
 
     return df_result
 
+
+def get_perovskite_data_NOMAD(import_new_pvk_data = False,
+                               output_path: Path = RAW_DATA_DIR / 'perovskite_bandgap_devices.csv'):
+    
+    if import_new_pvk_data:
+
+        from time import monotonic
+
+        import jmespath
+        import requests
+        import pandas as pd
+
+        base_url = 'https://nomad-lab.eu/prod/v1/api/v1'
+        bandgaps = []
+        reduced_formulas = []
+        descriptive_formulas = []
+        page_after_value = None
+
+        def extract_values(entry):
+            bandgaps.append(jmespath.search('results.properties.electronic.band_structure_electronic[0].band_gap[0].value', entry))
+            reduced_formulas.append(jmespath.search('results.material.chemical_formula_reduced', entry))
+            descriptive_formulas.append(jmespath.search('results.material.chemical_formula_descriptive', entry))
+
+
+        start = monotonic()
+        while True:
+
+            response = requests.post(
+                f'{base_url}/entries/query',
+                json={
+                    "owner": "visible",
+                    "query": {
+                        "and": [
+                            # {"results.material.elements:all": ["Sn"]},
+                            {"sections:all": ["nomad.datamodel.results.SolarCell"]}
+                        ]
+                    },
+                    'pagination': {
+                        'page_size': 1000,
+                        'page_after_value': page_after_value
+                    }
+                }
+            )
+            response_code = response.status_code
+            data = response.json()
+            pagination = data['pagination']
+            if page_after_value is None:
+                print(f'Total number of entries: {pagination["total"]}')
+            print(response_code)
+            page_after_value = data['pagination'].get('next_page_after_value')
+
+            for entry in data['data']:
+                extract_values(entry)
+            if not page_after_value:
+                break
+            end = monotonic()
+
+        print(f'Query took {end - start:.2f} seconds')
+
+        df = pd.DataFrame({
+            'reduced_formulas': reduced_formulas,
+            'descriptive_formulas': descriptive_formulas,
+            'bandgap': bandgaps,
+            })
+
+        df['bandgap'] = pd.to_numeric(df['bandgap'], errors='coerce')
+        df['bandgap'] = df['bandgap']*6.24150974e18
+        df.head()
+
+        df.to_csv(output_path, index=False)
+    else:
+        import pandas as pd
+        print('Importing existing data... with size:', pd.read_csv(output_path).shape)
+
 if __name__ == "__main__":
     app()
