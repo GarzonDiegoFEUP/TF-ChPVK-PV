@@ -18,17 +18,25 @@ Chalcogenide perovskites (ABX₃, X = S²⁻, Se²⁻) are promising absorber ma
 next-generation photovoltaic devices. This work presents a fully data-driven screening
 pipeline that integrates:
 
-1. **SISSO-derived tolerance factor (τ\*)** — an interpretable analytical descriptor for
-   perovskite structural stability, outperforming the Goldschmidt
-   tolerance factor on experimental data.
+1. **SISSO-derived tolerance factor (τ\*)** — an interpretable analytical descriptor
+   ([Ouyang et al., 2018](https://doi.org/10.1103/PhysRevMaterials.2.083802)) for
+   perovskite structural stability, outperforming the Goldschmidt tolerance factor
+   ([Goldschmidt, 1926](https://doi.org/10.1007/BF01507527);
+   [Bartel et al., 2019](https://doi.org/10.1126/sciadv.aav0693)) on experimental data.
 2. **CrystaLLM crystal structure generation** — generative prediction of crystal structures
-   to validate corner-sharing perovskite-type topology.
-3. **CrabNet bandgap estimation** — composition-based prediction of bandgaps trained on
+   ([Antunes et al., 2024](https://doi.org/10.1038/s41467-024-54639-7)) to validate
+   corner-sharing perovskite-type topology.
+3. **CrabNet bandgap estimation** — composition-based prediction of bandgaps
+   ([Wang et al., 2021](https://doi.org/10.1038/s41524-021-00545-1)) trained on
    experimental halide perovskite and chalcogenide semiconductor data.
 4. **Sustainability analysis** — multi-objective ranking using the Herfindahl–Hirschman
-   Index (HHI), ESG scores, and supply risk metrics.
+   Index (HHI) ([USGS, 2025](https://doi.org/10.5066/P13XCP3R)), ESG scores
+   ([World Bank, 2023](https://datacatalog.worldbank.org/search/dataset/0037651)),
+   and supply risk metrics.
 5. **Synthesizability assessment** — crystal-likeness scoring via a pre-trained GCNN model
-   for experimental plausibility.
+   ([Gu et al., 2022](https://doi.org/10.1038/s41524-022-00757-z);
+   [Jang et al., 2020](https://doi.org/10.1021/jacs.0c07384)) for experimental
+   plausibility.
 
 ## Installation
 
@@ -121,6 +129,22 @@ The analysis is organized as a sequential pipeline. Run notebooks in order:
         ├── materials_entries.py
         └── settings.py
 ```
+
+## References
+
+Key methods and data sources used in this pipeline:
+
+| Step | Reference | DOI |
+|------|-----------|-----|
+| SISSO | Ouyang, R. et al. *Phys. Rev. Materials* **2**, 083802 (2018) | [10.1103/PhysRevMaterials.2.083802](https://doi.org/10.1103/PhysRevMaterials.2.083802) |
+| Tolerance factor (τ) | Bartel, C. J. et al. *Science Advances* **5**, eaav0693 (2019) | [10.1126/sciadv.aav0693](https://doi.org/10.1126/sciadv.aav0693) |
+| Goldschmidt factor | Goldschmidt, V. M. *Naturwissenschaften* **14**, 477–485 (1926) | [10.1007/BF01507527](https://doi.org/10.1007/BF01507527) |
+| CrystaLLM | Antunes, L. M. et al. *Nature Communications* **15**, 10570 (2024) | [10.1038/s41467-024-54639-7](https://doi.org/10.1038/s41467-024-54639-7) |
+| CrabNet | Wang, A. Y.-T. et al. *npj Computational Materials* **7**, 77 (2021) | [10.1038/s41524-021-00545-1](https://doi.org/10.1038/s41524-021-00545-1) |
+| HHI / mineral data | U.S. Geological Survey. *Mineral Commodity Summaries 2025* | [10.5066/P13XCP3R](https://doi.org/10.5066/P13XCP3R) |
+| ESG data | World Bank. *Environment, Social and Governance Data* (2023) | [Data Catalog](https://datacatalog.worldbank.org/search/dataset/0037651) |
+| Synthesizability (GCNN) | Gu, G. H. et al. *npj Computational Materials* **8**, 71 (2022) | [10.1038/s41524-022-00757-z](https://doi.org/10.1038/s41524-022-00757-z) |
+| Synthesizability | Jang, J. et al. *J. Am. Chem. Soc.* **142**, 18836–18843 (2020) | [10.1021/jacs.0c07384](https://doi.org/10.1021/jacs.0c07384) |
 
 ## Citation
 
