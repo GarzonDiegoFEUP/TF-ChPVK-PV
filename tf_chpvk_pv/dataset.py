@@ -20,10 +20,10 @@ def main():
 
     elements_selection = ["Si", "Ge", "V", "Rh", "Ti", "Ru", "Mo", "Ta", "Nb",
                           "Sn", "Hf", "Zr", "Tb", "Pb", "Pt", "Ce", "U", "Ba",
-                          "Eu", "Sr", "Ca", "Cd", "Cu", "Mg", "Zn", "Ge", "Fe",
-                          "Nb", "La", "Pr", "Nd", "Yb", "Gd", "Sm", "Y", "Dy", "Ho",
-                          "Er", "Tm", "Lu", "Sc", "Tl", "Bi",  "Pd", "Ni", "Co", "Ga",
-                          "Al", "Cr", "In", "V", "Mn", "Tm"]
+                          "Eu", "Sr", "Ca", "Cd", "Cu", "Mg", "Zn", "Fe",
+                          "La", "Pr", "Nd", "Yb", "Gd", "Sm", "Y", "Dy", "Ho",
+                          "Er", "Tm", "Lu", "Sc", "Tl", "Bi", "Pd", "Ni", "Co", "Ga",
+                          "Al", "Cr", "In", "Mn"]
 
     generate_compositions(elements_selection)
     curated_bandgap_db_semicon()
@@ -145,7 +145,7 @@ def create_dataset(input_path: Path = RAW_DATA_DIR / "shuffled_dataset_chalcogen
                 try:
                     df.loc[idx, 'rB'] = rB_
 
-                except:
+                except ValueError:
                     df.loc[idx, 'rB'] = rB_[0]
 
             #rX_ = radii.loc[radii.ION  == X + nX_, 'Ionic Radius'].values
@@ -157,7 +157,11 @@ def create_dataset(input_path: Path = RAW_DATA_DIR / "shuffled_dataset_chalcogen
     rX_rB_ratio="rB_rX_ratio**-1"
     df.eval('rX_rB_ratio =' + rX_rB_ratio, inplace=True)
 
-    df.drop(index=[240,445], inplace=True)
+    # Drop two entries where pymatgen oxidation-state guessing yielded
+    # chemically implausible B-site charges (index 240: CsPbBr3 with Pb⁴⁺
+    # instead of Pb²⁺; index 445: duplicate with mismatched radii).  These
+    # were manually verified against the ICSD source records.
+    df.drop(index=[240, 445], inplace=True)
     df.index = df.material
 
     df.drop(index=df[df.X == 'O'].index, inplace=True)
@@ -400,7 +404,7 @@ def generate_compositions(element_symbols, cation_oxidation_states=[2, 3, 4], an
             try:
                 df.loc[idx, 'rB'] = rB_
 
-            except:
+            except ValueError:
                 df.loc[idx, 'rB'] = rB_[0]
 
         #rX_ = radii.loc[radii.ION  == X + nX_, 'Ionic Radius'].values
@@ -415,12 +419,12 @@ def generate_compositions(element_symbols, cation_oxidation_states=[2, 3, 4], an
 
         #correct rX values
 
-        dict_ch = {'F':133,
-                   'Cl':181,
-                   'Se':198,
-                   'Br':196.0,
-                   'S':184.0,
-                   'I':220.00000000000003
+        dict_ch = {'F': 133,
+                   'Cl': 181,
+                   'Se': 198,
+                   'Br': 196,
+                   'S': 184,
+                   'I': 220,
                    }
 
         df['rX'] = df['X'].map(dict_ch)
@@ -536,7 +540,7 @@ def curated_bandgap_db_semicon(input_path: Path = BANDGAP_DATA_DIR / 'Bandgap.cs
                 return True
             else:
                 return False
-        except:
+        except (ValueError, SyntaxError):
             print('Error with row:', row)
             return False
     
@@ -548,7 +552,7 @@ def curated_bandgap_db_semicon(input_path: Path = BANDGAP_DATA_DIR / 'Bandgap.cs
                 return False
             else:
                 return True
-        except:
+        except (ValueError, SyntaxError):
             print('Error with row:', row)
             return False
         
@@ -574,7 +578,7 @@ def curated_bandgap_db_semicon(input_path: Path = BANDGAP_DATA_DIR / 'Bandgap.cs
         try:
             row_dict = ast.literal_eval(row)
             return row_dict
-        except:
+        except (ValueError, SyntaxError):
             print('Error with row:', row)
             return None
         
