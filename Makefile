@@ -17,10 +17,10 @@ requirements:
 	$(PYTHON_INTERPRETER) -m pip install -U pip
 	$(PYTHON_INTERPRETER) -m pip install -r requirements.txt
 
-## Install Python Dependencies (uv, editable)
+## Install Python Dependencies (uv, recommended)
 .PHONY: install
 install:
-	uv pip install -e ".[dev,sisso]"
+	uv sync --extra dev --extra notebooks
 
 ## Delete all compiled Python files
 .PHONY: clean

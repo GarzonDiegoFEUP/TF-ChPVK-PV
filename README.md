@@ -40,18 +40,35 @@ pipeline that integrates:
 
 ## Installation
 
-**Requirements:** Python ≥ 3.10, CUDA-capable GPU (for CrabNet training/inference).
+**Requirements:** Python ≥ 3.10, CUDA-capable GPU recommended (for CrabNet training).
 
 ### Using uv (recommended)
 
+[uv](https://docs.astral.sh/uv/) manages the virtual environment, lockfile, and
+dependencies in a single command:
+
 ```bash
-uv pip install -e .
+# Install uv (if not already available)
+curl -LsSf https://astral.sh/uv/install.sh | sh   # macOS / Linux
+# or: brew install uv
+
+# Clone and install
+git clone https://github.com/GarzonDiegoFEUP/TF-ChPVK-PV.git
+cd TF-ChPVK-PV
+uv sync --extra dev --extra notebooks   # creates .venv, resolves & installs everything
+```
+
+Or equivalently via Make:
+
+```bash
+make install
 ```
 
 ### Using pip
 
 ```bash
-pip install -e .
+python -m venv .venv && source .venv/bin/activate
+pip install -e ".[dev,notebooks]"
 ```
 
 ### Frozen lockfile (exact reproduction)
@@ -60,13 +77,33 @@ pip install -e .
 pip install -r requirements.txt
 ```
 
+### SISSO feature derivation (optional)
+
+The SISSO features are cached in `data/interim/features_sisso.csv`, so most users
+**do not** need `sissopp`. If you want to re-derive features from scratch, install
+[sissopp](https://github.com/rouyang2017/SISSO) manually **after** setting up the
+environment:
+
+```bash
+# After uv sync / make install:
+pip install sissopp   # or build from source per the SISSO repo instructions
+```
+
 ### Environment variables
 
-Some notebooks require a [Materials Project API key](https://materialsproject.org/api).
+Some notebooks query the [Materials Project API](https://materialsproject.org/api).
 Create a `.env` file in the project root:
 
 ```
 MP_API_KEY=your_materials_project_api_key
+```
+
+### Running the notebooks
+
+After installation, select the `.venv` kernel in VS Code (or register it manually):
+
+```bash
+uv run python -m ipykernel install --user --name tf-chpvk --display-name "Python (TF-ChPVK)"
 ```
 
 ## Pipeline Notebooks
