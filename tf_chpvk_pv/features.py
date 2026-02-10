@@ -7,7 +7,7 @@ import pandas as pd
 import numpy as np
 
 
-from tf_chpvk_pv.config import PROCESSED_DATA_DIR, INTERIM_DATA_DIR, RAW_DATA_DIR
+from tf_chpvk_pv.config import PROCESSED_DATA_DIR, INTERIM_DATA_DIR, RAW_DATA_DIR, RANDOM_SEED
 
 app = typer.Typer()
 
@@ -141,8 +141,8 @@ def choose_primary_features(df, change_columns, number_of_cycles=15,
     results_df = pd.DataFrame(columns = df.drop(columns=['exp_label']).columns)
     
     for i in range(number_of_cycles):
-        # Choose the primary features
-        results_df = get_best_features(df, results_df, i)
+        # Each cycle uses a different seed so splits are actually varied
+        results_df = get_best_features(df, results_df, i, random_state=RANDOM_SEED + i)
 
     most_important_features = list(results_df.mean(axis=0).sort_values(ascending=False).iloc[:5].index)
 
@@ -152,7 +152,7 @@ def choose_primary_features(df, change_columns, number_of_cycles=15,
 
 
 
-def get_best_features(df, results_df, idx=0, train_ratio = 0.80, random_state=42):
+def get_best_features(df, results_df, idx=0, train_ratio=0.80, random_state=RANDOM_SEED):
     
     if 'A' in df.columns:
         df_ = df.drop(columns=['A', 'B', 'X'])
@@ -165,7 +165,7 @@ def get_best_features(df, results_df, idx=0, train_ratio = 0.80, random_state=42
     # make lists of random numbers for train and test sets 
     inds = np.arange(df_.shape[0])
 
-    train_inds, test_inds = train_test_split(inds, test_size=1 - train_ratio, stratify=df['rX'])
+    train_inds, test_inds = train_test_split(inds, test_size=1 - train_ratio, stratify=df['rX'], random_state=random_state)
 
     # test data frame
     index_id_test=df_.index[test_inds]
@@ -230,7 +230,13 @@ def create_features_SISSO(df_units, inputs,
     feature_df.to_csv(output_path)
 
 
-def perform_pca(df, variables, target):
+def perform_pca(df, variables, target, train_indices=None):
+  """Perform PCA on the dataset.
+
+  If ``train_indices`` is provided the scaler and PCA are fit **only** on the
+  training rows to avoid data leakage, then the full dataset is transformed.
+  When *None* (default, kept for backward-compat) the entire dataframe is used.
+  """
 
   from sklearn.preprocessing import StandardScaler
   from sklearn.decomposition import PCA
@@ -241,11 +247,19 @@ def perform_pca(df, variables, target):
   df_pca.dropna(inplace=True)
 
   scaler = StandardScaler()
-  df_scaled = scaler.fit_transform(df_pca)
-  df_scaled = pd.DataFrame(df_scaled, columns=df_pca.columns)
-
   pca = PCA()
-  pca.fit(df_scaled)
+
+  if train_indices is not None:
+      # Fit only on training data to prevent leakage
+      train_data = df_pca.iloc[train_indices]
+      scaler.fit(train_data)
+      df_scaled_arr = scaler.transform(df_pca)
+      df_scaled = pd.DataFrame(df_scaled_arr, columns=df_pca.columns, index=df_pca.index)
+      pca.fit(df_scaled.iloc[train_indices])
+  else:
+      df_scaled_arr = scaler.fit_transform(df_pca)
+      df_scaled = pd.DataFrame(df_scaled_arr, columns=df_pca.columns, index=df_pca.index)
+      pca.fit(df_scaled)
 
   component_loadings = pd.DataFrame(pca.components_.T, columns=[f'PC{i+1}' for i in range(len(pca.components_))], index=df_scaled.columns)
 
