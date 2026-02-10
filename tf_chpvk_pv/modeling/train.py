@@ -6,7 +6,12 @@ from tqdm import tqdm
 import numpy as np
 from sklearn import tree, metrics
 from sklearn.model_selection import cross_validate
-from sklearn.calibration import CalibratedClassifierCV 
+from sklearn.calibration import CalibratedClassifierCV
+from sklearn.metrics import (
+    balanced_accuracy_score,
+    classification_report,
+    matthews_corrcoef,
+)
 import pandas as pd
 import matplotlib.pyplot as plt
 import pickle
@@ -280,8 +285,14 @@ def test_tolerance_factor(t, train_df, test_df, tolerance_factor_dict, df_acc=pd
     acc_all = metrics.accuracy_score(all_labels, labels_all_data)
     
     print('Classification tree accuracy (for ' + t + ') on the train set: %f.' % acc_train)
-    print('Classification tree accuracy (for ' + t + ') on the train set (5 fold CV): %f.' % clf1_cv_score)
+    print('Classification tree accuracy (for ' + t + ') on the train set (5 fold CV): %.3f ± %.3f.' % (clf1_cv_score, np.std(clf1_cv['test_score'])))
     print('Classification tree accuracy (for ' + t + ') on the test set: %f.' % acc_test)
+
+    # --- Extended evaluation metrics ---
+    print('\n--- Extended metrics for %s (test set) ---' % t)
+    print('Balanced accuracy: %.3f' % balanced_accuracy_score(labels_test, labels_pred_))
+    print('Matthews correlation coefficient: %.3f' % matthews_corrcoef(labels_test, labels_pred_))
+    print(classification_report(labels_test, labels_pred_, target_names=['unstable', 'stable']))
 
     if n_tresh == 2:
         threshold_=[clf1_model.tree_.threshold[0],clf1_model.tree_.threshold[4]]
@@ -303,12 +314,13 @@ def test_tolerance_factor(t, train_df, test_df, tolerance_factor_dict, df_acc=pd
     df_acc.loc['all_data', t] = acc_all
     
     #get accuracy per X anion with the rX
-    dict_ch = {133:'F',
-            181:'Cl',
-            198:'Se',
-            196.0:'Br',
-            184.0:'S',
-            220.00000000000003:'I'
+    # Integer keys avoid floating-point precision issues (radii in pm)
+    dict_ch = {133: 'F',
+            181: 'Cl',
+            198: 'Se',
+            196: 'Br',
+            184: 'S',
+            220: 'I',
             }
   
         
@@ -324,8 +336,8 @@ def test_tolerance_factor(t, train_df, test_df, tolerance_factor_dict, df_acc=pd
         acc_train_ch = clf1_model.score(x_train_ch.reshape(-1,1),labels_train_ch)
         acc_test_ch = metrics.accuracy_score(labels_test_ch, labels_pred_ch)
         
-        df_acc.loc['train_data_' + dict_ch[rx], t] = acc_train_ch
-        df_acc.loc['test_data_' + dict_ch[rx], t] = acc_test_ch 
+        df_acc.loc['train_data_' + dict_ch[round(rx)], t] = acc_train_ch
+        df_acc.loc['test_data_' + dict_ch[round(rx)], t] = acc_test_ch 
         
     df_acc.loc['5-fold CV', t] = clf1_cv_score
     
@@ -375,8 +387,14 @@ def test_tolerance_factor_Ch(t, train_df, test_df, tolerance_factor_dict, df_acc
     acc_all = metrics.accuracy_score(all_labels, labels_all_data)
     
     print('Classification tree f1 (for ' + t + ') on the train set: %f.' % acc_train)
-    print('Classification tree f1 (for ' + t + ') on the train set (5 fold CV): %f.' % clf1_cv_score)
+    print('Classification tree f1 (for ' + t + ') on the train set (5 fold CV): %.3f ± %.3f.' % (clf1_cv_score, np.std(clf1_cv['test_score'])))
     print('Classification tree f1 (for ' + t + ') on the test set: %f.' % acc_test)
+
+    # --- Extended evaluation metrics ---
+    print('\n--- Extended metrics for %s (test set) ---' % t)
+    print('Balanced accuracy: %.3f' % balanced_accuracy_score(labels_test, labels_pred_))
+    print('Matthews correlation coefficient: %.3f' % matthews_corrcoef(labels_test, labels_pred_))
+    print(classification_report(labels_test, labels_pred_, target_names=['unstable', 'stable']))
 
     if n_tresh == 2:
         threshold_=[clf1_model.tree_.threshold[0],clf1_model.tree_.threshold[4]]
@@ -398,12 +416,13 @@ def test_tolerance_factor_Ch(t, train_df, test_df, tolerance_factor_dict, df_acc
     df_acc.loc['all_data', t] = acc_all
     
     #get accuracy per X anion with the rX
-    dict_ch = {133:'F',
-            181:'Cl',
-            198:'Se',
-            196:'Br',
-            184:'S',
-            220.00000000000003:'I'
+    # Integer keys avoid floating-point precision issues (radii in pm)
+    dict_ch = {133: 'F',
+            181: 'Cl',
+            198: 'Se',
+            196: 'Br',
+            184: 'S',
+            220: 'I',
             }
     
         
@@ -421,8 +440,8 @@ def test_tolerance_factor_Ch(t, train_df, test_df, tolerance_factor_dict, df_acc
         acc_test_ch = metrics.accuracy_score(labels_test_ch, labels_pred_ch)
         
         
-        df_acc.loc['train_data_' + dict_ch[rx], t] = acc_train_ch
-        df_acc.loc['test_data_' + dict_ch[rx], t] = acc_test_ch 
+        df_acc.loc['train_data_' + dict_ch[round(rx)], t] = acc_train_ch
+        df_acc.loc['test_data_' + dict_ch[round(rx)], t] = acc_test_ch 
         
     df_acc.loc['5-fold CV', t] = clf1_cv_score
     
