@@ -56,11 +56,15 @@ dev = [
     "pytest-timeout",
     "ruff",
     "black",
-    "ipykernel",
 ]
-sisso = [
-    "sissopp",
+notebooks = [
+    "ipykernel>=6.29",
+    "ipywidgets",
 ]
+
+# NOTE: sissopp is a compiled Fortran package NOT available on PyPI.
+# Install manually from https://github.com/rouyang2017/SISSO if you need
+# to re-derive SISSO features. Cached features ship in data/interim/features_sisso.csv.
 
 [tool.black]
 line-length = 99
