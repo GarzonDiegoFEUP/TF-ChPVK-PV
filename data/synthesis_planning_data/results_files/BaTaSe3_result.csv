@@ -1,4 +1,0 @@
-,target,reactants,reaction_energy(eV/atom),inverse_hull_energy(eV/atom),reaction,competing phases
-0,BaTaSe3,"['BaSe3', 'Ta']",-0.48056514300005904,-0.10457454695005719,BaSe3 + Ta -> BaTaSe3,"[['BaSe2', 'TaSe3'], 'Ba3Ta2Se9', ['TaSe2', 'BaSe'], ['Ta2Se', 'BaSe']]"
-1,BaTaSe3,"['Ba3Ta2Se9', 'Ta']",-0.12104985549999862,-0.10457454694999857,0.3333 Ba3Ta2Se9 + 0.3333 Ta -> BaTaSe3,"[['TaSe2', 'BaSe'], ['Ta2Se', 'BaSe']]"
-2,BaTaSe3,"['TaSe2', 'BaSe']",-0.00019999999999953386,-0.00019999999999953388,TaSe2 + BaSe -> BaTaSe3,[]

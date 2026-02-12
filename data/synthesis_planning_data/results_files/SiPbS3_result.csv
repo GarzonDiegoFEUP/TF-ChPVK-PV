@@ -1,2 +1,0 @@
-,target,reactants,reaction_energy(eV/atom),inverse_hull_energy(eV/atom),reaction,competing phases
-0,SiPbS3,"['SiS2', 'Si(PbS2)2']",-0.0002000000000030866,-0.0002000000000030866,0.5 SiS2 + 0.5 Si(PbS2)2 -> SiPbS3,[]

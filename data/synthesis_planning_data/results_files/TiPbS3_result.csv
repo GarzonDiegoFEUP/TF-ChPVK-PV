@@ -1,3 +1,0 @@
-,target,reactants,reaction_energy(eV/atom),inverse_hull_energy(eV/atom),reaction,competing phases
-0,TiPbS3,"['TiS', 'PbS2']",-0.2174235850000032,-0.02008935844441684,TiS + PbS2 -> TiPbS3,"[['Ti2S3', 'Pb'], ['Ti2S3', 'PbS'], ['Ti5S8', 'PbS'], ['Ti7S12', 'PbS'], ['TiS2', 'PbS'], ['TiS3', 'PbS']]"
-1,TiPbS3,"['TiS2', 'PbS']",-0.00019999999999953388,-0.00019999999999953388,TiS2 + PbS -> TiPbS3,[]

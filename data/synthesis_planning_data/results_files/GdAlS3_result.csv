@@ -1,3 +1,0 @@
-,target,reactants,reaction_energy(eV/atom),inverse_hull_energy(eV/atom),reaction,competing phases
-0,GdAlS3,"['GdAl', 'S']",-1.7046687202916637,-0.10736094989081746,GdAl + 3 S -> GdAlS3,"[['GdAl2', 'GdS'], ['GdAl3', 'GdS'], ['Al', 'GdS'], ['Gd2S3', 'Al'], ['Gd2S3', 'Al2S3'], ['Gd10S19', 'Al2S3'], ['GdS2', 'Al2S3']]"
-1,GdAlS3,"['Al2S3', 'Gd2S3']",-0.00020000000000237607,-0.0002000000000030866,0.5 Al2S3 + 0.5 Gd2S3 -> GdAlS3,[]

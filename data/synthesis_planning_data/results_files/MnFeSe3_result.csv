@@ -1,3 +1,0 @@
-,target,reactants,reaction_energy(eV/atom),inverse_hull_energy(eV/atom),reaction,competing phases
-0,MnFeSe3,"['MnSe2', 'FeSe']",-0.06799572150000088,-0.06799572150000177,MnSe2 + FeSe -> MnFeSe3,"[['FeSe2', 'MnSe']]"
-1,MnFeSe3,"['FeSe2', 'MnSe']",-0.00019999999999598114,-0.00019999999999598117,FeSe2 + MnSe -> MnFeSe3,[]

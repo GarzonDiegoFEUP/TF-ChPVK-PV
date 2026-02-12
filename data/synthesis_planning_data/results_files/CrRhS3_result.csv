@@ -1,2 +1,0 @@
-,target,reactants,reaction_energy(eV/atom),inverse_hull_energy(eV/atom),reaction,competing phases
-0,CrRhS3,"['Cr2S3', 'Rh2S3']",-0.00019999999999811277,-0.00019999999999775753,0.5 Cr2S3 + 0.5 Rh2S3 -> CrRhS3,[]

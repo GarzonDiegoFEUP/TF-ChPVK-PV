@@ -1,2 +1,0 @@
-,target,reactants,reaction_energy(eV/atom),inverse_hull_energy(eV/atom),reaction,competing phases
-0,BaTaS3,"['TaS2', 'BaS']",-0.022734703000040535,-0.00915806730475488,TaS2 + BaS -> BaTaS3,"[['Ba3(TaS4)2', 'Ta27S50']]"

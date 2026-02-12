@@ -1,3 +1,0 @@
-,target,reactants,reaction_energy(eV/atom),inverse_hull_energy(eV/atom),reaction,competing phases
-0,YBiSe3,"['Se', 'YBi']",-1.0686308909062505,-0.0583984953750365,3 Se + YBi -> YBiSe3,"[['BiSe2', 'YSe2'], ['YSe2', 'Bi2Se3'], ['Y2Se3', 'Bi2Se3'], ['Y2Se3', 'Bi']]"
-1,YBiSe3,"['Y2Se3', 'Bi2Se3']",-0.00019999999999527067,-0.00019999999999686935,0.5 Y2Se3 + 0.5 Bi2Se3 -> YBiSe3,[]

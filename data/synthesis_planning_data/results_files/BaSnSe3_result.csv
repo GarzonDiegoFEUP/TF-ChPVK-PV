@@ -1,3 +1,0 @@
-,target,reactants,reaction_energy(eV/atom),inverse_hull_energy(eV/atom),reaction,competing phases
-0,BaSnSe3,"['SnSe2', 'Ba2SnSe4']",-0.0038655744999914524,-0.0038655744999909203,0.5 SnSe2 + 0.5 Ba2SnSe4 -> BaSnSe3,"[['Ba2SnSe5', 'SnSe']]"
-1,BaSnSe3,"['SnSe', 'Ba2SnSe5']",-0.00019999999992990065,-0.0001999999999293678,0.5 SnSe + 0.5 Ba2SnSe5 -> BaSnSe3,[]

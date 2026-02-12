@@ -1,3 +1,0 @@
-,target,reactants,reaction_energy(eV/atom),inverse_hull_energy(eV/atom),reaction,competing phases
-0,TaPbSe3,"['TaSe3', 'Pb']",-0.19289166950000616,-0.0835756537500103,TaSe3 + Pb -> TaPbSe3,"[['PbSe', 'TaSe2'], ['TaPbSe2', 'PbSe']]"
-1,TaPbSe3,"['PbSe', 'TaSe2']",-0.00019999999999882327,-0.00019999999999953388,PbSe + TaSe2 -> TaPbSe3,[]

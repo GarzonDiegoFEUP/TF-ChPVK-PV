@@ -1,2 +1,0 @@
-,target,reactants,reaction_energy(eV/atom),inverse_hull_energy(eV/atom),reaction,competing phases
-0,CaUS3,"['CaS', 'US2']",-0.00020000000000237612,-0.00020000000000131024,CaS + US2 -> CaUS3,[]

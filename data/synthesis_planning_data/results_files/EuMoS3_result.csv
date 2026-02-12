@@ -1,3 +1,0 @@
-,target,reactants,reaction_energy(eV/atom),inverse_hull_energy(eV/atom),reaction,competing phases
-0,EuMoS3,"['EuS2', 'Eu(Mo3S4)2']",-0.23703268283332193,-0.07490288574999227,0.8333 EuS2 + 0.1667 Eu(Mo3S4)2 -> EuMoS3,"[['Eu3S4', 'MoS2'], ['MoS2', 'EuS']]"
-1,EuMoS3,"['EuS', 'MoS2']",-0.00020000000000237617,-0.00020000000000131024,EuS + MoS2 -> EuMoS3,[]

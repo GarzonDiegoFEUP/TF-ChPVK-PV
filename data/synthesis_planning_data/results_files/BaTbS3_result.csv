@@ -1,3 +1,0 @@
-,target,reactants,reaction_energy(eV/atom),inverse_hull_energy(eV/atom),reaction,competing phases
-0,BaTbS3,"['TbS2', 'BaS']",-0.05237085574999795,-0.006246982999989825,TbS2 + BaS -> BaTbS3,"[['Ba(TbS2)2', 'BaS3'], ['BaS2', 'Ba(TbS2)2']]"
-1,BaTbS3,"['Ba(TbS2)2', 'BaS2']",-0.000199999999993139,-0.00019999999999331664,0.5 Ba(TbS2)2 + 0.5 BaS2 -> BaTbS3,[]

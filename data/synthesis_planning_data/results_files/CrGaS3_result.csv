@@ -1,2 +1,0 @@
-,target,reactants,reaction_energy(eV/atom),inverse_hull_energy(eV/atom),reaction,competing phases
-0,CrGaS3,"['Cr3GaS6', 'Ga2S3']",-0.00019999999998745462,-0.0001999999999862112,0.3333 Cr3GaS6 + 0.3333 Ga2S3 -> CrGaS3,[]

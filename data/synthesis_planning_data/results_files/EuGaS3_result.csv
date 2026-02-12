@@ -1,2 +1,0 @@
-,target,reactants,reaction_energy(eV/atom),inverse_hull_energy(eV/atom),reaction,competing phases
-0,EuGaS3,"['EuS2', 'Eu(GaS2)2']",-0.00020000000001232365,-0.00020000000001285656,0.5 EuS2 + 0.5 Eu(GaS2)2 -> EuGaS3,[]

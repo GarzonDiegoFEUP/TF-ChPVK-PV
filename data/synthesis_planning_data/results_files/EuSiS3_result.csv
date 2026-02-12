@@ -1,3 +1,0 @@
-,target,reactants,reaction_energy(eV/atom),inverse_hull_energy(eV/atom),reaction,competing phases
-0,EuSiS3,"['S', 'EuSi']",-1.3492788383749987,-0.05234876399994093,3 S + EuSi -> EuSiS3,"[['EuS2', 'SiS2'], ['Eu3S4', 'SiS2'], ['Eu2SiS4', 'SiS2'], ['Eu2SiS4', 'Si'], ['Si', 'EuS'], ['EuSi2', 'EuS']]"
-1,EuSiS3,"['SiS2', 'Eu2SiS4']",-0.00019999999999242843,-0.00019999999999331664,0.5 SiS2 + 0.5 Eu2SiS4 -> EuSiS3,[]

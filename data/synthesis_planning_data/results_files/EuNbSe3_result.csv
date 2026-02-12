@@ -1,2 +1,0 @@
-,target,reactants,reaction_energy(eV/atom),inverse_hull_energy(eV/atom),reaction,competing phases
-0,EuNbSe3,"['NbSe2', 'EuSe']",-0.00019999999999527058,-0.000199999999995093,NbSe2 + EuSe -> EuNbSe3,[]

@@ -1,4 +1,0 @@
-,target,reactants,reaction_energy(eV/atom),inverse_hull_energy(eV/atom),reaction,competing phases
-0,SrSiS3,"['SrS3', 'Si']",-0.49027123500001824,-0.49027123500001846,SrS3 + Si -> SrSiS3,"[['Sr2SiS4', 'SiS2']]"
-1,SrSiS3,"['SrSi', 'S']",-1.4324126848749958,-0.16355707833333,SrSi + 3 S -> SrSiS3,"[['SrSi2', 'SrS'], ['Si', 'SrS'], ['Sr2SiS4', 'Si'], ['Sr2SiS4', 'SiS2'], ['SrS3', 'SiS2']]"
-2,SrSiS3,"['Sr2SiS4', 'SiS2']",-0.00020000000001445535,-0.0002000000000155211,0.5 Sr2SiS4 + 0.5 SiS2 -> SrSiS3,[]

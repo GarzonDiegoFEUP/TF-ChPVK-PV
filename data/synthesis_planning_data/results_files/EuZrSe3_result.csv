@@ -1,3 +1,0 @@
-,target,reactants,reaction_energy(eV/atom),inverse_hull_energy(eV/atom),reaction,competing phases
-0,EuZrSe3,"['ZrSe', 'EuSe2']",-0.26090764700000185,-0.06587312266666512,ZrSe + EuSe2 -> EuZrSe3,"[['Zr2Se3', 'EuSe'], ['ZrSe2', 'EuSe'], ['ZrSe3', 'EuSe']]"
-1,EuZrSe3,"['EuSe', 'ZrSe2']",-0.00020000000000663942,-0.00020000000000841567,EuSe + ZrSe2 -> EuZrSe3,[]

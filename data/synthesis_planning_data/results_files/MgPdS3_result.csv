@@ -1,3 +1,0 @@
-,target,reactants,reaction_energy(eV/atom),inverse_hull_energy(eV/atom),reaction,competing phases
-0,MgPdS3,"['MgS2', 'PdS']",-0.09355925775000032,-0.09355925774999996,MgS2 + PdS -> MgPdS3,"[['PdS2', 'MgS']]"
-1,MgPdS3,"['PdS2', 'MgS']",-0.0001999999999988233,-0.0001999999999986457,PdS2 + MgS -> MgPdS3,[]

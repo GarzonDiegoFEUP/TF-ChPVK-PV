@@ -1,2 +1,0 @@
-,target,reactants,reaction_energy(eV/atom),inverse_hull_energy(eV/atom),reaction,competing phases
-0,ZnRuS3,"['RuS2', 'ZnS']",-0.00019999999998958625,-0.0001999999999906521,RuS2 + ZnS -> ZnRuS3,[]

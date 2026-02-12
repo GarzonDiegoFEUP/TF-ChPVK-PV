@@ -1,2 +1,0 @@
-,target,reactants,reaction_energy(eV/atom),inverse_hull_energy(eV/atom),reaction,competing phases
-0,ZnMoS3,"['MoS2', 'ZnS']",-0.00019999999999029678,-0.0001999999999906521,MoS2 + ZnS -> ZnMoS3,[]

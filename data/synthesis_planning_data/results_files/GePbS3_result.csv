@@ -1,3 +1,0 @@
-,target,reactants,reaction_energy(eV/atom),inverse_hull_energy(eV/atom),reaction,competing phases
-0,GePbS3,"['PbS2', 'GeS']",-0.15893601150000305,-0.15893601150000336,PbS2 + GeS -> GePbS3,[]
-1,GePbS3,"['Ge(PbS2)2', 'GeS2']",-0.005907381312500353,-0.0059073813125012364,0.5 Ge(PbS2)2 + 0.5 GeS2 -> GePbS3,[]

@@ -1,2 +1,0 @@
-,target,reactants,reaction_energy(eV/atom),inverse_hull_energy(eV/atom),reaction,competing phases
-0,MgCrSe3,"['CrSe2', 'MgSe']",-0.0001999999999974022,-0.0001999999999986457,CrSe2 + MgSe -> MgCrSe3,[]

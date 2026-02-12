@@ -1,3 +1,0 @@
-,target,reactants,reaction_energy(eV/atom),inverse_hull_energy(eV/atom),reaction,competing phases
-0,BaMoSe3,"['BaSe3', 'Mo']",-0.39331456700005485,-0.1850561240000559,BaSe3 + Mo -> BaMoSe3,"[['BaSe2', 'MoSe2'], ['MoSe2', 'BaSe']]"
-1,BaMoSe3,"['MoSe2', 'BaSe']",-0.0001999999999988233,-0.00019999999999953388,MoSe2 + BaSe -> BaMoSe3,[]

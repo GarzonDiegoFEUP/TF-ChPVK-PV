@@ -1,3 +1,0 @@
-,target,reactants,reaction_energy(eV/atom),inverse_hull_energy(eV/atom),reaction,competing phases
-0,SrGeS3,"['Ge', 'SrS3']",-0.26514740893749644,-0.08753843360416536,Ge + SrS3 -> SrGeS3,"[['GeS', 'Sr2GeS4'], ['Sr2GeS4', 'GeS2']]"
-1,SrGeS3,"['Sr2GeS4', 'GeS2']",-0.00020000000002298187,-0.0002000000000235147,0.5 Sr2GeS4 + 0.5 GeS2 -> SrGeS3,[]

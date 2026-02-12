@@ -1,2 +1,0 @@
-,target,reactants,reaction_energy(eV/atom),inverse_hull_energy(eV/atom),reaction,competing phases
-0,ZnMoSe3,"['ZnSe', 'MoSe2']",-0.00020000000000450772,-0.00020000000000486295,ZnSe + MoSe2 -> ZnMoSe3,[]

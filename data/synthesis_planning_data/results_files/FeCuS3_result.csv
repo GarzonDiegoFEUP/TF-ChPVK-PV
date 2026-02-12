@@ -1,3 +1,0 @@
-,target,reactants,reaction_energy(eV/atom),inverse_hull_energy(eV/atom),reaction,competing phases
-0,FeCuS3,"['FeS', 'CuS2']",-0.12438963066667348,-0.027164315016677598,FeS + CuS2 -> FeCuS3,"[['FeS2', 'Cu'], ['Cu7S4', 'FeS2'], ['FeS2', 'CuS']]"
-1,FeCuS3,"['FeS2', 'CuS']",-0.00020000000000521822,-0.00020000000000486295,FeS2 + CuS -> FeCuS3,[]

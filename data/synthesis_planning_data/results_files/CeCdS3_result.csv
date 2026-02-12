@@ -1,2 +1,0 @@
-,target,reactants,reaction_energy(eV/atom),inverse_hull_energy(eV/atom),reaction,competing phases
-0,CeCdS3,"['CeS2', 'CdS']",-0.00020000000000379713,-0.00020000000000397478,CeS2 + CdS -> CeCdS3,[]

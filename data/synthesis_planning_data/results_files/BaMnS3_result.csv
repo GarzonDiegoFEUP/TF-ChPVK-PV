@@ -1,2 +1,0 @@
-,target,reactants,reaction_energy(eV/atom),inverse_hull_energy(eV/atom),reaction,competing phases
-0,BaMnS3,"['MnS2', 'BaS']",-0.0001999999999988233,-0.00019999999999953388,MnS2 + BaS -> BaMnS3,[]

@@ -1,3 +1,0 @@
-,target,reactants,reaction_energy(eV/atom),inverse_hull_energy(eV/atom),reaction,competing phases
-0,EuPdSe3,"['PdSe', 'EuSe2']",-0.04127426499999841,-0.04127426499999842,PdSe + EuSe2 -> EuPdSe3,"[['PdSe2', 'EuSe']]"
-1,EuPdSe3,"['EuSe', 'PdSe2']",-0.0002000000000094816,-0.00020000000000930385,EuSe + PdSe2 -> EuPdSe3,[]

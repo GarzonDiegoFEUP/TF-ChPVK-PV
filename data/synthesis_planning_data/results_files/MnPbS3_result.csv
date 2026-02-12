@@ -1,3 +1,0 @@
-,target,reactants,reaction_energy(eV/atom),inverse_hull_energy(eV/atom),reaction,competing phases
-0,MnPbS3,"['MnS', 'PbS2']",-0.18008110100000405,-0.08196431949999994,MnS + PbS2 -> MnPbS3,"[['Mn2S3', 'PbS'], ['MnS2', 'PbS']]"
-1,MnPbS3,"['MnS2', 'PbS']",-0.00020000000000521822,-0.00020000000000575113,MnS2 + PbS -> MnPbS3,[]

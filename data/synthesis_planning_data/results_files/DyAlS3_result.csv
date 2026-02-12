@@ -1,3 +1,0 @@
-,target,reactants,reaction_energy(eV/atom),inverse_hull_energy(eV/atom),reaction,competing phases
-0,DyAlS3,"['S', 'DyAl']",-1.7038527539212942,-0.1257218783915457,3 S + DyAl -> DyAlS3,"[['DyS2', 'Al2S3'], ['Dy9Al5S21', 'Al2S3'], ['Dy9Al5S21', 'Al'], ['Dy2S3', 'Al'], ['Dy5S7', 'Al'], ['Dy5S7', 'DyAl3'], ['DyAl3', 'DyS'], ['DyAl2', 'DyS']]"
-1,DyAlS3,"['Al2S3', 'Dy9Al5S21']",-0.00020000000002298165,-0.00020000000002262652,0.2222 Al2S3 + 0.1111 Dy9Al5S21 -> DyAlS3,[]

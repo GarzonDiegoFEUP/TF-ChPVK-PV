@@ -1,2 +1,0 @@
-,target,reactants,reaction_energy(eV/atom),inverse_hull_energy(eV/atom),reaction,competing phases
-0,CaCeSe3,"['CeSe2', 'CaSe']",-0.00020000000000166548,-0.00020000000000131024,CeSe2 + CaSe -> CaCeSe3,[]

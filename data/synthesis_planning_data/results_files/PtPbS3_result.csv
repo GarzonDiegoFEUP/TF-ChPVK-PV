@@ -1,4 +1,0 @@
-,target,reactants,reaction_energy(eV/atom),inverse_hull_energy(eV/atom),reaction,competing phases
-0,PtPbS3,"['PbS2', 'PtS']",-0.08784975699999575,-0.08784975699999542,PbS2 + PtS -> PtPbS3,"[['PtS2', 'PbS']]"
-1,PtPbS3,"['S', 'PtPb']",-0.6327846348749996,-0.04402487850000103,3 S + PtPb -> PtPbS3,"[['PbS2', 'PtS2'], ['PtS2', 'PbS'], ['PbS', 'PtS']]"
-2,PtPbS3,"['PtS2', 'PbS']",-0.00020000000000095497,-0.00020000000000042206,PtS2 + PbS -> PtPbS3,[]

@@ -1,3 +1,0 @@
-,target,reactants,reaction_energy(eV/atom),inverse_hull_energy(eV/atom),reaction,competing phases
-0,MnPbSe3,"['PbSe2', 'MnSe']",-0.06901489149999449,-0.06901489149999485,PbSe2 + MnSe -> MnPbSe3,"[['MnSe2', 'PbSe']]"
-1,MnPbSe3,"['PbSe', 'MnSe2']",-0.00019999999999669165,-0.00019999999999775753,PbSe + MnSe2 -> MnPbSe3,[]

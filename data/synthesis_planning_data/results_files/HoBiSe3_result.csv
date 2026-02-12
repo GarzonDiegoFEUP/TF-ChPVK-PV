@@ -1,3 +1,0 @@
-,target,reactants,reaction_energy(eV/atom),inverse_hull_energy(eV/atom),reaction,competing phases
-0,HoBiSe3,"['Se', 'HoBi']",-1.0850697649062506,-0.0377150814545395,3 Se + HoBi -> HoBiSe3,"[['BiSe2', 'HoSe2'], ['Ho6Se11', 'BiSe2'], ['Ho6Se11', 'Bi2Se3'], ['Ho2Se3', 'Bi2Se3'], ['Ho2Se3', 'Bi']]"
-1,HoBiSe3,"['Bi2Se3', 'Ho2Se3']",-0.00019999999998177023,-0.00019999999998177032,0.5 Bi2Se3 + 0.5 Ho2Se3 -> HoBiSe3,[]
