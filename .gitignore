@@ -1,5 +1,5 @@
 # Data
-#/data/
+/data/crystallm/ICSD_files
 
 # Mac OS-specific storage files
 .DS_Store
@@ -20,6 +20,8 @@ __pycache__/
 
 # Distribution / packaging
 .Python
+.conda
+.vscode
 build/
 develop-eggs/
 dist/

@@ -1,0 +1,74 @@
+
+#(C) 2025 by FIZ Karlsruhe - Leibniz Institute for Information Infrastructure.  All rights reserved.
+data_23288-ICSD
+_database_code_ICSD 23288
+_audit_creation_date 1980-12-31
+_audit_update_record 2019-08-01
+_chemical_name_common 'Barium trithiozirconate'
+_chemical_formula_structural 'Ba (Zr S3)'
+_chemical_formula_sum 'Ba1 S3 Zr1'
+_chemical_name_structure_type GdFeO3
+_exptl_crystal_density_diffrn 4.36
+_diffrn_ambient_temperature 300.
+_citation_title 'Sulphides with the GdFeO3 structure'
+loop_
+_citation_id
+_citation_journal_full
+_citation_year
+_citation_journal_volume
+_citation_page_first
+_citation_page_last
+_citation_journal_id_ASTM
+primary
+
+;
+Acta Crystallographica, Section B: Structural Crystallography and Crystal
+Chemistry
+; 1980 36 2223 2226 ACBCAR
+loop_
+_citation_author_citation_id
+_citation_author_name
+primary 'Lelieveld, R.'
+primary 'Ijdo, D.J.W.'
+_cell_length_a 7.0599(8)
+_cell_length_b 9.9813(17)
+_cell_length_c 7.0251(12)
+_cell_angle_alpha 90.
+_cell_angle_beta 90.
+_cell_angle_gamma 90.
+_cell_volume 495.04
+_cell_formula_units_Z 4
+_space_group_name_H-M_alt 'P n m a'
+_space_group_IT_number 62
+loop_
+_space_group_symop_id
+_space_group_symop_operation_xyz
+1 'x+1/2, y, -z+1/2'
+2 'x, -y+1/2, z'
+3 '-x+1/2, y+1/2, z+1/2'
+4 '-x, -y, -z'
+5 '-x+1/2, -y, z+1/2'
+6 '-x, y+1/2, -z'
+7 'x+1/2, -y+1/2, -z+1/2'
+8 'x, y, z'
+loop_
+_atom_type_symbol
+_atom_type_oxidation_number
+Ba2+ 2
+Zr4+ 4
+S2- -2
+loop_
+_atom_site_label
+_atom_site_type_symbol
+_atom_site_symmetry_multiplicity
+_atom_site_Wyckoff_symbol
+_atom_site_fract_x
+_atom_site_fract_y
+_atom_site_fract_z
+_atom_site_B_iso_or_equiv
+_atom_site_occupancy
+Ba1 Ba2+ 4 c 0.0376(5) 0.25 0.0069(16) 1.12 1.
+Zr1 Zr4+ 4 b 0 0 0.5 0.76 1.
+S1 S2- 4 c -0.0045(13) 0.25 0.5614(21) 0.69 1.
+S2 S2- 8 d 0.2155(14) -0.0293(9) 0.7869(12) 0.98 1.
+#End of TTdata_23288-ICSD
