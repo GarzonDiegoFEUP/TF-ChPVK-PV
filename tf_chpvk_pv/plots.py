@@ -574,7 +574,12 @@ def confusion_matrix_plot(df, test=True):
     cm = confusion_matrix(y_true, y_pred)
 
     plt.figure(figsize=(6, 4))
-    sns.heatmap(cm, annot=True, fmt='d', cmap='Blues',
+    if test:
+        sns.heatmap(cm, annot=True, fmt='d', cmap='Greens',
+                xticklabels=['Negative', 'Positive'],
+                yticklabels=['Negative', 'Positive'], vmax=35, vmin=0)
+    else:
+        sns.heatmap(cm, annot=True, fmt='d', cmap='Greens',
                 xticklabels=['Negative', 'Positive'],
                 yticklabels=['Negative', 'Positive'])
 
@@ -585,7 +590,7 @@ def confusion_matrix_plot(df, test=True):
     else:
         plt.title('Confusion Matrix - Train Set')
 
-    plt.savefig(FIGURES_DIR / f'confusion_matrix_{"test" if test else "train"}.png', dpi=600)
+    plt.savefig(FIGURES_DIR / f'confusion_matrix_{"test" if test else "train"}.png', dpi=600, bbox_inches='tight')
     plt.show()
 
 def normalize_abx3(formula):
@@ -968,6 +973,57 @@ def plot_PCA(df_scaled, df_pca, original_df, component_loadings, pca, pc1 = 1, p
   plt.savefig(FIGURES_DIR / name_file, dpi=600, bbox_inches='tight')
 
   plt.show()
+
+def corr_matrix(df, metrics, dict_labels):
+
+    # Correlation matrix for scoring metrics
+    import matplotlib.pyplot as plt
+    import seaborn as sns
+
+    sns.set_context('talk')
+
+    # Select metrics for correlation analysis (exclude BG_Deviation - it's derived from Bandgap)
+    metrics_for_corr = metrics
+    available_metrics = [m for m in metrics_for_corr if m in df.columns]
+
+    # Create correlation matrix
+    corr_data = df[available_metrics].dropna()
+    corr_matrix = corr_data.corr()
+
+    # Rename for display
+    corr_matrix_display = corr_matrix.rename(index=dict_labels, columns=dict_labels)
+
+    # Create heatmap
+    fig, ax = plt.subplots(figsize=(10, 8))
+
+    # Custom colormap centered at 0
+    sns.heatmap(corr_matrix_display, 
+                annot=True, 
+                #fmt='.3f', 
+                cmap='RdBu_r',
+                center=0,
+                vmin=-1, 
+                vmax=1,
+                square=True,
+                linewidths=0.5,
+                ax=ax)
+
+    plt.savefig(RESULTS_DIR / 'metric_correlation_matrix.png', dpi=150, bbox_inches='tight')
+    plt.show()
+    
+    # Interpretation
+    print("\nInterpretation:")
+    print("-" * 55)
+    for i, m1 in enumerate(available_metrics):
+        for m2 in available_metrics[i+1:]:
+            r = corr_matrix.loc[m1, m2]
+            strength = "weak" if abs(r) < 0.3 else "moderate" if abs(r) < 0.6 else "strong"
+            direction = "positive" if r > 0 else "negative"
+            orthogonal = " → ORTHOGONAL" if abs(r) < 0.3 else ""
+            print(f"  {dict_labels.get(m1, m1)} vs {dict_labels.get(m2, m2)}: r = {r:.3f} ({strength} {direction}){orthogonal}")
+
+    print("\n✓ Low correlations indicate metrics capture independent material properties")
+
 
 
 if __name__ == "__main__":
