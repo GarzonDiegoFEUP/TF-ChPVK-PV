@@ -2,7 +2,7 @@
 
 **ML-guided screening of chalcogenide perovskites as solar energy materials**
 
-[![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
+[![Python 3.8.2](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 This repository contains the datasets, analysis notebooks, and source code for the paper:
@@ -33,14 +33,14 @@ pipeline that integrates:
    Index (HHI) ([USGS, 2025](https://doi.org/10.5066/P13XCP3R)), ESG scores
    ([World Bank, 2023](https://datacatalog.worldbank.org/search/dataset/0037651)),
    and supply risk metrics.
-5. **Synthesizability assessment** — crystal-likeness scoring via a pre-trained GCNN model
+5. **Experimental plausibility assessment** — crystal-likeness scoring via a pre-trained GCNN model
    ([Gu et al., 2022](https://doi.org/10.1038/s41524-022-00757-z);
-   [Jang et al., 2020](https://doi.org/10.1021/jacs.0c07384)) for experimental
-   plausibility.
+   [Jang et al., 2020](https://doi.org/10.1021/jacs.0c07384)) for synthesizability
+   likelihood.
 
 ## Installation
 
-**Requirements:** Python ≥ 3.10, CUDA-capable GPU recommended (for CrabNet training).
+**Requirements:** Python <= 3.8.20.
 
 ### Using uv (recommended)
 
@@ -84,11 +84,6 @@ The SISSO features are cached in `data/interim/features_sisso.csv`, so most user
 [sissopp](https://github.com/rouyang2017/SISSO) manually **after** setting up the
 environment:
 
-```bash
-# After uv sync / make install:
-pip install sissopp   # or build from source per the SISSO repo instructions
-```
-
 ### Environment variables
 
 Some notebooks query the [Materials Project API](https://materialsproject.org/api).
@@ -112,14 +107,14 @@ The analysis is organized as a sequential pipeline. Run notebooks in order:
 
 | # | Notebook | Description |
 |---|----------|-------------|
+| 0 | `0. Figures paper.ipynb` | Generate all publication figures |
 | 1 | `1. get_SISSO_features.ipynb` | Dataset creation, SISSO feature generation, tolerance factor training and evaluation, Platt scaling, compositional screening |
-| 1.1 | `1.1 Decide_ops.ipynb` | Ablation study: SISSO operator sets, Turnley vs Shannon radii |
 | 2 | `2. CrystaLLM_analysis.ipynb` | Parse CrystaLLM-generated CIF files, crystal-likeness scoring, corner-sharing vs edge-sharing classification |
 | 3 | `3. Synthesis_path.ipynb` | Synthesis pathway prediction via convex hull analysis (Materials Project) |
 | 3.1 | `3.1 Synthetizability.ipynb` | GCNN-based synthesizability assessment (crystal-likeness scores) |
 | 4 | `4. crabnet_bandgap_prediction.ipynb` | CrabNet bandgap model: training, evaluation, predictions for all candidates |
 | 5 | `5. HHI_calculation.ipynb` | Sustainability analysis: HHI, supply risk, ESG scoring |
-| 0 | `0. Figures paper.ipynb` | Generate all publication figures |
+
 
 ## Project Organization
 
