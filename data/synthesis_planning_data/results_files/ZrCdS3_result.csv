@@ -1,0 +1,4 @@
+,target,reactants,reaction_energy(eV/atom),inverse_hull_energy(eV/atom),reaction,competing phases
+0,ZrCdS3,"['ZrS3', 'Cd']",-0.2027447709999884,-0.20274477099998744,ZrS3 + Cd -> ZrCdS3,"[['ZrS2', 'CdS']]"
+1,ZrCdS3,"['ZrS', 'CdS2']",-0.39343672400000657,-0.06771492366667697,ZrS + CdS2 -> ZrCdS3,"[['Zr3S4', 'Cd'], ['ZrS2', 'Cd'], ['ZrS2', 'CdS'], ['ZrS3', 'CdS']]"
+2,ZrCdS3,"['ZrS2', 'CdS']",-0.00019999999999882335,-0.0001999999999986457,ZrS2 + CdS -> ZrCdS3,[]

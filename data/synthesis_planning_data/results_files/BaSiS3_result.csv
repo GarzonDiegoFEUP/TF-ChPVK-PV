@@ -1,0 +1,4 @@
+,target,reactants,reaction_energy(eV/atom),inverse_hull_energy(eV/atom),reaction,competing phases
+0,BaSiS3,"['Si', 'BaS3']",-0.4839795472499965,-0.48397954724999703,Si + BaS3 -> BaSiS3,"[['Ba2SiS4', 'SiS2']]"
+1,BaSiS3,"['S', 'BaSi']",-1.4775903881249985,-0.16145984908333588,3 S + BaSi -> BaSiS3,"[['BaS3', 'SiS2'], ['Ba2SiS4', 'SiS2'], ['Ba2SiS4', 'Si'], ['Ba3SiS5', 'Si'], ['Si', 'BaS'], ['Ba6Si25', 'BaS'], ['BaSi2', 'BaS'], ['Ba3Si4', 'BaS']]"
+2,BaSiS3,"['Ba2SiS4', 'SiS2']",-0.00019999999999456016,-0.000199999999995093,0.5 Ba2SiS4 + 0.5 SiS2 -> BaSiS3,[]

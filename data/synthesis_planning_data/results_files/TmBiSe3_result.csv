@@ -1,0 +1,3 @@
+,target,reactants,reaction_energy(eV/atom),inverse_hull_energy(eV/atom),reaction,competing phases
+0,TmBiSe3,"['TmBi', 'Se']",-1.1009885891562505,-0.06502892062502053,TmBi + 3 Se -> TmBiSe3,"[['Tm2Se3', 'Bi'], ['Tm2Se3', 'Bi2Se3'], ['BiSe2', 'Tm2Se3'], ['TmSe2', 'BiSe2']]"
+1,TmBiSe3,"['Bi2Se3', 'Tm2Se3']",-0.0001999999999824808,-0.0001999999999826585,0.5 Bi2Se3 + 0.5 Tm2Se3 -> TmBiSe3,[]

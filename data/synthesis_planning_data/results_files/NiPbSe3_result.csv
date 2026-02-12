@@ -1,0 +1,2 @@
+,target,reactants,reaction_energy(eV/atom),inverse_hull_energy(eV/atom),reaction,competing phases
+0,NiPbSe3,"['PbSe', 'NiSe2']",-0.0002000000000009549,-0.00020000000000042206,PbSe + NiSe2 -> NiPbSe3,[]

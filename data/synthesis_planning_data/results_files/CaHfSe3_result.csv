@@ -1,0 +1,2 @@
+,target,reactants,reaction_energy(eV/atom),inverse_hull_energy(eV/atom),reaction,competing phases
+0,CaHfSe3,"['CaSe', 'HfSe2']",-0.0002000000000059288,-0.0002000000000066393,CaSe + HfSe2 -> CaHfSe3,[]

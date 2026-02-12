@@ -1,0 +1,2 @@
+,target,reactants,reaction_energy(eV/atom),inverse_hull_energy(eV/atom),reaction,competing phases
+0,MgTiSe3,"['MgSe', 'TiSe2']",-0.00020000000000024452,-0.00020000000000042206,MgSe + TiSe2 -> MgTiSe3,[]

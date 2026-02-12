@@ -1,0 +1,3 @@
+,target,reactants,reaction_energy(eV/atom),inverse_hull_energy(eV/atom),reaction,competing phases
+0,ZnPtS3,"['S', 'ZnPt']",-0.6101719930178591,-0.14757890262499984,3 S + ZnPt -> ZnPtS3,"[['PtS2', 'ZnS'], ['PtS', 'ZnS']]"
+1,ZnPtS3,"['PtS2', 'ZnS']",-0.00019999999999669168,-0.00019999999999686935,PtS2 + ZnS -> ZnPtS3,[]
