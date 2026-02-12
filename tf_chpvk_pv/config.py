@@ -22,11 +22,10 @@ SUSTAINABILITY_DATA_DIR = DATA_DIR / "sustainability_data"
 
 MODELS_DIR = PROJ_ROOT / "models"
 TREES_DIR = MODELS_DIR / "trees"
-RESULTS_DIR = MODELS_DIR/ "results"
+RESULTS_DIR = MODELS_DIR / "results"
 
 REPORTS_DIR = PROJ_ROOT / "reports"
 FIGURES_DIR = REPORTS_DIR / "figures"
-RESULTS_DIR = MODELS_DIR/ "results"
 SYNTHESIS_FIG_DIR = FIGURES_DIR / "synthesis_planning"
 
 NOTEBOOKS_DIR = PROJ_ROOT / "notebooks"
