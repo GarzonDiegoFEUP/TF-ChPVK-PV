@@ -7,7 +7,7 @@ from tqm import tqdm
 import pandas as pd
 import numpy as np
 
-from tf_chpvk_pv.config import PROCESSED_DATA_DIR, RAW_DATA_DIR, INTERIM_DATA_DIR, BANDGAP_DATA_DIR
+from tf_chpvk_pv.config import PROCESSED_DATA_DIR, RAW_DATA_DIR, INTERIM_DATA_DIR, BANDGAP_DATA_DIR, ANION_RADII
 
 app = typer.Typer()
 
@@ -452,15 +452,7 @@ def generate_compositions(element_symbols, cation_oxidation_states=[2, 3, 4], an
 
         #correct rX values
 
-        dict_ch = {'F':133,
-                   'Cl':181,
-                   'Se':198,
-                   'Br':196.0,
-                   'S':184.0,
-                   'I':220.00000000000003
-                   }
-
-        df['rX'] = df['X'].map(dict_ch)
+        df['rX'] = df['X'].map(ANION_RADII)
 
         df['rA_S'] = df.rA.copy()
         df['rB_S'] = df.rB.copy()

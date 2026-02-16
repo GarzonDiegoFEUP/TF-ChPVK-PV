@@ -35,6 +35,20 @@ TRAINED_MODELS = MODEL_CRABNET_DIR / "trained_models"
 # Random seed
 RANDOM_SEED = 187636123
 
+# Chalcogenide/halide ionic radii mappings (rX values in picometers)
+# Symbol to radii mapping
+ANION_RADII = {
+    'F': 133.0,
+    'Cl': 181.0,
+    'Se': 198.0,
+    'Br': 196.0,
+    'S': 184.0,
+    'I': 220.00000000000003
+}
+
+# Radii to symbol mapping (inverse)
+RADII_TO_ANION = {v: k for k, v in ANION_RADII.items()}
+
 # Primary features to use
 
 # If tqdm is installed, configure loguru with tqdm.write

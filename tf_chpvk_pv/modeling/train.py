@@ -12,7 +12,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import pickle
 
-from tf_chpvk_pv.config import PROCESSED_DATA_DIR, INTERIM_DATA_DIR, TREES_DIR, RESULTS_DIR
+from tf_chpvk_pv.config import PROCESSED_DATA_DIR, INTERIM_DATA_DIR, TREES_DIR, RESULTS_DIR, RADII_TO_ANION
 
 app = typer.Typer()
 
@@ -394,13 +394,7 @@ def test_tolerance_factor(t: str, train_df: pd.DataFrame, test_df: pd.DataFrame,
     df_acc.loc['all_data', t] = acc_all
     
     #get accuracy per X anion with the rX
-    dict_ch = {133.0:'F',
-            181.0:'Cl',
-            198.0:'Se',
-            196.0:'Br',
-            184.0:'S',
-            220.00000000000003:'I'
-            }
+    dict_ch = RADII_TO_ANION
   
         
     for rx in train_df.rX.unique():
@@ -510,13 +504,7 @@ def test_tolerance_factor_Ch(t: str, train_df: pd.DataFrame, test_df: pd.DataFra
     df_acc.loc['all_data', t] = acc_all
     
     #get accuracy per X anion with the rX
-    dict_ch = {133.0:'F',
-            181.0:'Cl',
-            198.0:'Se',
-            196.0:'Br',
-            184.0:'S',
-            220.00000000000003:'I'
-            }
+    dict_ch = RADII_TO_ANION
     
         
     for rx in train_df.rX.unique():
