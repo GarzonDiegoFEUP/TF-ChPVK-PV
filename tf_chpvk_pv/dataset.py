@@ -3,7 +3,7 @@ from typing import List, Optional, Tuple
 
 import typer
 from loguru import logger
-from tqdm import tqdm
+from tqm import tqdm
 import pandas as pd
 import numpy as np
 

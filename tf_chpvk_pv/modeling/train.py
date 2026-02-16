@@ -47,7 +47,7 @@ def main():
 
     logger.success("Modeling evaluation complete.")
 
-    train_platt_scaling(train_df, test_df, tolerance_factor_dict, clfs['t_sisso'])
+    train_platt_scaling(train_df, test_df, clfs['t_sisso'])
 
 
 def train_platt_scaling(train_df: pd.DataFrame, test_df: pd.DataFrame, clf_t: Any, t: str = 't_sisso',
@@ -394,9 +394,9 @@ def test_tolerance_factor(t: str, train_df: pd.DataFrame, test_df: pd.DataFrame,
     df_acc.loc['all_data', t] = acc_all
     
     #get accuracy per X anion with the rX
-    dict_ch = {133:'F',
-            181:'Cl',
-            198:'Se',
+    dict_ch = {133.0:'F',
+            181.0:'Cl',
+            198.0:'Se',
             196.0:'Br',
             184.0:'S',
             220.00000000000003:'I'
@@ -510,11 +510,11 @@ def test_tolerance_factor_Ch(t: str, train_df: pd.DataFrame, test_df: pd.DataFra
     df_acc.loc['all_data', t] = acc_all
     
     #get accuracy per X anion with the rX
-    dict_ch = {133:'F',
-            181:'Cl',
-            198:'Se',
-            196:'Br',
-            184:'S',
+    dict_ch = {133.0:'F',
+            181.0:'Cl',
+            198.0:'Se',
+            196.0:'Br',
+            184.0:'S',
             220.00000000000003:'I'
             }
     
