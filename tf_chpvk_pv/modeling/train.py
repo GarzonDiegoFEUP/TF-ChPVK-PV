@@ -18,7 +18,6 @@ app = typer.Typer()
 
 @app.command()
 def main():
-    # ---- REPLACE THIS WITH YOUR OWN CODE ----
     t_sisso_expression = train_tree_sis_features()
     logger.success("Modeling training complete.")
 
@@ -40,7 +39,6 @@ def main():
     logger.success("Modeling evaluation complete.")
 
     train_platt_scaling(train_df, test_df, tolerance_factor_dict, clfs['t_sisso'])
-    # -----------------------------------------
 
 
 def train_platt_scaling(train_df, test_df, clf_t, t='t_sisso',
@@ -72,9 +70,7 @@ def train_tree_sis_features(
     train_data_path: Path = PROCESSED_DATA_DIR / "chpvk_train_dataset.csv",
     test_data_path: Path = PROCESSED_DATA_DIR / "chpvk_test_dataset.csv",
 ):
-    # ---- REPLACE THIS WITH YOUR OWN CODE ----
     logger.info("Training tree model with SISSO features...")
-    # -----------------------------------------
 
     #train classification trees for the selected descriptors
     train_df = pd.read_csv(train_data_path, index_col=0)
@@ -120,9 +116,7 @@ def train_tree_sis_features_Ch(
     train_data_path: Path = PROCESSED_DATA_DIR / "chpvk_train_dataset.csv",
     test_data_path: Path = PROCESSED_DATA_DIR / "chpvk_test_dataset.csv",
 ):
-    # ---- REPLACE THIS WITH YOUR OWN CODE ----
     logger.info("Training tree model with SISSO features...")
-    # -----------------------------------------
 
     #train classification trees for the selected descriptors
     train_df = pd.read_csv(train_data_path, index_col=0)

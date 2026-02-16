@@ -14,11 +14,10 @@ app = typer.Typer()
 
 @app.command()
 def main():
-    # ---- REPLACE THIS WITH YOUR OWN CODE ----
+    
     
     run_SISSO_model()
     
-    # -----------------------------------------
 
 def run_SISSO_model(input_path: Path = PROCESSED_DATA_DIR / "chpvk_dataset.csv",
                     output_path: Path = INTERIM_DATA_DIR / "features_sisso.csv",):

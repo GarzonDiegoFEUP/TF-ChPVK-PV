@@ -13,8 +13,7 @@ app = typer.Typer()
 
 @app.command()
 def main():
-    # ---- REPLACE THIS WITH YOUR OWN CODE ----
-
+    
     create_dataset()
     train_test_split_()
 
@@ -223,9 +222,9 @@ def train_test_split_(ratio_splitting=0.8,
     
     from sklearn.model_selection import train_test_split
 
-    # ---- REPLACE THIS WITH YOUR OWN CODE ----
+    
     logger.info("Creating train and test dataset...")
-    # -----------------------------------------
+    
 
     df = pd.read_csv(input_path, index_col=0)
     
