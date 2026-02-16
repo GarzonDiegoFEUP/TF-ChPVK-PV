@@ -169,7 +169,7 @@ def create_dataset(input_path: Path = RAW_DATA_DIR / "shuffled_dataset_chalcogen
                 try:
                     df.loc[idx, 'rB'] = rB_
 
-                except:
+                except ValueError:
                     df.loc[idx, 'rB'] = rB_[0]
 
             #rX_ = radii.loc[radii.ION  == X + nX_, 'Ionic Radius'].values
@@ -437,7 +437,7 @@ def generate_compositions(element_symbols, cation_oxidation_states=[2, 3, 4], an
             try:
                 df.loc[idx, 'rB'] = rB_
 
-            except:
+            except ValueError:
                 df.loc[idx, 'rB'] = rB_[0]
 
         #rX_ = radii.loc[radii.ION  == X + nX_, 'Ionic Radius'].values
@@ -573,7 +573,7 @@ def curated_bandgap_db_semicon(input_path: Path = BANDGAP_DATA_DIR / 'Bandgap.cs
                 return True
             else:
                 return False
-        except:
+        except (ValueError, SyntaxError):
             print('Error with row:', row)
             return False
     
@@ -585,7 +585,7 @@ def curated_bandgap_db_semicon(input_path: Path = BANDGAP_DATA_DIR / 'Bandgap.cs
                 return False
             else:
                 return True
-        except:
+        except (ValueError, SyntaxError):
             print('Error with row:', row)
             return False
         
@@ -611,7 +611,7 @@ def curated_bandgap_db_semicon(input_path: Path = BANDGAP_DATA_DIR / 'Bandgap.cs
         try:
             row_dict = ast.literal_eval(row)
             return row_dict
-        except:
+        except (ValueError, SyntaxError):
             print('Error with row:', row)
             return None
         
