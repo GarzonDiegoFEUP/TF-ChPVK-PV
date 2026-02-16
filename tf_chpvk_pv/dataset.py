@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import List, Optional, Tuple
 
 import typer
 from loguru import logger
@@ -13,7 +14,14 @@ app = typer.Typer()
 
 @app.command()
 def main():
-    
+    """CLI entry point for the dataset creation pipeline.
+
+    Orchestrates the complete dataset preparation workflow:
+    1. Creates the processed chalcogenide perovskite dataset with corrected ionic radii
+    2. Splits data into train/test sets (80/20) stratified by anion type
+    3. Generates new valid perovskite compositions from element combinations
+    4. Curates the semiconductor bandgap database for S/Se compounds
+    """
     create_dataset()
     train_test_split_()
 
@@ -32,8 +40,25 @@ def create_dataset(input_path: Path = RAW_DATA_DIR / "shuffled_dataset_chalcogen
                    output_path: Path = PROCESSED_DATA_DIR / "chpvk_dataset.csv",
                    new_radii_path: Path = RAW_DATA_DIR / "Expanded_Shannon_Effective_Ionic_Radii.csv",
                    turnley_radii_path: Path = RAW_DATA_DIR / "Turnley_Ionic_Radii.xlsx",
-                   use_turnley_radii: bool = True):
-    
+                   use_turnley_radii: bool = True) -> pd.DataFrame:
+    """Process raw chalcogenide perovskite data into a feature-enriched dataset.
+
+    Loads the raw perovskite dataset and enriches it with corrected ionic radii
+    (using Turnley or Shannon radii), electronegativity ratios, and atomic orbital
+    features (HOMO, LUMO, EA, IP, orbital radii) for A, B, and X site ions.
+
+    Args:
+        input_path: Path to the raw shuffled chalcogenide perovskite CSV.
+        output_path: Path where the processed dataset will be saved.
+        new_radii_path: Path to expanded Shannon ionic radii data.
+        turnley_radii_path: Path to Turnley ionic radii Excel file.
+        use_turnley_radii: If True, use Turnley radii for Br, I, S, Se compounds;
+            otherwise use Shannon radii.
+
+    Returns:
+        pd.DataFrame: Processed dataset with ionic radii, electronegativity
+            features, and atomic orbital properties.
+    """
     from pymatgen.core import Composition, periodic_table
 
     
@@ -214,12 +239,25 @@ def create_dataset(input_path: Path = RAW_DATA_DIR / "shuffled_dataset_chalcogen
     return df
 
 
-def train_test_split_(ratio_splitting=0.8, 
+def train_test_split_(ratio_splitting: float = 0.8, 
                      input_path: Path = PROCESSED_DATA_DIR / "chpvk_dataset.csv",
                      output_train_path: Path = PROCESSED_DATA_DIR / "chpvk_train_dataset.csv",
-                     output_test_path: Path = PROCESSED_DATA_DIR / "chpvk_test_dataset.csv"):
-    
-    
+                     output_test_path: Path = PROCESSED_DATA_DIR / "chpvk_test_dataset.csv") -> Tuple[pd.DataFrame, pd.DataFrame]:
+    """Split the processed dataset into stratified train and test sets.
+
+    Performs an 80/20 train/test split stratified by anion radius (rX) to ensure
+    balanced representation of different anion types in both sets. Saves the
+    resulting DataFrames and index arrays for reproducibility.
+
+    Args:
+        ratio_splitting: Fraction of data to use for training (default 0.8).
+        input_path: Path to the processed dataset CSV.
+        output_train_path: Path to save the training set CSV.
+        output_test_path: Path to save the test set CSV.
+
+    Returns:
+        tuple[pd.DataFrame, pd.DataFrame]: Training and test DataFrames.
+    """
     from sklearn.model_selection import train_test_split
 
     
@@ -611,9 +649,23 @@ def curated_bandgap_db_semicon(input_path: Path = BANDGAP_DATA_DIR / 'Bandgap.cs
     return df_result
 
 
-def get_perovskite_data_NOMAD(import_new_pvk_data = False,
-                               output_path: Path = RAW_DATA_DIR / 'perovskite_bandgap_devices.csv'):
-    
+def get_perovskite_data_NOMAD(import_new_pvk_data: bool = False,
+                               output_path: Path = RAW_DATA_DIR / 'perovskite_bandgap_devices.csv') -> None:
+    """Query perovskite bandgap data from the NOMAD database API.
+
+    Fetches solar cell material entries from the NOMAD repository, extracting
+    bandgap values and chemical formulas. Results are cached to CSV to avoid
+    repeated API calls.
+
+    Args:
+        import_new_pvk_data: If True, query fresh data from NOMAD API;
+            if False, load from cached CSV file.
+        output_path: Path to save/load the perovskite bandgap data CSV.
+
+    Returns:
+        None: Data is saved to output_path when import_new_pvk_data is True,
+            or loaded and printed when False.
+    """
     if import_new_pvk_data:
 
         from time import monotonic

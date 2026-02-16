@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import Any, List, Optional, Tuple, Union
 
 import typer
 from loguru import logger
@@ -11,6 +12,11 @@ from tf_chpvk_pv.config import PROCESSED_DATA_DIR, RAW_DATA_DIR, INTERIM_DATA_DI
 app = typer.Typer()
 @app.command()
 def main():
+    """CLI entry point demonstrating CrabNet data processing.
+
+    Example workflow showing raw data loading, processing, and bandgap
+    normalization for the CrabNet model training pipeline.
+    """
     logger.info("Loading raw data...")
     raw_data_path = RAW_DATA_DIR / "chpvk_pv_data.csv"
     df = pd.read_csv(raw_data_path)
@@ -32,7 +38,24 @@ def get_raw_data(input_path_pvk: Path = RAW_DATA_DIR / "perovskite_bandgap_devic
              input_path_chalc_semicon: Path = RAW_DATA_DIR / "chalcogen_semicon_bandgap.csv",
              output_path: Path = PROCESSED_DATA_DIR / "chpvk_dataset.csv",
              new_radii_path: Path = RAW_DATA_DIR / "Expanded_Shannon_Effective_Ionic_Radii.csv",
-             turnley_radii_path: Path = RAW_DATA_DIR / "Turnley_Ionic_Radii.xlsx",):
+             turnley_radii_path: Path = RAW_DATA_DIR / "Turnley_Ionic_Radii.xlsx",) -> pd.DataFrame:
+    """Combine and process bandgap data from multiple sources for CrabNet training.
+
+    Merges perovskite device data, chalcogenide perovskite data, and general
+    chalcogenide semiconductor bandgap data. Filters for valid bandgaps > 1 eV
+    and removes outliers using median-based filtering.
+
+    Args:
+        input_path_pvk: Path to halide perovskite bandgap data.
+        input_path_chalcogenides: Path to chalcogenide perovskite bandgap data.
+        input_path_chalc_semicon: Path to chalcogenide semiconductor bandgap data.
+        output_path: Path for processed output (not used in current implementation).
+        new_radii_path: Path to expanded Shannon ionic radii data.
+        turnley_radii_path: Path to Turnley ionic radii Excel file.
+
+    Returns:
+        pd.DataFrame: Combined and filtered bandgap dataset with source labels.
+    """
 
     
     df_pvk = pd.read_csv(input_path_pvk)
@@ -73,81 +96,115 @@ def get_raw_data(input_path_pvk: Path = RAW_DATA_DIR / "perovskite_bandgap_devic
 
 def save_processed_data(df: pd.DataFrame,
                         output_path: Path = INTERIM_DATA_DIR / 'df_grouped_formula_complete_dataset.csv',):
+    """Save processed DataFrame to CSV file with logging.
+
+    Args:
+        df: DataFrame to save.
+        output_path: Path for the output CSV file.
+    """
     df.to_csv(output_path, index=False)
     logger.info(f"Processed data saved to {output_path}")
 
 
-def get_petiffor_features(df_grouped_formula,
+def get_petiffor_features(df_grouped_formula: pd.DataFrame,
                           input_petiffor_path: Path = RAW_DATA_DIR / 'petiffor_embedding.csv',
-                          train=True,
-                          original_df: pd.DataFrame = None,):
-   
-  # Add petifor embedding
-  from pymatgen.core import Composition
-  from ase.atom import Atom
-  from sklearn.model_selection import train_test_split
+                          train: bool = True,
+                          original_df: Optional[pd.DataFrame] = None,) -> Union[Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, List[str]], pd.DataFrame]:
+    """Add Pettifor embedding features and optionally split into train/val/test.
+
+    Computes compositionally-weighted Pettifor embeddings for each formula
+    and optionally performs stratified train/validation/test splitting
+    (80/10/10) based on data source.
+
+    Args:
+        df_grouped_formula: DataFrame with 'formula' and 'target' columns.
+        input_petiffor_path: Path to Pettifor embedding vectors CSV.
+        train: If True, perform stratified split and return train/val/test sets;
+            if False, return single DataFrame with features added.
+        original_df: Original DataFrame with 'source' column for stratification.
+
+    Returns:
+        If train=True: tuple of (train_df, val_df, test_df, feature_names).
+        If train=False: DataFrame with Pettifor features added.
+    """
+
+    # Add petifor embedding
+    from pymatgen.core import Composition
+    from ase.atom import Atom
+    from sklearn.model_selection import train_test_split
 
 
-  petiffor = pd.read_csv(input_petiffor_path, index_col=0)
+    petiffor = pd.read_csv(input_petiffor_path, index_col=0)
 
-  def get_onehot_comp(composition, elemental_embeddings):
-    if isinstance(composition, str):
-      composition = Composition(composition)
-    a = composition.fractional_composition.get_el_amt_dict()
-    comp_finger =  np.array([a.get(Atom(i).symbol, 0) for i in range(1,99)])
-    comp_finger = comp_finger @ elemental_embeddings.values
-    return comp_finger
+    def get_onehot_comp(composition, elemental_embeddings):
+        if isinstance(composition, str):
+            composition = Composition(composition)
+        a = composition.fractional_composition.get_el_amt_dict()
+        comp_finger = np.array([a.get(Atom(i).symbol, 0) for i in range(1,99)])
+        comp_finger = comp_finger @ elemental_embeddings.values
+        return comp_finger
 
-  df_grouped_formula['petiffor'] = df_grouped_formula.formula.apply(lambda x: get_onehot_comp(x, petiffor))
+    df_grouped_formula['petiffor'] = df_grouped_formula.formula.apply(lambda x: get_onehot_comp(x, petiffor))
 
-  df = df_grouped_formula.copy()
-  size_pf = df.petiffor[0].shape[0]
-  feature_names = ['petiffor_' + str(i) for i in range(0, size_pf)]
-  new_df = pd.DataFrame(columns = feature_names, index=df.index)
+    df = df_grouped_formula.copy()
+    size_pf = df.petiffor[0].shape[0]
+    feature_names = ['petiffor_' + str(i) for i in range(0, size_pf)]
+    new_df = pd.DataFrame(columns = feature_names, index=df.index)
 
-  for idx, arr in enumerate(df.petiffor.values):
-      new_df.iloc[idx] = arr
+    for idx, arr in enumerate(df.petiffor.values):
+        new_df.iloc[idx] = arr
 
-  df = pd.concat([df, new_df.astype('float64')], axis=1)
-  df.drop(columns=['petiffor'], inplace=True)
+    df = pd.concat([df, new_df.astype('float64')], axis=1)
+    df.drop(columns=['petiffor'], inplace=True)
 
-  if train:
+    if train:
 
-    #add_source to do the separation
-    if 'source' not in df.columns and original_df is not None:
-     for formula in df['formula']:
-        df.loc[df['formula'] == formula, 'source'] = original_df.loc[original_df['formula'] == formula, 'source'].values[0]
+        #add_source to do the separation
+        if 'source' not in df.columns and original_df is not None:
+            for formula in df['formula']:
+                df.loc[df['formula'] == formula, 'source'] = original_df.loc[original_df['formula'] == formula, 'source'].values[0]
 
-    try:
-      # First split: 80% train, 20% temp (val+test), stratified by source
-      train_df, temp_df = train_test_split(
-        df, test_size=0.2, stratify=df['source'], random_state=42
-      )
-      # Second split: split temp into 50/50 -> 10% val, 10% test, stratified by source
-      val_df, test_df = train_test_split(
-        temp_df, test_size=0.5, stratify=temp_df['source'], random_state=42
-      )
-    except ValueError:
-      # Fallback to non-stratified shuffle split if stratification is not possible
-      train_df, val_df, test_df = np.split(
-        df.sample(frac=1, random_state=42),
-        [
-            int(0.8 * len(df)),
-            int(0.9 * len(df))
-        ]
-      )
-    
-    if 'source' in train_df.columns:
-      train_df.drop(columns=['source'], inplace=True)
-      val_df.drop(columns=['source'], inplace=True)
-      test_df.drop(columns=['source'], inplace=True)
+        try:
+            # First split: 80% train, 20% temp (val+test), stratified by source
+            train_df, temp_df = train_test_split(
+                df, test_size=0.2, stratify=df['source'], random_state=42
+            )
+            # Second split: split temp into 50/50 -> 10% val, 10% test, stratified by source
+            val_df, test_df = train_test_split(
+                temp_df, test_size=0.5, stratify=temp_df['source'], random_state=42
+            )
+        except ValueError:
+            # Fallback to non-stratified shuffle split if stratification is not possible
+            train_df, val_df, test_df = np.split(
+                df.sample(frac=1, random_state=42),
+                [
+                    int(0.8 * len(df)),
+                    int(0.9 * len(df))
+                ]
+            )
 
-    return train_df, val_df, test_df, feature_names
-  else:
-    return df
-  
+        if 'source' in train_df.columns:
+            train_df.drop(columns=['source'], inplace=True)
+            val_df.drop(columns=['source'], inplace=True)
+            test_df.drop(columns=['source'], inplace=True)
 
-def load_model(model_path: Path = TRAINED_MODELS / 'perovskite_bg_prediction.pth',):
+        return train_df, val_df, test_df, feature_names
+    else:
+        return df
+
+
+def load_model(model_path: Path = TRAINED_MODELS / 'perovskite_bg_prediction.pth',) -> Any:
+    """Load pre-trained CrabNet model from checkpoint file.
+
+    Instantiates CrabNet architecture and loads trained weights from a
+    PyTorch checkpoint file for bandgap prediction.
+
+    Args:
+        model_path: Path to the .pth model checkpoint file.
+
+    Returns:
+        CrabNet: Loaded CrabNet model ready for inference on GPU.
+    """
     from crabnet.crabnet_ import CrabNet  # type: ignore
     from crabnet.kingcrab import SubCrab  # type: ignore
 
@@ -164,10 +221,23 @@ def load_model(model_path: Path = TRAINED_MODELS / 'perovskite_bg_prediction.pth
 
     return crabnet_model
 
-def get_test_r2_score_by_source_data(df, original_df,
-                                     feature_names,
-                                     crabnet_bandgap = None,
-                                     model_path: Path = TRAINED_MODELS / 'perovskite_bg_prediction.pth',):
+def get_test_r2_score_by_source_data(df: pd.DataFrame, original_df: pd.DataFrame,
+                                     feature_names: List[str],
+                                     crabnet_bandgap: Optional[Any] = None,
+                                     model_path: Path = TRAINED_MODELS / 'perovskite_bg_prediction.pth',) -> None:
+    """Compute R^2 scores separately for each data source.
+
+    Evaluates model performance on subsets of data grouped by source
+    (halide perovskites, chalcogenide perovskites, chalcogenide semiconductors)
+    to assess cross-domain generalization.
+
+    Args:
+        df: Test DataFrame with 'formula' column.
+        original_df: Original DataFrame with 'source' column for grouping.
+        feature_names: List of Pettifor feature column names.
+        crabnet_bandgap: Pre-loaded CrabNet model; if None, loads from file.
+        model_path: Path to CrabNet model checkpoint.
+    """
 
     for formula in df['formula']:
         df.loc[df['formula'] == formula, 'source'] = original_df.loc[original_df['formula'] == formula, 'source'].values[0]
@@ -184,105 +254,172 @@ def get_test_r2_score_by_source_data(df, original_df,
         else:
             print('No data available for this source.')
 
-def test_r2_score(df,
-                  feature_names=None,
-                  crabnet_bandgap = None,
-                  model_path: Path = TRAINED_MODELS / 'perovskite_bg_prediction.pth',):
-  
-  from crabnet.utils.figures import act_pred  # type: ignore
-  import pandas as pd
-  from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score  
+def test_r2_score(df: pd.DataFrame,
+                  feature_names: Optional[List[str]] = None,
+                  crabnet_bandgap: Optional[Any] = None,
+                  model_path: Path = TRAINED_MODELS / 'perovskite_bg_prediction.pth',) -> None:
+    """Compute and print R^2, MSE, and MAE metrics for model predictions.
+
+    Evaluates CrabNet bandgap predictions against ground truth values,
+    printing regression metrics and generating an actual vs predicted plot.
+
+    Args:
+        df: DataFrame with 'formula' and 'target' (ground truth bandgap) columns.
+        feature_names: List of Pettifor feature column names; if None,
+            uses formula-only prediction.
+        crabnet_bandgap: Pre-loaded CrabNet model; if None, loads from file.
+        model_path: Path to CrabNet model checkpoint.
+    """
+
+    from crabnet.utils.figures import act_pred  # type: ignore
+    import pandas as pd
+    from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 
 
-  if not crabnet_bandgap:
-    crabnet_bandgap = load_model(model_path=model_path)
+    if not crabnet_bandgap:
+        crabnet_bandgap = load_model(model_path=model_path)
 
-  # Train data
-  df_zeros = pd.DataFrame({"formula": df['formula'], "target": [0.0]*len(df['formula']),})
-  if feature_names:
-     df_zeros = pd.concat([df_zeros, df[feature_names]], axis=1)
-  else:
-     print('No feature names provided, using only formula and target columns.')
+    # Train data
+    df_zeros = pd.DataFrame({"formula": df['formula'], "target": [0.0]*len(df['formula']),})
+    if feature_names:
+        df_zeros = pd.concat([df_zeros, df[feature_names]], axis=1)
+    else:
+        print('No feature names provided, using only formula and target columns.')
 
-  df_predicted, df_predicted_sigma = crabnet_bandgap.predict(df_zeros, return_uncertainty=True)
+    df_predicted, df_predicted_sigma = crabnet_bandgap.predict(df_zeros, return_uncertainty=True)
 
-  act_pred(df['target'], df_predicted)
-  r2 = r2_score(df['target'], df_predicted)
-  print(f'R2 score: {r2}')
-  mse = mean_squared_error(df['target'], df_predicted)
-  print(f'MSE: {mse}')
-  mae = mean_absolute_error(df['target'], df_predicted)
-  print(f'MAE: {mae} eV')
+    act_pred(df['target'], df_predicted)
+    r2 = r2_score(df['target'], df_predicted)
+    print(f'R2 score: {r2}')
+    mse = mean_squared_error(df['target'], df_predicted)
+    print(f'MSE: {mse}')
+    mae = mean_absolute_error(df['target'], df_predicted)
+    print(f'MAE: {mae} eV')
 
-def predict_bandgap(formula, 
-                     crabnet_model = None,
-                     model_path: Path = TRAINED_MODELS / 'perovskite_bg_prediction.pth',):
-    
-  if not crabnet_model:
-    crabnet_model = load_model(model_path=model_path)
+def predict_bandgap(formula: str, 
+                     crabnet_model: Optional[Any] = None,
+                     model_path: Path = TRAINED_MODELS / 'perovskite_bg_prediction.pth',) -> Tuple[Any, Any]:
+    """Predict bandgap for a single chemical formula using CrabNet.
 
-  input_df = pd.DataFrame({"formula": [formula], "target": [0.0]})
-  input_df = get_petiffor_features(input_df, train=False)
-  prediction, prediction_sigma = crabnet_model.predict(input_df, return_uncertainty=True)
-  return prediction, prediction_sigma
+    Computes Pettifor embedding features and runs CrabNet inference
+    to predict bandgap value with uncertainty estimate.
 
-def get_CrystaLLM_predictions(crabnet_model = None,
+    Args:
+        formula: Chemical formula string (e.g., 'BaZrS3').
+        crabnet_model: Pre-loaded CrabNet model; if None, loads from file.
+        model_path: Path to CrabNet model checkpoint.
+
+    Returns:
+        tuple: (prediction, prediction_sigma) arrays with bandgap value
+            and uncertainty in eV.
+    """
+
+    if not crabnet_model:
+        crabnet_model = load_model(model_path=model_path)
+
+    input_df = pd.DataFrame({"formula": [formula], "target": [0.0]})
+    input_df = get_petiffor_features(input_df, train=False)
+    prediction, prediction_sigma = crabnet_model.predict(input_df, return_uncertainty=True)
+    return prediction, prediction_sigma
+
+def get_CrystaLLM_predictions(crabnet_model: Optional[Any] = None,
                               input_data_CrystaLLM: Path = CRYSTALLM_DATA_DIR / 'results CrystaLLM.csv',
-                              output_data_CrystaLLM: Path = PROCESSED_DATA_DIR / 'results_CrystaLLM_with_bandgap.csv',):
+                              output_data_CrystaLLM: Path = PROCESSED_DATA_DIR / 'results_CrystaLLM_with_bandgap.csv',) -> pd.DataFrame:
+    """Predict bandgaps for CrystaLLM-generated compositions.
 
-  if not crabnet_model:
-    crabnet_model = load_model()
+    Iterates through compositions predicted by CrystaLLM generative model
+    and adds bandgap predictions with uncertainties using CrabNet.
 
-  df_compositions = pd.read_csv(input_data_CrystaLLM)
-  df_compositions.rename(columns={'material': 'formula'}, inplace=True)
-  df_compositions.set_index('formula', inplace=True)
-  for formula in df_compositions.index:
-      prediction, prediction_sigma = predict_bandgap(formula, crabnet_model)
-      df_compositions.loc[formula, 'bandgap'] = prediction
-      df_compositions.loc[formula, 'bandgap_sigma'] = prediction_sigma
+    Args:
+        crabnet_model: Pre-loaded CrabNet model; if None, loads from file.
+        input_data_CrystaLLM: Path to CrystaLLM results CSV.
+        output_data_CrystaLLM: Path to save predictions CSV.
 
-  df_compositions.to_csv(output_data_CrystaLLM)
-  
-  return df_compositions
+    Returns:
+        pd.DataFrame: CrystaLLM compositions with 'bandgap' and 'bandgap_sigma' columns.
+    """
 
-def get_SISSO_predictions(crabnet_model = None,
+    if not crabnet_model:
+        crabnet_model = load_model()
+
+    df_compositions = pd.read_csv(input_data_CrystaLLM)
+    df_compositions.rename(columns={'material': 'formula'}, inplace=True)
+    df_compositions.set_index('formula', inplace=True)
+    for formula in df_compositions.index:
+        prediction, prediction_sigma = predict_bandgap(formula, crabnet_model)
+        df_compositions.loc[formula, 'bandgap'] = prediction
+        df_compositions.loc[formula, 'bandgap_sigma'] = prediction_sigma
+
+    df_compositions.to_csv(output_data_CrystaLLM)
+
+    return df_compositions
+
+def get_SISSO_predictions(crabnet_model: Optional[Any] = None,
                           input_data_SISSO: Path = PROCESSED_DATA_DIR / 'stable_compositions.csv',
-                          output_data_SISSO: Path = PROCESSED_DATA_DIR / 'results_SISSO_with_bandgap.csv'):
+                          output_data_SISSO: Path = PROCESSED_DATA_DIR / 'results_SISSO_with_bandgap.csv') -> pd.DataFrame:
+    """Predict bandgaps for SISSO-selected stable compositions.
 
-  if not crabnet_model:
-    crabnet_model = load_model()
+    Adds bandgap predictions with uncertainties to compositions identified
+    as stable by the t_sisso tolerance factor screening.
 
-  df_compositions = pd.read_csv(input_data_SISSO)
-  df_compositions.rename(columns={'Unnamed: 0': 'formula'}, inplace=True)
-  df_compositions.set_index('formula', inplace=True)
-  for formula in df_compositions.index:
-      prediction, prediction_sigma = predict_bandgap(formula, crabnet_model)
-      df_compositions.loc[formula, 'bandgap'] = prediction
-      df_compositions.loc[formula, 'bandgap_sigma'] = prediction_sigma
+    Args:
+        crabnet_model: Pre-loaded CrabNet model; if None, loads from file.
+        input_data_SISSO: Path to SISSO stable compositions CSV.
+        output_data_SISSO: Path to save predictions CSV.
 
-  df_compositions.to_csv(output_data_SISSO)
-  
-  return df_compositions
+    Returns:
+        pd.DataFrame: Stable compositions with 'bandgap' and 'bandgap_sigma' columns.
+    """
 
-def get_experimental_predictions(crabnet_model = None,
+    if not crabnet_model:
+        crabnet_model = load_model()
+
+    df_compositions = pd.read_csv(input_data_SISSO)
+    df_compositions.rename(columns={'Unnamed: 0': 'formula'}, inplace=True)
+    df_compositions.set_index('formula', inplace=True)
+    for formula in df_compositions.index:
+        prediction, prediction_sigma = predict_bandgap(formula, crabnet_model)
+        df_compositions.loc[formula, 'bandgap'] = prediction
+        df_compositions.loc[formula, 'bandgap_sigma'] = prediction_sigma
+
+    df_compositions.to_csv(output_data_SISSO)
+
+    return df_compositions
+
+def get_experimental_predictions(crabnet_model: Optional[Any] = None,
                                  input_data_experimental: Path = RAW_DATA_DIR / 'chalcogenides_bandgap_devices.csv',
-                                 output_data_experimental: Path = PROCESSED_DATA_DIR / 'results_experimental_with_bandgap.csv',):
+                                 output_data_experimental: Path = PROCESSED_DATA_DIR / 'results_experimental_with_bandgap.csv',) -> pd.DataFrame:
+    """Predict bandgaps for experimental chalcogenide formulas and compare.
 
-  if not crabnet_model:
-    crabnet_model = load_model()
+    Evaluates CrabNet predictions against experimental bandgap measurements
+    for known chalcogenide perovskite compounds, printing comparisons and
+    saving results.
 
-  df_chalcogenides = pd.read_csv(input_data_experimental)
-  for formula in df_chalcogenides.descriptive_formulas.unique():
-      prediction, prediction_sigma = predict_bandgap(formula)
-      print(f'Experimental bandgap for {formula}:', str(df_chalcogenides.loc[df_chalcogenides['descriptive_formulas'] == formula, 'bandgap'].values[0]) + ' eV')
-      print(f'Bandgap prediction for {formula}:', f"{round(prediction[0], 2)} ± {round(prediction_sigma[0], 2)}" + ' eV')
+    Args:
+        crabnet_model: Pre-loaded CrabNet model; if None, loads from file.
+        input_data_experimental: Path to experimental chalcogenide data CSV.
+        output_data_experimental: Path to save predictions CSV.
 
-      df_chalcogenides.loc[df_chalcogenides['descriptive_formulas'] == formula, 'predicted_bandgap'] = prediction[0]
-      df_chalcogenides.loc[df_chalcogenides['descriptive_formulas'] == formula, 'predicted_bandgap_sigma'] = prediction_sigma[0]
+    Returns:
+        pd.DataFrame: Experimental data with 'predicted_bandgap' and
+            'predicted_bandgap_sigma' columns added.
+    """
 
-  df_chalcogenides.to_csv(output_data_experimental)
-    
-  return df_chalcogenides
+    if not crabnet_model:
+        crabnet_model = load_model()
+
+    df_chalcogenides = pd.read_csv(input_data_experimental)
+    for formula in df_chalcogenides.descriptive_formulas.unique():
+        prediction, prediction_sigma = predict_bandgap(formula)
+        print(f'Experimental bandgap for {formula}:', str(df_chalcogenides.loc[df_chalcogenides['descriptive_formulas'] == formula, 'bandgap'].values[0]) + ' eV')
+        print(f'Bandgap prediction for {formula}:', f"{round(prediction[0], 2)} ± {round(prediction_sigma[0], 2)}" + ' eV')
+
+        df_chalcogenides.loc[df_chalcogenides['descriptive_formulas'] == formula, 'predicted_bandgap'] = prediction[0]
+        df_chalcogenides.loc[df_chalcogenides['descriptive_formulas'] == formula, 'predicted_bandgap_sigma'] = prediction_sigma[0]
+
+    df_chalcogenides.to_csv(output_data_experimental)
+
+    return df_chalcogenides
 
 
 

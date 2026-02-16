@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import Any, Dict, List, Tuple
 
 import typer
 from loguru import logger
@@ -14,14 +15,27 @@ app = typer.Typer()
 
 @app.command()
 def main():
-    
-    
+    """CLI entry point for SISSO feature generation.
+
+    Runs the complete SISSO feature space generation pipeline, which includes
+    selecting primary features via Random Forest importance and creating
+    symbolic regression features using SISSO++.
+    """
     run_SISSO_model()
     
 
 def run_SISSO_model(input_path: Path = PROCESSED_DATA_DIR / "chpvk_dataset.csv",
-                    output_path: Path = INTERIM_DATA_DIR / "features_sisso.csv",):
-    
+                    output_path: Path = INTERIM_DATA_DIR / "features_sisso.csv",) -> None:
+    """Orchestrate the SISSO feature space generation pipeline.
+
+    Loads the processed dataset, selects primary features using Random Forest
+    importance ranking, creates SISSO++ inputs, and generates the symbolic
+    feature space for tolerance factor discovery.
+
+    Args:
+        input_path: Path to the processed chalcogenide perovskite dataset.
+        output_path: Path to save the generated SISSO features CSV.
+    """
     # Load the dataset
     df = pd.read_csv(input_path)
 
@@ -72,13 +86,27 @@ def run_SISSO_model(input_path: Path = PROCESSED_DATA_DIR / "chpvk_dataset.csv",
         create_features_SISSO(df_units, inputs)
         logger.success("SISSO Features generation complete.")
 
-def createInputs(df, 
-                 cols_path: Path = RAW_DATA_DIR / "cols.csv",
+def createInputs(df: pd.DataFrame,
+                 cols_path: Path = RAW_DATA_DIR / "cols.csv", 
                  ops_path: Path = RAW_DATA_DIR / "ops.csv", 
                  train_inds_path: Path = INTERIM_DATA_DIR / "train_inds.npy",
-                 test_inds_path: Path = INTERIM_DATA_DIR / "test_inds.npy"):
-    """
-    Get the units from the dataset
+                 test_inds_path: Path = INTERIM_DATA_DIR / "test_inds.npy") -> Any:
+    """Create SISSO++ Inputs object with feature nodes and configuration.
+
+    Configures the SISSO++ feature space generation by setting up primary
+    feature nodes with their units, allowed mathematical operators, and
+    train/test data splits for classification.
+
+    Args:
+        df: DataFrame with unit-annotated column names (e.g., 'rA (AA)').
+        cols_path: Path to CSV file listing selected primary feature columns.
+        ops_path: Path to CSV file listing allowed mathematical operators.
+        train_inds_path: Path to numpy file with training set indices.
+        test_inds_path: Path to numpy file with test set indices.
+
+    Returns:
+        sissopp.Inputs: Configured SISSO++ input object with feature nodes,
+            operators, and classification settings.
     """
 
     from sissopp import Inputs, Unit, FeatureNode
@@ -131,10 +159,20 @@ def createInputs(df,
     return inputs
 
 
-def choose_primary_features(df, change_columns, number_of_cycles=15,
-                            cols_path: Path = RAW_DATA_DIR / "cols.csv"):
-    """
-    Choose the primary features
+def choose_primary_features(df: pd.DataFrame, change_columns: Dict[str, str], number_of_cycles: int = 15,
+                            cols_path: Path = RAW_DATA_DIR / "cols.csv") -> None:
+    """Select top primary features using Random Forest importance ranking.
+
+    Runs multiple cycles of Random Forest classification with GridSearchCV
+    to identify the most consistently important features for perovskite
+    stability prediction. The top 5 features are saved for SISSO input.
+
+    Args:
+        df: DataFrame containing all candidate features and exp_label target.
+        change_columns: Dictionary mapping original column names to unit-annotated
+            names (e.g., {'rA': 'rA (AA)'}).
+        number_of_cycles: Number of training cycles for robust feature ranking.
+        cols_path: Path to save the selected primary feature columns.
     """
     # Choose the primary features
     results_df = pd.DataFrame(columns = df.drop(columns=['exp_label']).columns)
@@ -151,7 +189,23 @@ def choose_primary_features(df, change_columns, number_of_cycles=15,
 
 
 
-def get_best_features(df, results_df, idx=0, train_ratio = 0.80, random_state=42):
+def get_best_features(df: pd.DataFrame, results_df: pd.DataFrame, idx: int = 0, train_ratio: float = 0.80, random_state: int = 42) -> pd.DataFrame:
+    """Train Random Forest classifier and extract feature importances.
+
+    Performs a single iteration of Random Forest training with hyperparameter
+    optimization via GridSearchCV, returning the feature importance scores
+    for ranking.
+
+    Args:
+        df: DataFrame containing features and exp_label target column.
+        results_df: DataFrame to accumulate feature importances across cycles.
+        idx: Index for this iteration in results_df.
+        train_ratio: Fraction of data for training (default 0.80).
+        random_state: Random seed for reproducibility.
+
+    Returns:
+        pd.DataFrame: Updated results_df with feature importances for this iteration.
+    """
     
     if 'A' in df.columns:
         df_ = df.drop(columns=['A', 'B', 'X'])
@@ -203,11 +257,20 @@ def get_best_features(df, results_df, idx=0, train_ratio = 0.80, random_state=42
 
 
 
-def create_features_SISSO(df_units, inputs,
+def create_features_SISSO(df_units: pd.DataFrame, inputs: Any,
                           output_path: Path = INTERIM_DATA_DIR / "features_sisso.csv",
-                          train_inds_path: Path = INTERIM_DATA_DIR / "train_inds.npy"):
-    """
-    Create SISSO features from the dataset
+                          train_inds_path: Path = INTERIM_DATA_DIR / "train_inds.npy") -> None:
+    """Generate SISSO feature space using Sure Independence Screening.
+
+    Applies SISSO++ to create a symbolic feature space from primary features,
+    selecting the most predictive composite features for perovskite stability
+    classification.
+
+    Args:
+        df_units: DataFrame with unit-annotated feature columns.
+        inputs: Configured SISSO++ Inputs object from createInputs().
+        output_path: Path to save the selected SISSO features CSV.
+        train_inds_path: Path to numpy file with training set indices.
     """
 
     train_inds = np.load(train_inds_path)
@@ -229,28 +292,47 @@ def create_features_SISSO(df_units, inputs,
     feature_df.to_csv(output_path)
 
 
-def perform_pca(df, variables, target):
+def perform_pca(df: pd.DataFrame, variables: List[str], target: List[str]) -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame, Any]:
+    """Perform Principal Component Analysis on selected variables.
 
-  from sklearn.preprocessing import StandardScaler
-  from sklearn.decomposition import PCA
+    Standardizes the input features and performs PCA to extract principal
+    components, their loadings, and explained variance ratios for
+    dimensionality reduction and feature analysis.
 
-  selected_columns = variables + target
-  df_pca = df[selected_columns]
-  df_pca = df_pca.select_dtypes(include=['number'])
-  df_pca.dropna(inplace=True)
+    Args:
+        df: DataFrame containing the variables to analyze.
+        variables: List of column names to include as PCA features.
+        target: List of target column names to include in output.
 
-  scaler = StandardScaler()
-  df_scaled = scaler.fit_transform(df_pca)
-  df_scaled = pd.DataFrame(df_scaled, columns=df_pca.columns)
+    Returns:
+        tuple: Contains:
+            - df_scaled (pd.DataFrame): Standardized feature values.
+            - df_pca (pd.DataFrame): Original data subset used for PCA.
+            - component_loadings (pd.DataFrame): Feature loadings for each PC.
+            - explained_variance_ratio (pd.DataFrame): Variance explained by each PC.
+            - pca (PCA): Fitted sklearn PCA object.
+    """
 
-  pca = PCA()
-  pca.fit(df_scaled)
+    from sklearn.preprocessing import StandardScaler
+    from sklearn.decomposition import PCA
 
-  component_loadings = pd.DataFrame(pca.components_.T, columns=[f'PC{i+1}' for i in range(len(pca.components_))], index=df_scaled.columns)
+    selected_columns = variables + target
+    df_pca = df[selected_columns]
+    df_pca = df_pca.select_dtypes(include=['number'])
+    df_pca.dropna(inplace=True)
 
-  explained_variance_ratio = pd.DataFrame({'Principal Component': [f'PC{i+1}' for i in range(len(pca.explained_variance_ratio_))], 'Explained Variance Ratio': pca.explained_variance_ratio_})
+    scaler = StandardScaler()
+    df_scaled = scaler.fit_transform(df_pca)
+    df_scaled = pd.DataFrame(df_scaled, columns=df_pca.columns)
 
-  return df_scaled, df_pca, component_loadings, explained_variance_ratio, pca
+    pca = PCA()
+    pca.fit(df_scaled)
+
+    component_loadings = pd.DataFrame(pca.components_.T, columns=[f'PC{i+1}' for i in range(len(pca.components_))], index=df_scaled.columns)
+
+    explained_variance_ratio = pd.DataFrame({'Principal Component': [f'PC{i+1}' for i in range(len(pca.explained_variance_ratio_))], 'Explained Variance Ratio': pca.explained_variance_ratio_})
+
+    return df_scaled, df_pca, component_loadings, explained_variance_ratio, pca
 
 
 if __name__ == "__main__":
