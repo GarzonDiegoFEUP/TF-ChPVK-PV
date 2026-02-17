@@ -1,4 +1,4 @@
-# GCNN: Graph Convolutional Neural Networks for Synthesizability Prediction
+# GCNN: Graph Convolutional Neural Networks for Relative Synthesizability Prediction
 
 ## Overview
 
@@ -32,10 +32,10 @@ GCNN employs a multi-step approach combining transfer learning and positive-unla
 ## Usage in this Project
 
 In this pipeline, GCNN is used to:
-- Assess the experimental plausibility of CrystaLLM-generated crystal structures
+- Assess the experimental plausibility of CrystaLLM-generated perovskite-type structures
 - Generate crystal-likeness scores for all candidate compounds
 - Rank candidates by synthesizability likelihood
-- Combine synthesizability with thermodynamic and sustainability metrics for final prioritization
+- Combine synthesizability with sustainability metrics for final prioritization
 
 See [`3_Experimental_likelihood.ipynb`](../../notebooks/3_Experimental_likelihood.ipynb) for structure evaluation and synthesizability scoring workflows.
 

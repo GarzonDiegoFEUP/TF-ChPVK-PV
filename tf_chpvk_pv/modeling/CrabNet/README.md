@@ -1,14 +1,14 @@
-# CrabNet: Element Representations Learned by Conditional Random Field Autoencoders
+# CrabNet: Compositionally-restricted attention-based Network
 
 ## Overview
 
-CrabNet (Composition-based Representation from Attributes Learned By Neural Encoding from Transformer) is a deep learning model that predicts the bandgaps of crystal materials based on their chemical composition alone. The model learns high-dimensional representations of chemical elements and combines them using attention mechanisms to make accurate predictions without requiring explicit structural information.
+CrabNet (Compositionally-restricted attention-based Network) is a deep learning model that predicts the bandgaps of crystal materials based on their chemical composition alone. The model learns high-dimensional representations of chemical elements and combines them using attention mechanisms to make accurate predictions without requiring explicit structural information.
 
 ## Algorithm
 
 CrabNet employs a two-stage approach:
 
-1. **Element Representation Learning**: The model learns latent representations of elements from a conditional random field (CRF) autoencoder, capturing chemical properties and trends from large materials databases.
+1. **Element Representation Learning**: The model learns latent representations of elements, capturing chemical properties and trends from large materials databases.
 
 2. **Composition-Based Prediction**: Given a chemical composition (A_x B_y C_z...), the model:
    - Extracts learned element representations
