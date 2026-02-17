@@ -36,7 +36,6 @@ def patch_crabnet_elem_prop() -> None:
         return
 
     import torch
-    import numpy as np
     from crabnet.crabnet_ import CrabNet
     from crabnet.kingcrab import SubCrab, Encoder, Embedder
 
