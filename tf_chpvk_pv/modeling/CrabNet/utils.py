@@ -305,7 +305,7 @@ def register_pettifor_elem_prop(
     Parameters
     ----------
     pettifor_path : Path
-        Path to the 98×98 Pettifor embedding CSV.
+        Path to the Pettifor embedding CSV (99×98 including header/index; 98×98 data matrix).
     force : bool
         Re-write even if the file already exists.
 
