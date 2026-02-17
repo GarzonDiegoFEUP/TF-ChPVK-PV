@@ -20,7 +20,7 @@ __pycache__/
 
 #extra notebooks
 notebooks/11Decide_ops.ipynb
-notebooks/6Full_pipeline_Evaluation.ipynb
+notebooks/6Full_Pipeline_Evaluation.ipynb
 
 # Distribution / packaging
 .Python
