@@ -449,7 +449,7 @@ def plot_tau_star_histogram(threshold: float, df: pd.DataFrame) -> None:
     #ax.legend(handles=handles, labels=labels, title=None)
 
     plt.xlim([0, 1.6])
-    plt.xlabel('$\\tau$*')
+    plt.xlabel('SISSO-derived $\\tau$*')
     plt.ylabel('Counts')
     plt.tight_layout()
 
@@ -497,7 +497,7 @@ def plot_t_star_histogram(thresholds: List[float], df: pd.DataFrame) -> None:
     #ax.legend(handles=handles, labels=labels, title=None)
 
     plt.xlim([0.3, 2.2])
-    plt.xlabel('Jess et al. tolerance factor (t*)')
+    plt.xlabel('Jess et al. tolerance factor ($t_{Jess}$)')
     plt.ylabel('Counts')
     plt.tight_layout()
 
@@ -541,7 +541,7 @@ def plot_t_star_vs_p_t_sisso(df: pd.DataFrame, thresholds: List[float]) -> None:
 
     ax.axvspan(xmin=thresholds[0], xmax=thresholds[1], color='limegreen', alpha=0.25, )
 
-    ax.set_xlabel('Jess et al. tolerance factor (t*)')
+    ax.set_xlabel('Jess et al. tolerance factor ($t_{Jess}$)')
     ax.set_ylabel('P($\\tau$*)')
 
     # Remove title from legend
