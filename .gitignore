@@ -19,8 +19,8 @@ __pycache__/
 *.so
 
 #extra notebooks
-notebooks/11Decide_ops.ipynb
-notebooks/6Full_Pipeline_Evaluation.ipynb
+notebooks/1_1_Decide_ops.ipynb
+notebooks/6_Full_Pipeline_Evaluation.ipynb
 
 # Distribution / packaging
 .Python
