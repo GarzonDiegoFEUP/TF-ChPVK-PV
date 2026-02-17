@@ -18,6 +18,10 @@ __pycache__/
 # C extensions
 *.so
 
+#extra notebooks
+notebooks/11Decide_ops.ipynb
+notebooks/6Full_pipeline_Evaluation.ipynb
+
 # Distribution / packaging
 .Python
 .conda
