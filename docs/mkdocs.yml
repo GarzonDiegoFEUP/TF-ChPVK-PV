@@ -1,4 +1,36 @@
 site_name: TF-ChPVK-PV
-# 
 site_author: GarzonDiegoFEUP
-# 
+site_description: Chalcogenide Perovskite Tolerance Factor for Photovoltaics
+
+theme:
+  name: material
+  palette:
+    primary: teal
+  features:
+    - navigation.sections
+    - navigation.expand
+
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            docstring_style: google
+            show_source: true
+            show_root_heading: true
+
+nav:
+  - Home: index.md
+  - Getting Started: getting-started.md
+  - API Reference:
+      - Dataset: api/dataset.md
+      - Features: api/features.md
+      - Plots: api/plots.md
+      - Modeling:
+          - Train: api/modeling/train.md
+          - Predict: api/modeling/predict.md
+          - GCCN Predict: api/modeling/gccn_predict.md
+          - CrabNet: api/modeling/crabnet.md
+          - GCNN: api/modeling/gcnn.md
+          - CrabNet Utils: api/modeling/crabnet_utils.md

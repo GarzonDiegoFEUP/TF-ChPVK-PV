@@ -1,3 +1,8 @@
+# Frozen dependency lockfile for exact reproduction.
+# Generated from a Linux/CUDA environment. NVIDIA packages are included
+# intentionally for GPU support. Install abstract deps from pyproject.toml
+# if you don't need exact pinning: pip install -e .
+#
 ase==3.23.0
 asttokens==3.0.0
 backcall==0.2.0
@@ -48,6 +53,13 @@ MarkupSafe==2.1.5
 matplotlib==3.7.3
 matplotlib-inline==0.1.7
 mdurl==0.1.2
+mkdocs==1.6.1
+mkdocs-autorefs==1.2.0
+mkdocs-get-deps==0.2.0
+mkdocs-material==9.7.1
+mkdocs-material-extensions==1.3.1
+mkdocstrings==0.26.1
+mkdocstrings-python==1.11.1
 monty==2023.9.25
 mp-api==0.35.1
 mpmath==1.3.0
@@ -79,7 +91,6 @@ patsy==0.5.6
 pexpect==4.9.0
 pickleshare==0.7.5
 pillow==10.4.0
-pip==24.3.1
 platformdirs==4.3.6
 plotly==5.6.0
 pluggy==1.5.0
@@ -96,8 +107,6 @@ Pygments==2.19.1
 pymatgen==2023.8.10
 pymatviz==0.6.3
 pyparsing==3.1.4
-PyQt5==5.15.9
-PyQt5-sip==12.12.2
 PySocks==1.7.1
 pytest==8.3.5
 pytest-timeout==2.4.0
@@ -113,7 +122,6 @@ ruamel.yaml.clib==0.2.8
 scikit-learn==1.3.2
 scipy==1.10.1
 seaborn==0.13.2
-setuptools==75.3.0
 shellingham==1.5.4
 simplejson==3.20.2
 sip==6.7.12
@@ -124,11 +132,11 @@ statsmodels==0.14.1
 sympy==1.13.3
 tabulate==0.9.0
 tenacity==9.0.0
--e ./
 threadpoolctl==3.5.0
 toml==0.10.2
 tomli==2.0.2
 torch==2.4.1
+torch-scatter==2.1.2
 torchaudio==2.4.1
 torchvision==0.19.1
 tornado==6.4.2
@@ -142,6 +150,5 @@ uncertainties==3.2.2
 unicodedata2==15.1.0
 urllib3==2.2.3
 wcwidth==0.2.13
-wheel==0.45.1
 zipp==3.20.2
 zstandard==0.23.0

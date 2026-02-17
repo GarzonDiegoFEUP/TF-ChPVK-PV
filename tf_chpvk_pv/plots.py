@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import Any, Dict, List, Optional
 
 import typer
 from loguru import logger
@@ -15,6 +16,12 @@ app = typer.Typer()
 
 @app.command()
 def main():
+    """CLI entry point for generating tolerance factor visualization plots.
+
+    Generates Platt scaling probability plots and tolerance factor comparison
+    plots (t_sisso vs t, t_jess, tau) for both raw values and calibrated
+    probabilities.
+    """
 
     platt_scaling_plot()
 
@@ -27,11 +34,25 @@ def main():
     plot_p_t_sisso_tf("tau")
 
 
-def platt_scaling_plot(t = 't_sisso', train_input_path: Path = RESULTS_DIR / "processed_chpvk_train_dataset.csv",
+def platt_scaling_plot(t: str = 't_sisso', train_input_path: Path = RESULTS_DIR / "processed_chpvk_train_dataset.csv",
                         test_input_path: Path = RESULTS_DIR / "processed_chpvk_test_dataset.csv",
                         concat_input_path: Path = RESULTS_DIR / "processed_chpvk_concat_dataset.csv",
                         tolerance_dict_path: Path = INTERIM_DATA_DIR / "tolerance_factors.pkl",
-                        output_path: Path = FIGURES_DIR / "platt_scaling_plot.png"):
+                        output_path: Path = FIGURES_DIR / "platt_scaling_plot.png") -> None:
+    """Generate scatter plot of tolerance factor vs calibrated probability.
+
+    Creates a visualization showing the relationship between a tolerance factor
+    (t_sisso by default) and its Platt-scaled probability, with points colored
+    by experimental stability label and shaped by train/test split.
+
+    Args:
+        t: Name of the tolerance factor column to plot.
+        train_input_path: Path to processed training dataset CSV.
+        test_input_path: Path to processed test dataset CSV.
+        concat_input_path: Path to save/load concatenated dataset.
+        tolerance_dict_path: Path to pickle file with tolerance factor thresholds.
+        output_path: Path to save the output PNG figure.
+    """
     
     train_df = pd.read_csv(train_input_path)
     test_df = pd.read_csv(test_input_path)
@@ -74,12 +95,25 @@ def platt_scaling_plot(t = 't_sisso', train_input_path: Path = RESULTS_DIR / "pr
 
 
 
-def platt_scaling_plot_plotly(t='t_sisso', 
+def platt_scaling_plot_plotly(t: str = 't_sisso', 
                         train_input_path: Path = RESULTS_DIR / "processed_chpvk_train_dataset.csv",
                         test_input_path: Path = RESULTS_DIR / "processed_chpvk_test_dataset.csv",
                         concat_input_path: Path = RESULTS_DIR / "processed_chpvk_concat_dataset.csv",
                         tolerance_dict_path: Path = INTERIM_DATA_DIR / "tolerance_factors.pkl",
-                        output_path: Path = FIGURES_DIR / "platt_scaling_plot_plotly.html"):  # Changed to .html for interactivity
+                        output_path: Path = FIGURES_DIR / "platt_scaling_plot_plotly.html") -> None:  # Changed to .html for interactivity
+    """Generate interactive Platt scaling plot using Plotly.
+
+    Creates an interactive HTML visualization of tolerance factor vs calibrated
+    probability with hover data, allowing exploration of individual data points.
+
+    Args:
+        t: Name of the tolerance factor column to plot.
+        train_input_path: Path to processed training dataset CSV.
+        test_input_path: Path to processed test dataset CSV.
+        concat_input_path: Path to save/load concatenated dataset.
+        tolerance_dict_path: Path to pickle file with tolerance factor thresholds.
+        output_path: Path to save the interactive HTML figure.
+    """
     
     import plotly.express as px
     import plotly.graph_objects as go
@@ -146,11 +180,24 @@ def platt_scaling_plot_plotly(t='t_sisso',
 
 
 
-def plot_t_sisso_tf(tf, train_input_path: Path = RESULTS_DIR / "processed_chpvk_train_dataset.csv",
+def plot_t_sisso_tf(tf: str, train_input_path: Path = RESULTS_DIR / "processed_chpvk_train_dataset.csv",
                         test_input_path: Path = RESULTS_DIR / "processed_chpvk_test_dataset.csv",
                         concat_input_path: Path = RESULTS_DIR / "processed_chpvk_concat_dataset.csv",
                         tolerance_dict_path: Path = INTERIM_DATA_DIR / "tolerance_factors.pkl",
-):
+) -> None:
+    """Plot t_sisso as a function of another tolerance factor.
+
+    Creates a scatter plot comparing t_sisso against a reference tolerance
+    factor (t, t_jess, or tau) to visualize their correlation, with threshold
+    lines for stability regions.
+
+    Args:
+        tf: Reference tolerance factor to plot on x-axis ('t', 't_jess', or 'tau').
+        train_input_path: Path to processed training dataset CSV.
+        test_input_path: Path to processed test dataset CSV.
+        concat_input_path: Path to save/load concatenated dataset.
+        tolerance_dict_path: Path to pickle file with tolerance factor thresholds.
+    """
     
     train_df = pd.read_csv(train_input_path)
     test_df = pd.read_csv(test_input_path)
@@ -194,11 +241,24 @@ def plot_t_sisso_tf(tf, train_input_path: Path = RESULTS_DIR / "processed_chpvk_
     else:
         logger.error(f"t_sisso as a function of {tf} plot cannot be generated as the required columns are not present in the dataframes.")
 
-def plot_p_t_sisso_tf(tf, train_input_path: Path = RESULTS_DIR / "processed_chpvk_train_dataset.csv",
+def plot_p_t_sisso_tf(tf: str, train_input_path: Path = RESULTS_DIR / "processed_chpvk_train_dataset.csv",
                         test_input_path: Path = RESULTS_DIR / "processed_chpvk_test_dataset.csv",
                         concat_input_path: Path = RESULTS_DIR / "processed_chpvk_concat_dataset.csv",
                         tolerance_dict_path: Path = INTERIM_DATA_DIR / "tolerance_factors.pkl",
-):
+) -> None:
+    """Plot calibrated probability P(t_sisso) as a function of another tolerance factor.
+
+    Creates a scatter plot showing how the Platt-scaled stability probability
+    varies with a reference tolerance factor, useful for comparing predictive
+    power across different tolerance factor formulations.
+
+    Args:
+        tf: Reference tolerance factor to plot on x-axis ('t', 't_jess', or 'tau').
+        train_input_path: Path to processed training dataset CSV.
+        test_input_path: Path to processed test dataset CSV.
+        concat_input_path: Path to save/load concatenated dataset.
+        tolerance_dict_path: Path to pickle file with tolerance factor thresholds.
+    """
     
     train_df = pd.read_csv(train_input_path)
     test_df = pd.read_csv(test_input_path)
@@ -239,7 +299,19 @@ def plot_p_t_sisso_tf(tf, train_input_path: Path = RESULTS_DIR / "processed_chpv
         logger.error(f"P(t_sisso) as a function of {tf} plot cannot be generated as the required columns are not present in the dataframes.")
 
 
-def graph_periodic_table(stable_candidates_t_sisso, t='t_sisso', save_plot=True, cmap_='turbo'):
+def graph_periodic_table(stable_candidates_t_sisso: List[str], t: str = 't_sisso', save_plot: bool = True, cmap_: str = 'turbo') -> None:
+    """Generate periodic table heatmap showing element frequency in stable candidates.
+
+    Creates a heatmap visualization of the periodic table where each element's
+    color intensity represents how frequently it appears in compositions
+    predicted to be stable perovskites.
+
+    Args:
+        stable_candidates_t_sisso: List of chemical formulas predicted as stable.
+        t: Name of tolerance factor used for labeling the output file.
+        save_plot: If True, save the figure to the figures directory.
+        cmap_: Matplotlib colormap name for the heatmap.
+    """
     from pymatviz import count_elements,  ptable_heatmap_plotly, ptable_heatmap
     import matplotlib.pyplot as plt
     import re
@@ -256,7 +328,17 @@ def graph_periodic_table(stable_candidates_t_sisso, t='t_sisso', save_plot=True,
     plt.show()
 
 
-def spider_plot(df, title):
+def spider_plot(df: pd.DataFrame, title: str) -> None:
+    """Create radar/spider plot comparing metrics across S, Se, and halide groups.
+
+    Generates a polar plot showing normalized metric values for sulfide,
+    selenide, and halide perovskite compounds, enabling visual comparison
+    of multi-dimensional performance characteristics.
+
+    Args:
+        df: DataFrame indexed by group ('S', 'Se', 'hal') with metric columns.
+        title: Title string used for saving the figure file.
+    """
 
     # Libraries
     import matplotlib.pyplot as plt
@@ -327,45 +409,65 @@ def spider_plot(df, title):
     plt.savefig(FIGURES_DIR / txt_title, bbox_inches='tight')
 
 
-def plot_tau_star_histogram(threshold, df):
-  
-  import matplotlib.pyplot as plt
-  import seaborn as sns
+def plot_tau_star_histogram(threshold: float, df: pd.DataFrame) -> None:
+    """Create histogram of tau* tolerance factor values by stability class.
 
-  fig = plt.figure(figsize=(8, 6))
+    Generates a histogram showing the distribution of tau* (τ*) values,
+    colored by perovskite/nonperovskite classification, with the stability
+    threshold region highlighted.
 
-  df_ = df.copy()
-  df_.loc[df_['exp_label'] == 1, 'exp_label_'] = 'Perovskite'
-  df_.loc[df_['exp_label'] == 0, 'exp_label_'] = 'Nonperovskite'
+    Args:
+        threshold: Tau* threshold value for stable perovskite classification.
+        df: DataFrame containing 'tau*' and 'exp_label' columns.
+    """
+
+    import matplotlib.pyplot as plt
+    import seaborn as sns
+
+    fig = plt.figure(figsize=(8, 6))
+
+    df_ = df.copy()
+    df_.loc[df_['exp_label'] == 1, 'exp_label_'] = 'Perovskite'
+    df_.loc[df_['exp_label'] == 0, 'exp_label_'] = 'Nonperovskite'
 
 
-  sns.set_context('talk')
-  ax = sns.histplot(data=df_, x='tau*', hue='exp_label_',
-                    multiple='dodge', element='bars', bins=25,
-                    hue_order=['Perovskite', 'Nonperovskite'])
+    sns.set_context('talk')
+    ax = sns.histplot(data=df_, x='tau*', hue='exp_label_',
+                      multiple='dodge', element='bars', bins=25,
+                      hue_order=['Perovskite', 'Nonperovskite'])
 
-  # Add axvspan calls with labels
-  ax.axvline(x=threshold, color='k', label='$\\tau$*' + f' > {threshold}')
-  ax.axvspan(xmin=0, xmax=threshold, color='limegreen', alpha=0.25, label= '$\\tau$*' + f' < {threshold}')
+    # Add axvspan calls with labels
+    ax.axvline(x=threshold, color='k', label='$\\tau$*' + f' > {threshold}')
+    ax.axvspan(xmin=0, xmax=threshold, color='limegreen', alpha=0.25, label= '$\\tau$*' + f' < {threshold}')
 
-  # Get all handles and labels from the axis. This should include both histplot and axvspan.
-  if ax.legend_ is not None:
-      ax.legend_.set_title(None)
+    # Get all handles and labels from the axis. This should include both histplot and axvspan.
+    if ax.legend_ is not None:
+        ax.legend_.set_title(None)
 
-  # Create a unified legend from the collected handles and labels, without a title.
-  # This will overwrite any default legend created by seaborn.
-  #ax.legend(handles=handles, labels=labels, title=None)
+    # Create a unified legend from the collected handles and labels, without a title.
+    # This will overwrite any default legend created by seaborn.
+    #ax.legend(handles=handles, labels=labels, title=None)
 
-  plt.xlim([0, 1.6])
-  plt.xlabel('$\\tau$*')
-  plt.ylabel('Counts')
-  plt.tight_layout()
+    plt.xlim([0, 1.6])
+    plt.xlabel('SISSO-derived $\\tau$*')
+    plt.ylabel('Counts')
+    plt.tight_layout()
 
-  plt.savefig(FIGURES_DIR / 'tau_star_histogram.png', dpi=600, bbox_inches='tight')
+    plt.savefig(FIGURES_DIR / 'tau_star_histogram.png', dpi=600, bbox_inches='tight')
 
-  plt.show()
+    plt.show()
 
-def plot_t_star_histogram(thresholds, df):
+def plot_t_star_histogram(thresholds: List[float], df: pd.DataFrame) -> None:
+    """Create histogram of t* (Jess et al.) tolerance factor values by stability class.
+
+    Generates a histogram showing the distribution of t* values with
+    perovskite/nonperovskite classification, highlighting the two-threshold
+    stability region characteristic of this tolerance factor.
+
+    Args:
+        thresholds: List of two threshold values [lower, upper] defining stable region.
+        df: DataFrame containing 't*' and 'exp_label' columns.
+    """
 
     fig = plt.figure(figsize=(8, 6))
 
@@ -395,7 +497,7 @@ def plot_t_star_histogram(thresholds, df):
     #ax.legend(handles=handles, labels=labels, title=None)
 
     plt.xlim([0.3, 2.2])
-    plt.xlabel('Jess et al. tolerance factor (t*)')
+    plt.xlabel('Jess et al. tolerance factor ($t_{Jess}$)')
     plt.ylabel('Counts')
     plt.tight_layout()
 
@@ -403,7 +505,17 @@ def plot_t_star_histogram(thresholds, df):
 
     plt.show()
 
-def plot_t_star_vs_p_t_sisso(df, thresholds):
+def plot_t_star_vs_p_t_sisso(df: pd.DataFrame, thresholds: List[float]) -> None:
+    """Create scatter plot of t* vs P(τ*) with stability regions.
+
+    Visualizes the relationship between the Jess et al. tolerance factor (t*)
+    and the calibrated probability P(τ*), with vertical lines marking the
+    stability threshold region.
+
+    Args:
+        thresholds: List of two threshold values [lower, upper] for t* stability region.
+        df: DataFrame containing 't*', 'p_tau*', and 'exp_label' columns.
+    """
     plt.figure(figsize=(8, 6))
 
     # Create a copy and map exp_label for better legend labels
@@ -429,7 +541,7 @@ def plot_t_star_vs_p_t_sisso(df, thresholds):
 
     ax.axvspan(xmin=thresholds[0], xmax=thresholds[1], color='limegreen', alpha=0.25, )
 
-    ax.set_xlabel('Jess et al. tolerance factor (t*)')
+    ax.set_xlabel('Jess et al. tolerance factor ($t_{Jess}$)')
     ax.set_ylabel('P($\\tau$*)')
 
     # Remove title from legend
@@ -444,7 +556,19 @@ def plot_t_star_vs_p_t_sisso(df, thresholds):
 
     plt.show()
 
-def colormap_radii(df, exp_df, clf_proba=None, t_sisso=False):
+def colormap_radii(df: pd.DataFrame, exp_df: pd.DataFrame, clf_proba: Optional[Any] = None, t_sisso: bool = False) -> None:
+    """Create 2D colormap of stability predictions vs ionic radii for S and Se anions.
+
+    Generates side-by-side heatmaps showing t_sisso or P(t_sisso) values across
+    the (rA, rB) ionic radii space for sulfide and selenide compounds, with
+    experimentally observed compounds overlaid as markers.
+
+    Args:
+        df: DataFrame with predicted compositions containing rA, rB, rX columns.
+        exp_df: DataFrame with experimental compounds for overlay markers.
+        clf_proba: Pre-trained Platt scaling classifier; if None, loads from file.
+        t_sisso: If True, plot raw t_sisso values; if False, plot P(t_sisso).
+    """
 
     import numpy as np
     import matplotlib.pyplot as plt
@@ -555,7 +679,17 @@ def colormap_radii(df, exp_df, clf_proba=None, t_sisso=False):
     plt.show()
 
 
-def confusion_matrix_plot(df, test=True):
+def confusion_matrix_plot(df: pd.DataFrame, test: bool = True) -> None:
+    """Generate confusion matrix heatmap for stability classification results.
+
+    Creates a heatmap visualization of the confusion matrix comparing predicted
+    stability (based on P(t_sisso) >= 0.5 threshold) against experimental labels.
+
+    Args:
+        df: DataFrame containing 'exp_label' and 'p_t_sisso' columns.
+        test: If True, label as test set and use fixed color scale;
+            if False, label as train set with auto-scaled colors.
+    """
 
 
     from sklearn.metrics import confusion_matrix
@@ -574,7 +708,12 @@ def confusion_matrix_plot(df, test=True):
     cm = confusion_matrix(y_true, y_pred)
 
     plt.figure(figsize=(6, 4))
-    sns.heatmap(cm, annot=True, fmt='d', cmap='Blues',
+    if test:
+        sns.heatmap(cm, annot=True, fmt='d', cmap='Greens',
+                xticklabels=['Negative', 'Positive'],
+                yticklabels=['Negative', 'Positive'], vmax=35, vmin=0)
+    else:
+        sns.heatmap(cm, annot=True, fmt='d', cmap='Greens',
                 xticklabels=['Negative', 'Positive'],
                 yticklabels=['Negative', 'Positive'])
 
@@ -585,10 +724,22 @@ def confusion_matrix_plot(df, test=True):
     else:
         plt.title('Confusion Matrix - Train Set')
 
-    plt.savefig(FIGURES_DIR / f'confusion_matrix_{"test" if test else "train"}.png', dpi=600)
+    plt.savefig(FIGURES_DIR / f'confusion_matrix_{"test" if test else "train"}.png', dpi=600, bbox_inches='tight')
     plt.show()
 
-def normalize_abx3(formula):
+def normalize_abx3(formula: str) -> Optional[str]:
+    """Normalize a perovskite formula to standard ABX3 format.
+
+    Parses a chemical formula and reorders elements to place the two cations
+    (A, B) alphabetically before the anion (X) with stoichiometry 3.
+
+    Args:
+        formula: Chemical formula string (e.g., 'BaTiS3', 'SrZrSe3').
+
+    Returns:
+        str: Normalized formula in 'ABX3' format, or None if formula
+            doesn't match ABX3 stoichiometry.
+    """
     import re
     from collections import Counter
     tokens = re.findall(r'([A-Z][a-z]?)(\d*)', formula)
@@ -607,7 +758,20 @@ def normalize_abx3(formula):
 
     return f"{AB[0]}{AB[1]}{X}3"
 
-def plot_matrix(df_out, df_crystal, anion='S', parameter='Eg', clf_proba=None):
+def plot_matrix(df_out: pd.DataFrame, df_crystal: pd.DataFrame, anion: str = 'S', parameter: str = 'Eg', clf_proba: Optional[Any] = None) -> None:
+    """Create scatter matrix of cation A vs cation B colored by bandgap or P(t_sisso).
+
+    Generates a matrix plot showing all predicted compositions for a given anion,
+    with each point representing an AB pair colored by bandgap energy or stability
+    probability. CrystaLLM-validated compositions are highlighted with borders.
+
+    Args:
+        df_out: DataFrame with predicted compositions containing A, B, X, formula columns.
+        df_crystal: DataFrame with CrystaLLM-validated compositions for highlighting.
+        anion: Anion element to filter ('S' or 'Se').
+        parameter: Coloring parameter ('Eg' for bandgap, 'p_t_sisso' for probability).
+        clf_proba: Pre-trained Platt scaling classifier; if None, loads from file.
+    """
 
 
     import matplotlib.pyplot as plt
@@ -726,12 +890,29 @@ def plot_matrix(df_out, df_crystal, anion='S', parameter='Eg', clf_proba=None):
 
     plt.show()
 
-def pareto_front_plot(df, variable, Eg_ref=1.34,
-                  plot_names=False, ax=None,
-                  same_y_axis=False, 
-                  plot_PCE=False,
-                  sj_limit_path = RAW_DATA_DIR / "SJ_limit.csv",
-                  dj_limit_path = RAW_DATA_DIR / "DJ_limit.csv"):
+def pareto_front_plot(df: pd.DataFrame, variable: str, Eg_ref: float = 1.34,
+                  plot_names: bool = False, ax: Optional[Any] = None,
+                  same_y_axis: bool = False, 
+                  plot_PCE: bool = False,
+                  sj_limit_path: Path = RAW_DATA_DIR / "SJ_limit.csv",
+                  dj_limit_path: Path = RAW_DATA_DIR / "DJ_limit.csv") -> None:
+    """Plot Pareto front for bandgap deviation vs sustainability metric.
+
+    Creates a multi-objective optimization plot showing the tradeoff between
+    bandgap deviation from a reference value and a sustainability metric
+    (HHI, SR, or 1-CL score), with Pareto-optimal points highlighted.
+
+    Args:
+        df: DataFrame with 'bandgap', 'formula', and sustainability metric columns.
+        variable: Sustainability metric column name ('HHI', 'SR', or '1-CL score').
+        Eg_ref: Reference bandgap in eV (1.34 for single-junction, 1.71 for tandem).
+        plot_names: If True, annotate points with formula labels.
+        ax: Matplotlib axes object; if None, creates new figure.
+        same_y_axis: If True, hide y-axis labels (for multi-panel figures).
+        plot_PCE: If True, overlay theoretical PCE limit colormap.
+        sj_limit_path: Path to single-junction Shockley-Queisser limit data.
+        dj_limit_path: Path to dual-junction limit data for tandem cells.
+    """
 
     import matplotlib.pyplot as plt
     import seaborn as sns
@@ -827,7 +1008,19 @@ def pareto_front_plot(df, variable, Eg_ref=1.34,
     if ax is None:
         plt.show()
 
-def plot_pareto_3fronts(df, print_tables=False, plot_names=False, FIGURES_DIR=FIGURES_DIR):
+def plot_pareto_3fronts(df: pd.DataFrame, print_tables: bool = False, plot_names: bool = False, FIGURES_DIR: Path = FIGURES_DIR) -> None:
+    """Create 3-objective Pareto front plot for bandgap, SR, and CL score.
+
+    Visualizes the multi-objective optimization landscape with crystal-likeness
+    score vs supply risk, colored by bandgap. Highlights Pareto-optimal
+    candidates for both single-junction (1.34 eV) and tandem (1.71 eV) targets.
+
+    Args:
+        df: DataFrame with 'bandgap', 'SR', 'CL score', and 'formula' columns.
+        print_tables: If True, print DataFrames of Pareto-optimal compositions.
+        plot_names: If True, annotate all points with formula labels.
+        FIGURES_DIR: Directory path for saving output figures.
+    """
 
     import matplotlib.pyplot as plt
     import seaborn as sns
@@ -895,79 +1088,156 @@ def plot_pareto_3fronts(df, print_tables=False, plot_names=False, FIGURES_DIR=FI
     plt.show()  
 
 
-def plot_PCA(df_scaled, df_pca, original_df, component_loadings, pca, pc1 = 1, pc2 = 2):
+def plot_PCA(df_scaled: pd.DataFrame, df_pca: pd.DataFrame, original_df: pd.DataFrame, component_loadings: pd.DataFrame, pca: Any, pc1: int = 1, pc2: int = 2) -> None:
+    """Create biplot of PCA scores with feature loading vectors.
 
-  import matplotlib.pyplot as plt
-  import numpy as np
-  import seaborn as sns
-  from tf_chpvk_pv.config import FIGURES_DIR
+    Generates a visualization combining PCA-transformed data points (colored by
+    bandgap, sized by rB) with feature loading vectors showing how original
+    variables contribute to the principal components.
 
-  dict_values = {'nA':'$n_A$',
-                'nB':'$n_B$',
-                'nX':'$n_X$',
-                'chi_A':r'$\chi_A$',
-                'chi_B':r'$\chi_B$',
-                'chi_X':r'$\chi_X$',
-                'rX':'$r_X$',
-                'rA':'$r_A$',
-                'rB':'$r_B$',
-                'bandgap': '$E_g$'}
+    Args:
+        df_scaled: Standardized DataFrame from perform_pca().
+        df_pca: Original data subset used for PCA.
+        original_df: Full original DataFrame with 'color_edge' column for styling.
+        component_loadings: DataFrame of feature loadings from perform_pca().
+        pca: Fitted sklearn PCA object.
+        pc1: Principal component number for x-axis (1-indexed).
+        pc2: Principal component number for y-axis (1-indexed).
+    """
 
-  sns.set_context('talk')
+    import matplotlib.pyplot as plt
+    import numpy as np
+    import seaborn as sns
+    from tf_chpvk_pv.config import FIGURES_DIR
 
-  # Transform the scaled data to get the principal components scores
-  pca_scores = pca.transform(df_scaled)
+    dict_values = {'nA':'$n_A$',
+                  'nB':'$n_B$',
+                  'nX':'$n_X$',
+                  'chi_A':r'$\chi_A$',
+                  'chi_B':r'$\chi_B$',
+                  'chi_X':r'$\chi_X$',
+                  'rX':'$r_X$',
+                  'rA':'$r_A$',
+                  'rB':'$r_B$',
+                  'bandgap': '$E_g$'}
 
-  # Get the loadings for PC1 and PC2
-  loadings_pc1 = component_loadings['PC' + str(pc1)]
-  loadings_pc2 = component_loadings['PC' + str(pc2)]
+    sns.set_context('talk')
 
-  # Scale the loadings for better visualization if needed (e.g., by explained variance or just a constant factor)
-  # For simplicity, we'll scale by the square root of explained variance to make them proportional to the component's importance
-  scale_pc1 = np.sqrt(pca.explained_variance_[pc1-1])
-  scale_pc2 = np.sqrt(pca.explained_variance_[pc2-1])
+    # Transform the scaled data to get the principal components scores
+    pca_scores = pca.transform(df_scaled)
 
-  plt.figure(figsize=(10, 8))
+    # Get the loadings for PC1 and PC2
+    loadings_pc1 = component_loadings['PC' + str(pc1)]
+    loadings_pc2 = component_loadings['PC' + str(pc2)]
 
-  # Plot the data points (PCA scores), color-coded by 'bandgap'
-  scatter = plt.scatter(pca_scores[:, pc1-1], pca_scores[:, pc2-1],
-                        c=df_pca['bandgap'], cmap='jet', vmin=0.5, vmax=3.5,
-                        alpha=0.75, edgecolors=original_df['color_edge'], s=df_pca['rB'])
+    # Scale the loadings for better visualization if needed (e.g., by explained variance or just a constant factor)
+    # For simplicity, we'll scale by the square root of explained variance to make them proportional to the component's importance
+    scale_pc1 = np.sqrt(pca.explained_variance_[pc1-1])
+    scale_pc2 = np.sqrt(pca.explained_variance_[pc2-1])
 
-  # Add a colorbar for the bandgap values
-  plt.colorbar(scatter, label='Bandgap (eV)')
+    plt.figure(figsize=(10, 8))
 
-  # Plot the feature loadings as vectors
-  for i, feature in enumerate(df_scaled.columns):
-      # Adjust the length of the loading vectors for better visibility
-      # Here, scaling by a factor relative to the component's variance and the range of scores
-      # Using .iloc to avoid FutureWarning
-      col = 'red'
-      if feature == 'bandgap':
-          col = 'blue'
-      plt.arrow(0, 0, loadings_pc1.iloc[i] * scale_pc1 * 3, loadings_pc2.iloc[i] * scale_pc2 * 3,
-                head_width=0.05, head_length=0.05, fc=col, ec=col, linewidth=1.5)
+    # Plot the data points (PCA scores), color-coded by 'bandgap'
+    scatter = plt.scatter(pca_scores[:, pc1-1], pca_scores[:, pc2-1],
+                          c=df_pca['bandgap'], cmap='jet', vmin=0.5, vmax=3.5,
+                          alpha=0.75, edgecolors=original_df['color_edge'], s=df_pca['rB'])
 
-      # Highlight 'bandgap' specifically
-      if feature == 'bandgap':
-          plt.text(loadings_pc1.iloc[i] * scale_pc1 * 3 * 1.2, loadings_pc2.iloc[i] * scale_pc2 * 3 * 1.2,
-                  dict_values[feature], color='blue', ha='center', va='center', fontweight='bold')
-      else:
-          plt.text(loadings_pc1.iloc[i] * scale_pc1 * 3 * 1.2, loadings_pc2.iloc[i] * scale_pc2 * 3 * 1.2,
-                  dict_values[feature], color='red', ha='center', va='center')
+    # Add a colorbar for the bandgap values
+    plt.colorbar(scatter, label='Bandgap (eV)')
 
-  plt.xlabel(f'PC {pc1} ({pca.explained_variance_ratio_[pc1-1]*100:.1f}% variance)')
-  plt.ylabel(f'PC {pc2} ({pca.explained_variance_ratio_[pc2-1]*100:.1f}% variance)')
-  plt.axhline(0, color='k', linewidth=2)
-  plt.axvline(0, color='k', linewidth=2)
-  plt.xlim([-4.2,4.2])
-  plt.ylim([-4.2,4.2])
+    # Plot the feature loadings as vectors
+    for i, feature in enumerate(df_scaled.columns):
+        # Adjust the length of the loading vectors for better visibility
+        # Here, scaling by a factor relative to the component's variance and the range of scores
+        # Using .iloc to avoid FutureWarning
+        col = 'red'
+        if feature == 'bandgap':
+            col = 'blue'
+        plt.arrow(0, 0, loadings_pc1.iloc[i] * scale_pc1 * 3, loadings_pc2.iloc[i] * scale_pc2 * 3,
+                  head_width=0.05, head_length=0.05, fc=col, ec=col, linewidth=1.5)
 
-  name_file = f'PCA_PC{pc1}_PC{pc2}_plot.png'
+        # Highlight 'bandgap' specifically
+        if feature == 'bandgap':
+            plt.text(loadings_pc1.iloc[i] * scale_pc1 * 3 * 1.2, loadings_pc2.iloc[i] * scale_pc2 * 3 * 1.2,
+                    dict_values[feature], color='blue', ha='center', va='center', fontweight='bold')
+        else:
+            plt.text(loadings_pc1.iloc[i] * scale_pc1 * 3 * 1.2, loadings_pc2.iloc[i] * scale_pc2 * 3 * 1.2,
+                    dict_values[feature], color='red', ha='center', va='center')
 
-  plt.savefig(FIGURES_DIR / name_file, dpi=600, bbox_inches='tight')
+    plt.xlabel(f'PC {pc1} ({pca.explained_variance_ratio_[pc1-1]*100:.1f}% variance)')
+    plt.ylabel(f'PC {pc2} ({pca.explained_variance_ratio_[pc2-1]*100:.1f}% variance)')
+    plt.axhline(0, color='k', linewidth=2)
+    plt.axvline(0, color='k', linewidth=2)
+    plt.xlim([-4.2,4.2])
+    plt.ylim([-4.2,4.2])
 
-  plt.show()
+    name_file = f'PCA_PC{pc1}_PC{pc2}_plot.png'
+
+    plt.savefig(FIGURES_DIR / name_file, dpi=600, bbox_inches='tight')
+
+    plt.show()
+
+def corr_matrix(df: pd.DataFrame, metrics: List[str], dict_labels: Dict[str, str]) -> None:
+    """Generate correlation matrix heatmap for scoring metrics.
+
+    Creates a heatmap visualization of pairwise correlations between
+    sustainability and performance metrics, with interpretation of
+    correlation strengths printed to console.
+
+    Args:
+        df: DataFrame containing the metric columns to analyze.
+        metrics: List of metric column names to include in correlation analysis.
+        dict_labels: Dictionary mapping column names to display labels.
+    """
+
+    # Correlation matrix for scoring metrics
+    import matplotlib.pyplot as plt
+    import seaborn as sns
+
+    sns.set_context('talk')
+
+    # Select metrics for correlation analysis (exclude BG_Deviation - it's derived from Bandgap)
+    metrics_for_corr = metrics
+    available_metrics = [m for m in metrics_for_corr if m in df.columns]
+
+    # Create correlation matrix
+    corr_data = df[available_metrics].dropna()
+    corr_matrix = corr_data.corr()
+
+    # Rename for display
+    corr_matrix_display = corr_matrix.rename(index=dict_labels, columns=dict_labels)
+
+    # Create heatmap
+    fig, ax = plt.subplots(figsize=(10, 8))
+
+    # Custom colormap centered at 0
+    sns.heatmap(corr_matrix_display, 
+                annot=True, 
+                #fmt='.3f', 
+                cmap='RdBu_r',
+                center=0,
+                vmin=-1, 
+                vmax=1,
+                square=True,
+                linewidths=0.5,
+                ax=ax)
+
+    plt.savefig(RESULTS_DIR / 'metric_correlation_matrix.png', dpi=150, bbox_inches='tight')
+    plt.show()
+    
+    # Interpretation
+    print("\nInterpretation:")
+    print("-" * 55)
+    for i, m1 in enumerate(available_metrics):
+        for m2 in available_metrics[i+1:]:
+            r = corr_matrix.loc[m1, m2]
+            strength = "weak" if abs(r) < 0.3 else "moderate" if abs(r) < 0.6 else "strong"
+            direction = "positive" if r > 0 else "negative"
+            orthogonal = " → ORTHOGONAL" if abs(r) < 0.3 else ""
+            print(f"  {dict_labels.get(m1, m1)} vs {dict_labels.get(m2, m2)}: r = {r:.3f} ({strength} {direction}){orthogonal}")
+
+    print("\n✓ Low correlations indicate metrics capture independent material properties")
+
 
 
 if __name__ == "__main__":

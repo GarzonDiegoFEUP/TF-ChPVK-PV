@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import Any, Dict, Tuple
 
 import typer
 from loguru import logger
@@ -11,14 +12,21 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import pickle
 
-from tf_chpvk_pv.config import PROCESSED_DATA_DIR, INTERIM_DATA_DIR, TREES_DIR, RESULTS_DIR
+from tf_chpvk_pv.config import PROCESSED_DATA_DIR, INTERIM_DATA_DIR, TREES_DIR, RESULTS_DIR, RADII_TO_ANION
 
 app = typer.Typer()
 
 
 @app.command()
 def main():
-    # ---- REPLACE THIS WITH YOUR OWN CODE ----
+    """CLI entry point for model training and tolerance factor evaluation.
+
+    Orchestrates the complete training pipeline:
+    1. Trains decision trees on SISSO features to identify best tolerance factor
+    2. Evaluates t_sisso expression on train/test data
+    3. Tests multiple tolerance factors (t_sisso, t, tau, t_jess) with thresholds
+    4. Trains Platt scaling for probability calibration
+    """
     t_sisso_expression = train_tree_sis_features()
     logger.success("Modeling training complete.")
 
@@ -39,12 +47,30 @@ def main():
 
     logger.success("Modeling evaluation complete.")
 
-    train_platt_scaling(train_df, test_df, tolerance_factor_dict, clfs['t_sisso'])
-    # -----------------------------------------
+    train_platt_scaling(train_df, test_df, clfs['t_sisso'])
 
 
-def train_platt_scaling(train_df, test_df, clf_t, t='t_sisso',
-                        output_dir: Path = RESULTS_DIR):
+def train_platt_scaling(train_df: pd.DataFrame, test_df: pd.DataFrame, clf_t: Any, t: str = 't_sisso',
+                        output_dir: Path = RESULTS_DIR) -> Tuple[pd.DataFrame, pd.DataFrame, CalibratedClassifierCV]:
+    """Train Platt scaling model for probability calibration.
+
+    Applies isotonic regression (CalibratedClassifierCV) to convert raw
+    tolerance factor values into calibrated probability estimates P(t_sisso),
+    enabling probabilistic stability predictions.
+
+    Args:
+        train_df: Training DataFrame with tolerance factor column.
+        test_df: Test DataFrame with tolerance factor column.
+        clf_t: Pre-trained decision tree classifier for initial predictions.
+        t: Name of tolerance factor column to calibrate.
+        output_dir: Directory to save processed datasets with probabilities.
+
+    Returns:
+        tuple: Contains:
+            - train_df (pd.DataFrame): Training data with added 'p_{t}' column.
+            - test_df (pd.DataFrame): Test data with added 'p_{t}' column.
+            - clf2_sisso (CalibratedClassifierCV): Fitted Platt scaling model.
+    """
 
     logger.info("Training Platt scaling model...")
 
@@ -71,10 +97,23 @@ def train_tree_sis_features(
     features_path: Path = INTERIM_DATA_DIR / "features_sisso.csv",
     train_data_path: Path = PROCESSED_DATA_DIR / "chpvk_train_dataset.csv",
     test_data_path: Path = PROCESSED_DATA_DIR / "chpvk_test_dataset.csv",
-):
-    # ---- REPLACE THIS WITH YOUR OWN CODE ----
+) -> str:
+    """Train decision tree classifiers on SISSO features to find best tolerance factor.
+
+    Ranks all SISSO-generated features by classification accuracy using
+    decision trees with cross-validation. The top-ranked feature expression
+    becomes the t_sisso tolerance factor formula.
+
+    Args:
+        features_path: Path to SISSO-generated features CSV.
+        train_data_path: Path to training dataset with exp_label.
+        test_data_path: Path to test dataset.
+
+    Returns:
+        str: Mathematical expression for t_sisso tolerance factor,
+            converted to Python eval-compatible syntax.
+    """
     logger.info("Training tree model with SISSO features...")
-    # -----------------------------------------
 
     #train classification trees for the selected descriptors
     train_df = pd.read_csv(train_data_path, index_col=0)
@@ -119,10 +158,23 @@ def train_tree_sis_features_Ch(
     features_path: Path = INTERIM_DATA_DIR / "features_sisso.csv",
     train_data_path: Path = PROCESSED_DATA_DIR / "chpvk_train_dataset.csv",
     test_data_path: Path = PROCESSED_DATA_DIR / "chpvk_test_dataset.csv",
-):
-    # ---- REPLACE THIS WITH YOUR OWN CODE ----
+) -> str:
+    """Train decision tree classifiers with sample weights for chalcogenides.
+
+    Similar to train_tree_sis_features but applies higher weights to
+    chalcogenide (S, Se) compounds during training and uses F1 score
+    instead of accuracy for feature ranking.
+
+    Args:
+        features_path: Path to SISSO-generated features CSV.
+        train_data_path: Path to training dataset with exp_label.
+        test_data_path: Path to test dataset.
+
+    Returns:
+        str: Mathematical expression for t_sisso tolerance factor,
+            optimized for chalcogenide classification.
+    """
     logger.info("Training tree model with SISSO features...")
-    # -----------------------------------------
 
     #train classification trees for the selected descriptors
     train_df = pd.read_csv(train_data_path, index_col=0)
@@ -166,9 +218,27 @@ def train_tree_sis_features_Ch(
     print('Identified expression for t_sisso: %s' % t_sisso_expression)
     return t_sisso_expression
     
-def evaluate_t_sisso(t_sisso_expression, idx=-1,
+def evaluate_t_sisso(t_sisso_expression: str, idx: int = -1,
                      train_df_path: Path = PROCESSED_DATA_DIR / "chpvk_train_dataset.csv",
-                     test_df_path: Path = PROCESSED_DATA_DIR / "chpvk_test_dataset.csv"):
+                     test_df_path: Path = PROCESSED_DATA_DIR / "chpvk_test_dataset.csv") -> Tuple[pd.DataFrame, pd.DataFrame, Dict[str, Any]]:
+    """Evaluate tolerance factor expressions on train and test datasets.
+
+    Computes t_sisso and reference tolerance factors (t, tau, t_jess) for
+    all compounds in the datasets by evaluating their mathematical expressions.
+
+    Args:
+        t_sisso_expression: Mathematical expression string for t_sisso.
+        idx: If not -1, append index to column name (e.g., 't_sisso_0').
+        train_df_path: Path to training dataset CSV.
+        test_df_path: Path to test dataset CSV.
+
+    Returns:
+        tuple: Contains:
+            - train_df (pd.DataFrame): Training data with computed tolerance factors.
+            - test_df (pd.DataFrame): Test data with computed tolerance factors.
+            - tolerance_factor_dict (dict): Dictionary mapping factor names to
+              [expression, threshold] lists.
+    """
     
     import re
     
@@ -243,8 +313,29 @@ def evaluate_t_sisso(t_sisso_expression, idx=-1,
 
     return train_df, test_df, tolerance_factor_dict
 
-def test_tolerance_factor(t, train_df, test_df, tolerance_factor_dict, df_acc=pd.DataFrame(),
-                          n_tresh=1, cl_w = 'balanced', crit='entropy'):
+def test_tolerance_factor(t: str, train_df: pd.DataFrame, test_df: pd.DataFrame, tolerance_factor_dict: Dict[str, Any], df_acc: pd.DataFrame = pd.DataFrame(),
+                          n_tresh: int = 1, cl_w: str = 'balanced', crit: str = 'entropy') -> Tuple[pd.DataFrame, Any]:
+    """Test a tolerance factor using decision tree classification.
+
+    Trains a decision tree on the tolerance factor values, determines optimal
+    threshold(s), and computes accuracy metrics for train, test, and per-anion
+    subsets. Saves a visualization of the decision tree.
+
+    Args:
+        t: Name of tolerance factor column to test.
+        train_df: Training DataFrame with tolerance factor and exp_label.
+        test_df: Test DataFrame with tolerance factor and exp_label.
+        tolerance_factor_dict: Dictionary to store threshold values.
+        df_acc: DataFrame to accumulate accuracy results across factors.
+        n_tresh: Decision tree depth (1 for single threshold, 2 for range).
+        cl_w: Class weight strategy for decision tree ('balanced' recommended).
+        crit: Split criterion ('entropy' or 'gini').
+
+    Returns:
+        tuple: Contains:
+            - df_acc (pd.DataFrame): Updated accuracy results DataFrame.
+            - clf1_model: Fitted decision tree classifier.
+    """
     
     labels_train=train_df["exp_label"].to_numpy()
     labels_test=test_df["exp_label"].to_numpy()
@@ -303,13 +394,7 @@ def test_tolerance_factor(t, train_df, test_df, tolerance_factor_dict, df_acc=pd
     df_acc.loc['all_data', t] = acc_all
     
     #get accuracy per X anion with the rX
-    dict_ch = {133:'F',
-            181:'Cl',
-            198:'Se',
-            196.0:'Br',
-            184.0:'S',
-            220.00000000000003:'I'
-            }
+    dict_ch = RADII_TO_ANION
   
         
     for rx in train_df.rX.unique():
@@ -331,8 +416,29 @@ def test_tolerance_factor(t, train_df, test_df, tolerance_factor_dict, df_acc=pd
     
     return df_acc, clf1_model
 
-def test_tolerance_factor_Ch(t, train_df, test_df, tolerance_factor_dict, df_acc=pd.DataFrame(),
-                          n_tresh=1, cl_w = 'balanced', crit='entropy'):
+def test_tolerance_factor_Ch(t: str, train_df: pd.DataFrame, test_df: pd.DataFrame, tolerance_factor_dict: Dict[str, Any], df_acc: pd.DataFrame = pd.DataFrame(),
+                          n_tresh: int = 1, cl_w: str = 'balanced', crit: str = 'entropy') -> Tuple[pd.DataFrame, Any]:
+    """Test a tolerance factor with sample weights for chalcogenide compounds.
+
+    Similar to test_tolerance_factor but applies 2x weight to chalcogenide
+    (S, Se) compounds during training and uses F1 score for evaluation,
+    improving performance on the target chalcogenide perovskite class.
+
+    Args:
+        t: Name of tolerance factor column to test.
+        train_df: Training DataFrame with tolerance factor and exp_label.
+        test_df: Test DataFrame with tolerance factor and exp_label.
+        tolerance_factor_dict: Dictionary to store threshold values.
+        df_acc: DataFrame to accumulate F1 results across factors.
+        n_tresh: Decision tree depth (1 for single threshold, 2 for range).
+        cl_w: Class weight strategy for decision tree.
+        crit: Split criterion ('entropy' or 'gini').
+
+    Returns:
+        tuple: Contains:
+            - df_acc (pd.DataFrame): Updated F1 score results DataFrame.
+            - clf1_model: Fitted decision tree classifier with sample weights.
+    """
     
     
     
@@ -398,13 +504,7 @@ def test_tolerance_factor_Ch(t, train_df, test_df, tolerance_factor_dict, df_acc
     df_acc.loc['all_data', t] = acc_all
     
     #get accuracy per X anion with the rX
-    dict_ch = {133:'F',
-            181:'Cl',
-            198:'Se',
-            196:'Br',
-            184:'S',
-            220.00000000000003:'I'
-            }
+    dict_ch = RADII_TO_ANION
     
         
     for rx in train_df.rX.unique():

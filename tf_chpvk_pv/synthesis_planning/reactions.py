@@ -28,7 +28,7 @@ def get_possible_reactions(precursors, product):
             reaction = ComputedReaction(reactants, product)
             if len(reaction.reactants) == 2 and len(reaction.products)==1:
                 reactions.append(reaction)
-        except:
+        except Exception:
             SkipReaction('Reaction can not be compositionally balanced')
     return reactions
 

@@ -22,11 +22,10 @@ SUSTAINABILITY_DATA_DIR = DATA_DIR / "sustainability_data"
 
 MODELS_DIR = PROJ_ROOT / "models"
 TREES_DIR = MODELS_DIR / "trees"
-RESULTS_DIR = MODELS_DIR/ "results"
+RESULTS_DIR = MODELS_DIR / "results"
 
 REPORTS_DIR = PROJ_ROOT / "reports"
 FIGURES_DIR = REPORTS_DIR / "figures"
-RESULTS_DIR = MODELS_DIR/ "results"
 SYNTHESIS_FIG_DIR = FIGURES_DIR / "synthesis_planning"
 
 NOTEBOOKS_DIR = PROJ_ROOT / "notebooks"
@@ -35,6 +34,20 @@ TRAINED_MODELS = MODEL_CRABNET_DIR / "trained_models"
 
 # Random seed
 RANDOM_SEED = 187636123
+
+# Chalcogenide/halide ionic radii mappings (rX values in picometers)
+# Symbol to radii mapping
+ANION_RADII = {
+    'F': 133.0,
+    'Cl': 181.0,
+    'Se': 198.0,
+    'Br': 196.0,
+    'S': 184.0,
+    'I': 220.00000000000003
+}
+
+# Radii to symbol mapping (inverse)
+RADII_TO_ANION = {v: k for k, v in ANION_RADII.items()}
 
 # Primary features to use
 
