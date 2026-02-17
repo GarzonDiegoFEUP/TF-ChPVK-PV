@@ -1,3 +1,19 @@
+"""GCNN-based synthesizability prediction for crystal structures.
+
+This module provides utilities for predicting the crystal-likeness (synthesizability)
+of perovskite structures using a Graph Convolutional Neural Network (GCNN). It includes
+data preparation, model loading, and inference pipelines for evaluating experimental
+plausibility of computationally generated crystal structures.
+
+Key Functions:
+    - create_id_prop: Prepare crystal composition data for GCNN inference
+    - run_prediction: Execute GCNN predictions on crystal structures
+    - use_model: Inference function for individual model evaluation
+
+For more details on the GCNN algorithm and methodology, see the module documentation
+in tf_chpvk_pv/modeling/gcnn/README.md
+"""
+
 import os
 import json
 from time import time
@@ -23,7 +39,11 @@ from glob import glob
 import csv
 
 def main():
-
+    """Entry point for GCNN synthesizability prediction pipeline.
+    
+    Executes the full prediction workflow including data preparation,
+    model loading, and output generation.
+    """
     run_prediction()
 
 
@@ -32,6 +52,22 @@ def create_id_prop(input_data_folder: Path = CRYSTALLM_DATA_DIR / "cif_files",
                    crystal_csv: Path = PROCESSED_DATA_DIR / "results_CrystaLLM_with_HHI.csv",
                    exp_csv: Path = PROCESSED_DATA_DIR / "chpvk_dataset.csv",
                    output_id_prop: Path = CRYSTALLM_DATA_DIR / "cif_files/id_prop.csv"):
+    """Prepare composition ID and label data for GCNN inference.
+    
+    Merges CrystaLLM-generated structures with SISSO results and experimental data
+    to create a labeled dataset for GCNN prediction. Assigns labels based on whether
+    structures have experimental support in the chalcogenide perovskite dataset.
+    
+    Args:
+        input_data_folder: Path to CIF files directory.
+        sisso_csv: Path to SISSO tolerance factor results.
+        crystal_csv: Path to CrystaLLM results with HHI scores.
+        exp_csv: Path to experimental chalcogenide perovskite dataset.
+        output_id_prop: Output path for composition-label CSV file.
+    
+    Returns:
+        None. Writes id_prop.csv to output_id_prop path.
+    """
 
     import pandas as pd
     from pymatgen.core.composition import Composition
@@ -71,7 +107,27 @@ def run_prediction(
                    folder_weights: Path = INTERIM_DATA_DIR / "weights",
                    output_prediction_json: Path = PROCESSED_DATA_DIR / "Perov_All.json.csv",
                    output_prediction_csv: Path = PROCESSED_DATA_DIR / "prediction.csv"):
-
+    """Execute GCNN-based synthesizability predictions on crystal structures.
+    
+    Loads pre-trained GCNN model weights, processes crystal structures from CIF files,
+    and generates crystal-likeness (CL) scores with uncertainty estimates. Scores are
+    computed as an ensemble average across multiple trained models for robustness.
+    
+    Args:
+        input_data_folder: Path containing CIF files and id_prop.csv.
+        folder_weights: Path containing pre-trained GCNN model weights.
+        output_prediction_json: Intermediate output path for prediction JSON.
+        output_prediction_csv: Final output CSV with CL scores and uncertainties.
+    
+    Returns:
+        None. Writes prediction results to output_prediction_csv in format:
+            [id, CL score, CL score std]
+    
+    Notes:
+        - Automatically creates id_prop.csv if not present.
+        - Uses GPU if available (multi-GPU supported).
+        - Ensemble predictions reduce variance in synthesizability estimates.
+    """
     
     data_path= input_data_folder.as_posix()
 
@@ -133,6 +189,27 @@ def run_prediction(
         
     
 def use_model(data_loader, model, epoch):
+    """Perform inference using a trained GCNN model on crystal data.
+    
+    Evaluates the model on all structures in the data loader in batch mode.
+    Tracks timing statistics and returns crystal-likeness predictions for each structure.
+    
+    Args:
+        data_loader: DataLoader providing batches of crystal structures and target labels.
+        model: Trained GCNN model in evaluation mode.
+        epoch: Epoch identifier for logging purposes.
+    
+    Returns:
+        tuple: Contains:
+            - outputs (list): Predicted crystal-likeness scores for each structure.
+            - targets (list): Target labels (0/1 for unlabeled/labeled structures).
+            - mpids (list): Structure identifiers, sorted in same order as outputs.
+    
+    Notes:
+        - Model is set to eval mode (no gradient computation).
+        - GPU inference used if model parameters are on CUDA device.
+        - Outputs are sorted by structure ID for consistent ordering.
+    """
     
     batch_time = AverageMeter()
     
@@ -177,16 +254,29 @@ def use_model(data_loader, model, epoch):
     return outputs,targets,mpids
     #return outputs,targets,mpids,Bs
 class AverageMeter(object):
+    """Track average and current value of metrics.
+    
+    Utility class for monitoring prediction timing statistics during model inference.
+    Maintains running sum, count, and average of observed values.
+    """
     def __init__(self):
+        """Initialize meter with zeroed values."""
         self.reset()
 
     def reset(self):
+        """Reset all accumulated values to zero."""
         self.val = 0
         self.avg = 0
         self.sum = 0
         self.count = 0
 
-    def update(self,val,n=1):
+    def update(self, val, n=1):
+        """Update meter with new value(s).
+        
+        Args:
+            val: New value to add.
+            n: Number of occurrences of this value (default: 1).
+        """
         self.val = val
         self.sum += val * n
         self.count += n

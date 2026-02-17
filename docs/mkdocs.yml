@@ -22,6 +22,7 @@ plugins:
 
 nav:
   - Home: index.md
+  - Getting Started: getting-started.md
   - API Reference:
       - Dataset: api/dataset.md
       - Features: api/features.md
@@ -29,4 +30,7 @@ nav:
       - Modeling:
           - Train: api/modeling/train.md
           - Predict: api/modeling/predict.md
+          - GCCN Predict: api/modeling/gccn_predict.md
+          - CrabNet: api/modeling/crabnet.md
+          - GCNN: api/modeling/gcnn.md
           - CrabNet Utils: api/modeling/crabnet_utils.md
