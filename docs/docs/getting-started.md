@@ -78,32 +78,32 @@ Then select this kernel when opening notebooks in VS Code or Jupyter Lab.
 The analysis consists of sequential notebooks that should be run in order:
 
 ### Step 1: Tolerance Factor and Feature Engineering
-Run [1_get_SISSO_features.ipynb](../notebooks/1_get_SISSO_features.ipynb):
+Run [1_get_SISSO_features.ipynb](https://github.com/GarzonDiegoFEUP/TF-ChPVK-PV/blob/main/notebooks/1_get_SISSO_features.ipynb):
 - Load and normalize the chalcogenide perovskite dataset
 - Generate SISSO-derived tolerance factor features
 - Train tolerance factor predictor
 - Screen for synthetically viable compositions
 
 ### Step 2: Crystal Structure Generation & Evaluation
-Run [2_CrystaLLM_analysis.ipynb](../notebooks/2_CrystaLLM_analysis.ipynb):
+Run [2_CrystaLLM_analysis.ipynb](https://github.com/GarzonDiegoFEUP/TF-ChPVK-PV/blob/main/notebooks/2_CrystaLLM_analysis.ipynb):
 - Parse CrystaLLM-generated crystal structure files
 - Classify structures as corner-sharing vs edge-sharing perovskites
 - Filter for topologically valid ABX₃ perovskite geometries
 
 ### Step 3: Experimental Plausibility Assessment
-Run [3_Experimental_likelihood.ipynb](../notebooks/3_Experimental_likelihood.ipynb):
+Run [3_Experimental_likelihood.ipynb](https://github.com/GarzonDiegoFEUP/TF-ChPVK-PV/blob/main/notebooks/3_Experimental_likelihood.ipynb):
 - Assess crystal-likeness (synthesizability) using GCNN
 - Generate synthesizability scores for all candidate structures
 - Combine with other metrics for final ranking
 
 ### Step 4: Bandgap Prediction
-Run [4. crabnet_bandgap_prediction.ipynb](../notebooks/4.%20crabnet_bandgap_prediction.ipynb):
+Run [4. crabnet_bandgap_prediction.ipynb](https://github.com/GarzonDiegoFEUP/TF-ChPVK-PV/blob/main/notebooks/4.%20crabnet_bandgap_prediction.ipynb):
 - Train CrabNet composition-based bandgap predictor (if needed)
 - Evaluate on experimental data
 - Predict bandgaps for all candidates
 
 ### Step 5: Sustainability Analysis
-Run [5_HHI_calculation.ipynb](../notebooks/5_HHI_calculation.ipynb):
+Run [5_HHI_calculation.ipynb](https://github.com/GarzonDiegoFEUP/TF-ChPVK-PV/blob/main/notebooks/5_HHI_calculation.ipynb):
 - Calculate Herfindahl–Hirschman Index (HHI) for element scarcity
 - Integrate ESG and supply risk metrics
 

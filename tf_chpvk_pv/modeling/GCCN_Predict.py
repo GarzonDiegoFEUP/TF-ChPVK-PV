@@ -51,7 +51,7 @@ def create_id_prop(input_data_folder: Path = CRYSTALLM_DATA_DIR / "cif_files",
                    sisso_csv: Path = PROCESSED_DATA_DIR / "results_SISSO_with_bandgap.csv",
                    crystal_csv: Path = PROCESSED_DATA_DIR / "results_CrystaLLM_with_HHI.csv",
                    exp_csv: Path = PROCESSED_DATA_DIR / "chpvk_dataset.csv",
-                   output_id_prop: Path = CRYSTALLM_DATA_DIR / "cif_files/id_prop.csv"):
+                   output_id_prop: Path = CRYSTALLM_DATA_DIR / "cif_files/id_prop.csv") -> None:
     """Prepare composition ID and label data for GCNN inference.
     
     Merges CrystaLLM-generated structures with SISSO results and experimental data
@@ -106,7 +106,7 @@ def run_prediction(
                    input_data_folder: Path = CRYSTALLM_DATA_DIR / "cif_files",
                    folder_weights: Path = INTERIM_DATA_DIR / "weights",
                    output_prediction_json: Path = PROCESSED_DATA_DIR / "Perov_All.json.csv",
-                   output_prediction_csv: Path = PROCESSED_DATA_DIR / "prediction.csv"):
+                   output_prediction_csv: Path = PROCESSED_DATA_DIR / "prediction.csv") -> None:
     """Execute GCNN-based synthesizability predictions on crystal structures.
     
     Loads pre-trained GCNN model weights, processes crystal structures from CIF files,
@@ -188,7 +188,7 @@ def run_prediction(
             writer.writerow([cifid,cl,clstd])
         
     
-def use_model(data_loader, model, epoch):
+def use_model(data_loader: object, model: nn.Module, epoch: int) -> tuple[list, list, list]:
     """Perform inference using a trained GCNN model on crystal data.
     
     Evaluates the model on all structures in the data loader in batch mode.
@@ -270,7 +270,7 @@ class AverageMeter(object):
         self.sum = 0
         self.count = 0
 
-    def update(self, val, n=1):
+    def update(self, val: float, n: int = 1) -> None:
         """Update meter with new value(s).
         
         Args:
