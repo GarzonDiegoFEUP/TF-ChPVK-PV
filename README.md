@@ -107,13 +107,12 @@ The analysis is organized as a sequential pipeline. Run notebooks in order:
 
 | # | Notebook | Description |
 |---|----------|-------------|
-| 0 | `0. Figures paper.ipynb` | Generate all publication figures |
-| 1 | `1. get_SISSO_features.ipynb` | Dataset creation, SISSO feature generation, tolerance factor training and evaluation, Platt scaling, compositional screening |
-| 2 | `2. CrystaLLM_analysis.ipynb` | Parse CrystaLLM-generated CIF files, crystal-likeness scoring, corner-sharing vs edge-sharing classification |
-| 3 | `3. Synthesis_path.ipynb` | Synthesis pathway prediction via convex hull analysis (Materials Project) |
-| 3.1 | `3.1 Synthetizability.ipynb` | GCNN-based synthesizability assessment (crystal-likeness scores) |
+| 0 | `0_figures_paper.ipynb` | Generate all publication figures |
+| 1 | `1_get_SISSO_features.ipynb` | Dataset creation, SISSO feature generation, tolerance factor training and evaluation, Platt scaling, compositional screening |
+| 2 | `2_CrystaLLM_analysis.ipynb` | Parse CrystaLLM-generated CIF files, crystal-likeness scoring, corner-sharing vs edge-sharing classification |
+| 3 | `3_Experimental_likelihood.ipynb` | GCNN-based synthesizability assessment and experimental plausibility scoring |
 | 4 | `4. crabnet_bandgap_prediction.ipynb` | CrabNet bandgap model: training, evaluation, predictions for all candidates |
-| 5 | `5. HHI_calculation.ipynb` | Sustainability analysis: HHI, supply risk, ESG scoring |
+| 5 | `5_HHI_calculation.ipynb` | Sustainability analysis: HHI, supply risk, ESG scoring |
 
 
 ## Project Organization
@@ -146,20 +145,27 @@ The analysis is organized as a sequential pipeline. Run notebooks in order:
 ├── references/              <- Data dictionaries, manuals, explanatory materials
 │
 └── tf_chpvk_pv/             <- Source code (Python package)
+    ├── __init__.py
     ├── config.py            <- Path configuration and constants
     ├── dataset.py           <- Data loading, cleaning, composition generation
     ├── features.py          <- SISSO feature engineering and PCA
     ├── plots.py             <- Visualization functions
-    ├── modeling/
+    ├── modeling/            <- Machine learning models and training
+    │   ├── __init__.py
     │   ├── train.py         <- Tolerance factor training and evaluation
-    │   ├── predict.py       <- Model inference on new compositions
-    │   └── CrabNet/
-    │       └── utils.py     <- CrabNet bandgap prediction utilities
+    │   ├── predict.py       <- Model inference and predictions
+    │   ├── GCCN_Predict.py  <- GCNN-based synthesizability prediction
+    │   ├── CrabNet/         <- CrabNet bandgap model integration
+    │   └── gcnn/            <- GCNN model implementation
     └── synthesis_planning/  <- Synthesis pathway optimization (adapted from Chen et al.)
+        ├── __init__.py
+        ├── README.md
+        ├── LICENSE
         ├── synthesis_pathways.py
         ├── reactions.py
         ├── materials_entries.py
-        └── settings.py
+        ├── settings.py
+        └── interfacial_pdplotter.py
 ```
 
 ## References
