@@ -1,17 +1,21 @@
 # Getting Started
 
-This guide will help you set up the TF-ChPVK-PV environment and run the ML-guided screening pipeline for chalcogenide perovskites.
+This guide covers environment setup and installation so you can run the full screening pipeline.
+
+## Prerequisites
+
+- **Python <= 3.8.20** (required by dependency constraints)
+- Git
+- [uv](https://docs.astral.sh/uv/) (recommended) or pip
+
+!!! warning "Python version constraint"
+    This project requires **Python <= 3.8.20** due to specific dependency version locks. Using a newer Python version will cause resolution failures.
 
 ## Installation
 
-### Prerequisites
-- Python 3.8 or higher
-- Git
-- Conda or pip package manager
-
 ### Option 1: Using uv (Recommended)
 
-[uv](https://docs.astral.sh/uv/) provides the fastest and most reliable installation:
+[uv](https://docs.astral.sh/uv/) manages the virtual environment, lockfile, and dependencies in a single command:
 
 ```bash
 # Install uv (if not already installed)
@@ -25,7 +29,7 @@ cd TF-ChPVK-PV
 uv sync --extra dev --extra notebooks
 ```
 
-Or using Make:
+Or equivalently via Make:
 
 ```bash
 make install
@@ -34,15 +38,13 @@ make install
 ### Option 2: Using pip and venv
 
 ```bash
-# Create virtual environment
 python -m venv .venv
 source .venv/bin/activate  # On Windows: .venv\Scripts\activate
 
-# Install dependencies
 pip install -e ".[dev,notebooks]"
 ```
 
-### Option 3: Using frozen lockfile (exact reproduction)
+### Option 3: Frozen lockfile (exact reproduction)
 
 For reproducible results matching the exact development environment:
 
@@ -50,80 +52,64 @@ For reproducible results matching the exact development environment:
 pip install -r requirements.txt
 ```
 
+!!! tip "Exact reproduction"
+    The frozen lockfile in `requirements.txt` pins every transitive dependency to the exact versions used during development. Use this if you need bit-for-bit reproducibility.
+
 ## Configuration
 
-### Materials Project API (Optional)
+### Materials Project API Key
 
 Some notebooks query the [Materials Project API](https://materialsproject.org/api) for structural data. To enable this:
 
 1. Get your API key from [Materials Project](https://materialsproject.org/api)
-2. Create a `.env` file in the project root:
+2. Copy the example environment file and fill in your key:
 
 ```bash
-echo "MP_API_KEY=your_api_key_here" > .env
+cp .env.example .env
+# Edit .env and set: MP_API_KEY=your_api_key_here
 ```
+
+!!! note "Optional dependency"
+    The Materials Project API key is only required for notebooks that retrieve crystal structure data. The core pipeline will run without it using cached data in `data/`.
+
+### SISSO Features (Optional)
+
+SISSO features are pre-cached in `data/interim/features_sisso.csv`. If you need to re-derive them from scratch, install [sissopp](https://github.com/rouyang2017/SISSO) manually after setting up the environment.
 
 ## Jupyter Notebook Setup
 
-Configure the Jupyter kernel to use your environment. After installation:
+Register the virtual environment as a Jupyter kernel:
 
 ```bash
-python -m ipykernel install --user --name tf-chpvk --display-name "Python (TF-ChPVK)"
+uv run python -m ipykernel install --user --name tf-chpvk --display-name "Python (TF-ChPVK)"
 ```
 
-Then select this kernel when opening notebooks in VS Code or Jupyter Lab.
+Then select the **Python (TF-ChPVK)** kernel when opening notebooks in VS Code or Jupyter Lab.
 
-## Running the Pipeline
+## Next Steps
 
-The analysis consists of sequential notebooks that should be run in order:
-
-### Step 1: Tolerance Factor and Feature Engineering
-Run [1_get_SISSO_features.ipynb](https://github.com/GarzonDiegoFEUP/TF-ChPVK-PV/blob/main/notebooks/1_get_SISSO_features.ipynb):
-- Load and normalize the chalcogenide perovskite dataset
-- Generate SISSO-derived tolerance factor features
-- Train tolerance factor predictor
-- Screen for synthetically viable compositions
-
-### Step 2: Crystal Structure Generation & Evaluation
-Run [2_CrystaLLM_analysis.ipynb](https://github.com/GarzonDiegoFEUP/TF-ChPVK-PV/blob/main/notebooks/2_CrystaLLM_analysis.ipynb):
-- Parse CrystaLLM-generated crystal structure files
-- Classify structures as corner-sharing vs edge-sharing perovskites
-- Filter for topologically valid ABX₃ perovskite geometries
-
-### Step 3: Experimental Plausibility Assessment
-Run [3_Experimental_likelihood.ipynb](https://github.com/GarzonDiegoFEUP/TF-ChPVK-PV/blob/main/notebooks/3_Experimental_likelihood.ipynb):
-- Assess crystal-likeness (synthesizability) using GCNN
-- Generate synthesizability scores for all candidate structures
-- Combine with other metrics for final ranking
-
-### Step 4: Bandgap Prediction
-Run [4. crabnet_bandgap_prediction.ipynb](https://github.com/GarzonDiegoFEUP/TF-ChPVK-PV/blob/main/notebooks/4.%20crabnet_bandgap_prediction.ipynb):
-- Train CrabNet composition-based bandgap predictor (if needed)
-- Evaluate on experimental data
-- Predict bandgaps for all candidates
-
-### Step 5: Sustainability Analysis
-Run [5_HHI_calculation.ipynb](https://github.com/GarzonDiegoFEUP/TF-ChPVK-PV/blob/main/notebooks/5_HHI_calculation.ipynb):
-- Calculate Herfindahl–Hirschman Index (HHI) for element scarcity
-- Integrate ESG and supply risk metrics
+Once installed, head to the [Pipeline](pipeline.md) page to run the analysis notebooks in order.
 
 ## Project Structure
 
 ```
 TF-ChPVK-PV/
 ├── data/                    # Data directory (raw, interim, processed)
-├── notebooks/               # Jupyter analysis notebooks
-├── tf_chpvk_pv/            # Python package
-│   ├── modeling/           # ML models (GCNN, CrabNet, tolerance factor)
-│   ├── dataset.py          # Data loading and processing
-│   ├── features.py         # Feature engineering
-│   └── plots.py            # Visualization utilities
-├── models/                 # Trained model weights and results
-├── docs/                   # Documentation (MkDocs)
-└── requirements.txt        # Frozen dependency lockfile
+│   ├── raw/                 # Original immutable datasets
+│   ├── interim/             # Intermediate transformed data
+│   ├── processed/           # Final canonical datasets
+│   ├── crystaLLM/           # CrystaLLM-generated CIF files
+│   └── sustainability_data/ # ESG, HHI, earth abundance data
+├── notebooks/               # Jupyter analysis notebooks (numbered)
+├── tf_chpvk_pv/             # Python package
+│   ├── config.py            # Path configuration and constants
+│   ├── dataset.py           # Data loading and processing
+│   ├── features.py          # SISSO feature engineering
+│   ├── plots.py             # Visualization utilities
+│   ├── modeling/            # ML models (GCNN, CrabNet, tolerance factor)
+│   └── synthesis_planning/  # Synthesis pathway optimization
+├── models/                  # Trained model weights and results
+├── docs/                    # Documentation (MkDocs)
+├── pyproject.toml           # Package metadata and dependencies
+└── requirements.txt         # Frozen dependency lockfile
 ```
-
-## Support
-
-For issues, questions, or contributions, please visit the [GitHub repository](https://github.com/GarzonDiegoFEUP/TF-ChPVK-PV).
-
