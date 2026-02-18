@@ -8,6 +8,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import pickle
+import numpy as np
 
 from tf_chpvk_pv.config import FIGURES_DIR, PROCESSED_DATA_DIR, RAW_DATA_DIR, RESULTS_DIR, INTERIM_DATA_DIR
 
@@ -1178,11 +1179,11 @@ def plot_PCA(df_scaled: pd.DataFrame, df_pca: pd.DataFrame, original_df: pd.Data
     plt.show()
 
 def corr_matrix(df: pd.DataFrame, metrics: List[str], dict_labels: Dict[str, str]) -> None:
-    """Generate correlation matrix heatmap for scoring metrics.
+    """Generate Spearman rank-correlation matrix heatmap for scoring metrics.
 
-    Creates a heatmap visualization of pairwise correlations between
-    sustainability and performance metrics, with interpretation of
-    correlation strengths printed to console.
+    Creates a heatmap of pairwise Spearman correlations (robust to non-normal
+    and bounded distributions) with significance annotations.  Prints an
+    interpretation summary to the console.
 
     Args:
         df: DataFrame containing the metric columns to analyze.
@@ -1190,53 +1191,83 @@ def corr_matrix(df: pd.DataFrame, metrics: List[str], dict_labels: Dict[str, str
         dict_labels: Dictionary mapping column names to display labels.
     """
 
-    # Correlation matrix for scoring metrics
     import matplotlib.pyplot as plt
     import seaborn as sns
+    from scipy.stats import spearmanr
 
     sns.set_context('talk')
 
-    # Select metrics for correlation analysis (exclude BG_Deviation - it's derived from Bandgap)
-    metrics_for_corr = metrics
-    available_metrics = [m for m in metrics_for_corr if m in df.columns]
-
-    # Create correlation matrix
+    available_metrics = [m for m in metrics if m in df.columns]
     corr_data = df[available_metrics].dropna()
-    corr_matrix = corr_data.corr()
+    n = len(corr_data)
 
-    # Rename for display
-    corr_matrix_display = corr_matrix.rename(index=dict_labels, columns=dict_labels)
+    # --- Spearman rank correlation + two-sided p-values ---
+    rho_mat, p_mat = spearmanr(corr_data)
 
-    # Create heatmap
+    # spearmanr returns scalars when only 2 variables; ensure 2-D arrays
+    if corr_data.shape[1] == 2:
+        rho_mat = np.array([[1.0, rho_mat], [rho_mat, 1.0]])
+        p_mat   = np.array([[0.0, p_mat],   [p_mat,   0.0]])
+
+    rho_df = pd.DataFrame(rho_mat, index=available_metrics, columns=available_metrics)
+    p_df   = pd.DataFrame(p_mat,   index=available_metrics, columns=available_metrics)
+
+    # Build annotation strings: ρ value + significance stars
+    def _sig_stars(p: float) -> str:
+        if p < 0.001:
+            return '***'
+        if p < 0.01:
+            return '**'
+        if p < 0.05:
+            return '*'
+        return ''
+
+    annot_array = np.empty_like(rho_mat, dtype=object)
+    for i in range(len(available_metrics)):
+        for j in range(len(available_metrics)):
+            stars = _sig_stars(p_df.iloc[i, j])
+            annot_array[i, j] = f'{rho_df.iloc[i, j]:.2f}{stars}'
+
+    # Rename for display labels
+    display_labels = [dict_labels.get(m, m) for m in available_metrics]
+
+    # --- Heatmap ---
     fig, ax = plt.subplots(figsize=(10, 8))
+    sns.heatmap(
+        rho_df.values,
+        annot=annot_array,
+        fmt='',
+        cmap='RdBu_r',
+        center=0,
+        vmin=-1,
+        vmax=1,
+        square=True,
+        linewidths=0.5,
+        xticklabels=display_labels,
+        yticklabels=display_labels,
+        ax=ax,
+    )
+    ax.set_title(f'Spearman rank correlation (n = {n})', fontsize=14, pad=12)
 
-    # Custom colormap centered at 0
-    sns.heatmap(corr_matrix_display, 
-                annot=True, 
-                #fmt='.3f', 
-                cmap='RdBu_r',
-                center=0,
-                vmin=-1, 
-                vmax=1,
-                square=True,
-                linewidths=0.5,
-                ax=ax)
-
-    plt.savefig(RESULTS_DIR / 'metric_correlation_matrix.png', dpi=150, bbox_inches='tight')
+    plt.savefig(FIGURES_DIR / 'metric_correlation_matrix.png', dpi=300, bbox_inches='tight')
     plt.show()
-    
-    # Interpretation
-    print("\nInterpretation:")
-    print("-" * 55)
+
+    # --- Console interpretation ---
+    print(f"\nSpearman rank correlations (n = {n}):")
+    print("-" * 60)
     for i, m1 in enumerate(available_metrics):
         for m2 in available_metrics[i+1:]:
-            r = corr_matrix.loc[m1, m2]
-            strength = "weak" if abs(r) < 0.3 else "moderate" if abs(r) < 0.6 else "strong"
-            direction = "positive" if r > 0 else "negative"
-            orthogonal = " → ORTHOGONAL" if abs(r) < 0.3 else ""
-            print(f"  {dict_labels.get(m1, m1)} vs {dict_labels.get(m2, m2)}: r = {r:.3f} ({strength} {direction}){orthogonal}")
+            rho = rho_df.loc[m1, m2]
+            p   = p_df.loc[m1, m2]
+            strength = "weak" if abs(rho) < 0.3 else "moderate" if abs(rho) < 0.6 else "strong"
+            direction = "positive" if rho > 0 else "negative"
+            sig = f"p = {p:.4f}" if p >= 0.001 else f"p = {p:.2e}"
+            orthogonal = "  → INDEPENDENT" if abs(rho) < 0.3 else ""
+            print(f"  {dict_labels.get(m1, m1):>12s} vs {dict_labels.get(m2, m2):<12s}: "
+                  f"ρ = {rho:+.3f} ({strength} {direction}, {sig}){orthogonal}")
 
-    print("\n✓ Low correlations indicate metrics capture independent material properties")
+    print("\n* p < 0.05, ** p < 0.01, *** p < 0.001")
+    print("Low |ρ| values indicate metrics capture independent material characteristics.")
 
 
 
