@@ -29,6 +29,7 @@ FIGURES_DIR = REPORTS_DIR / "figures"
 SYNTHESIS_FIG_DIR = FIGURES_DIR / "synthesis_planning"
 
 NOTEBOOKS_DIR = PROJ_ROOT / "notebooks"
+FIGURES_NOTEBOOK_DIR = NOTEBOOKS_DIR / "figures/lc_data"
 MODEL_CRABNET_DIR = NOTEBOOKS_DIR / "models"
 TRAINED_MODELS = MODEL_CRABNET_DIR / "trained_models"
 
