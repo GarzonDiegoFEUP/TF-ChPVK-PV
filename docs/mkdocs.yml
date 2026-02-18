@@ -1,14 +1,33 @@
 site_name: TF-ChPVK-PV
-site_author: GarzonDiegoFEUP
-site_description: Chalcogenide Perovskite Tolerance Factor for Photovoltaics
+site_description: ML-guided screening of chalcogenide perovskites as solar energy materials
+site_author: Diego A. Garzón
 
-theme:
-  name: material
-  palette:
-    primary: teal
-  features:
-    - navigation.sections
-    - navigation.expand
+repo_url: https://github.com/GarzonDiegoFEUP/TF-ChPVK-PV
+edit_uri: ""
+
+nav:
+  - Home: index.md
+  - Getting Started: getting-started.md
+  - Pipeline: pipeline.md
+  - API Reference:
+      - Dataset: api/dataset.md
+      - Features: api/features.md
+      - Plots: api/plots.md
+      - Config: api/config.md
+      - Modeling:
+          - Train: api/modeling/train.md
+          - Predict: api/modeling/predict.md
+          - GCNN Predict: api/modeling/gccn_predict.md
+          - CrabNet: api/modeling/crabnet.md
+          - GCNN: api/modeling/gcnn.md
+          - CrabNet Utils: api/modeling/crabnet_utils.md
+      - Synthesis Planning:
+          - Synthesis Pathways: api/synthesis_planning/synthesis_pathways.md
+          - Reactions: api/synthesis_planning/reactions.md
+          - Materials Entries: api/synthesis_planning/materials_entries.md
+          - Settings: api/synthesis_planning/settings.md
+          - Interfacial PD Plotter: api/synthesis_planning/interfacial_pdplotter.md
+  - References & Citation: references.md
 
 plugins:
   - search
@@ -20,17 +39,53 @@ plugins:
             show_source: true
             show_root_heading: true
 
-nav:
-  - Home: index.md
-  - Getting Started: getting-started.md
-  - API Reference:
-      - Dataset: api/dataset.md
-      - Features: api/features.md
-      - Plots: api/plots.md
-      - Modeling:
-          - Train: api/modeling/train.md
-          - Predict: api/modeling/predict.md
-          - GCCN Predict: api/modeling/gccn_predict.md
-          - CrabNet: api/modeling/crabnet.md
-          - GCNN: api/modeling/gcnn.md
-          - CrabNet Utils: api/modeling/crabnet_utils.md
+theme:
+  name: material
+  palette:
+    primary: teal
+    accent: deep orange
+  font:
+    text: "Titillium Web"
+  features:
+    - navigation.instant
+    - navigation.path
+    - navigation.footer
+    - navigation.top
+    - navigation.sections
+    - content.code.copy
+    - content.code.annotate
+    - search.suggest
+    - search.highlight
+  icon:
+    repo: fontawesome/brands/github
+
+markdown_extensions:
+  - attr_list
+  - md_in_html
+  - admonition
+  - pymdownx.details
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - toc:
+      permalink: true
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.extra
+
+extra:
+  generator: false
+
+use_directory_urls: true
+
+extra_css:
+  - stylesheets/extra.css
+
+extra_javascript:
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
