@@ -115,7 +115,7 @@ def get_pettifor_features(df_grouped_formula,
   df_grouped_formula['pettifor'] = df_grouped_formula.formula.apply(lambda x: get_onehot_comp(x, pettifor))
 
   df = df_grouped_formula.copy()
-  size_pf = df.pettifor[0].shape[0]
+  size_pf = df.pettifor.iloc[0].shape[0]
   feature_names = ['pettifor_' + str(i) for i in range(0, size_pf)]
   new_df = pd.DataFrame(columns = feature_names, index=df.index)
 
