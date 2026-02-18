@@ -62,12 +62,6 @@ notebooks = [
     "ipykernel>=6.29",
     "ipywidgets",
 ]
-docs = [
-    "mkdocs>=1.5",
-    "mkdocs-material>=9.0",
-    "mkdocstrings[python]>=0.24",
-    "pymdown-extensions>=10.0",
-]
 
 # NOTE: sissopp is a compiled Fortran package NOT available on PyPI.
 # Install manually from https://github.com/rouyang2017/SISSO if you need

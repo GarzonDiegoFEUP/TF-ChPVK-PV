@@ -1,12 +1,24 @@
 Generating the docs
 ----------
 
-Use [mkdocs](http://www.mkdocs.org/) structure to update the documentation. 
+Uses [MkDocs](http://www.mkdocs.org/) with [Material theme](https://squidfunk.github.io/mkdocs-material/).
 
-Build locally with:
+> **Note:** Docs dependencies require Python >= 3.9. They are installed separately from the project's Python 3.8 environment.
 
-    mkdocs build
+### Quick start (from repo root)
 
-Serve locally with:
+    make docs
 
-    mkdocs serve
+### Manual setup
+
+Install dependencies (use any Python >= 3.9 environment):
+
+    pip install -r docs/requirements.txt
+
+Build:
+
+    cd docs && mkdocs build
+
+Serve locally:
+
+    cd docs && mkdocs serve

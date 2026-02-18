@@ -40,6 +40,12 @@ format:
 	ruff check --fix tf_chpvk_pv
 	black --config pyproject.toml tf_chpvk_pv
 
+## Serve documentation locally (requires Python >= 3.9)
+.PHONY: docs
+docs:
+	pip install -r docs/requirements.txt
+	cd docs && mkdocs serve
+
 
 #################################################################################
 # PROJECT RULES                                                                 #
