@@ -14,6 +14,8 @@ For more details on the GCNN algorithm and methodology, see the module documenta
 in tf_chpvk_pv/modeling/gcnn/README.md
 """
 
+from __future__ import annotations
+
 import os
 import json
 from time import time
