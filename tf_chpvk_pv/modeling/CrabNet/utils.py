@@ -268,6 +268,12 @@ def predict_bandgap(formula,
   prediction, prediction_sigma = crabnet_model.predict(input_df, return_uncertainty=True)
   return prediction, prediction_sigma
 
+
+def get_CrystaLLM_predictions(crabnet_model: Optional[Any] = None,
+                               input_data_CrystaLLM: Path = CRYSTALLM_DATA_DIR / 'results_crystallm.csv',
+                               output_data_CrystaLLM: Path = PROCESSED_DATA_DIR / 'results_CrystaLLM_with_bandgap.csv') -> pd.DataFrame:
+    """Predict bandgaps for CrystaLLM-generated compositions.
+
     Args:
         crabnet_model: Pre-loaded CrabNet model; if None, loads from file.
         input_data_CrystaLLM: Path to CrystaLLM results CSV.
@@ -332,12 +338,6 @@ def get_experimental_predictions(crabnet_model: Optional[Any] = None,
     Evaluates CrabNet predictions against experimental bandgap measurements
     for known chalcogenide perovskite compounds, printing comparisons and
     saving results.
-
-  df_chalcogenides = pd.read_csv(input_data_experimental)
-  for formula in df_chalcogenides.descriptive_formulas.unique():
-      prediction, prediction_sigma = predict_bandgap(formula, crabnet_model=crabnet_model)
-      print(f'Experimental bandgap for {formula}:', str(df_chalcogenides.loc[df_chalcogenides['descriptive_formulas'] == formula, 'bandgap'].values[0]) + ' eV')
-      print(f'Bandgap prediction for {formula}:', f"{round(prediction[0], 2)} ± {round(prediction_sigma[0], 2)}" + ' eV')
 
     Returns:
         pd.DataFrame: Experimental data with 'predicted_bandgap' and
