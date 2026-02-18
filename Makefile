@@ -44,7 +44,7 @@ format:
 .PHONY: docs
 docs:
 	pip install -r docs/requirements.txt
-	cd docs && mkdocs serve
+	mkdocs serve
 
 
 #################################################################################

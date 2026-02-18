@@ -9,36 +9,10 @@ nav:
   - Home: index.md
   - Getting Started: getting-started.md
   - Pipeline: pipeline.md
-  - API Reference:
-      - Dataset: api/dataset.md
-      - Features: api/features.md
-      - Plots: api/plots.md
-      - Config: api/config.md
-      - Modeling:
-          - Train: api/modeling/train.md
-          - Predict: api/modeling/predict.md
-          - GCNN Predict: api/modeling/gccn_predict.md
-          - CrabNet: api/modeling/crabnet.md
-          - GCNN: api/modeling/gcnn.md
-      - Synthesis Planning:
-          - Synthesis Pathways: api/synthesis_planning/synthesis_pathways.md
-          - Reactions: api/synthesis_planning/reactions.md
-          - Materials Entries: api/synthesis_planning/materials_entries.md
-          - Settings: api/synthesis_planning/settings.md
-          - Interfacial PD Plotter: api/synthesis_planning/interfacial_pdplotter.md
   - References & Citation: references.md
 
 plugins:
   - search
-  - mkdocstrings:
-      handlers:
-        python:
-          paths: [".."]
-          options:
-            docstring_style: google
-            show_source: true
-            show_root_heading: true
-            allow_inspection: false
 
 theme:
   name: material

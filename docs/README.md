@@ -17,8 +17,8 @@ Install dependencies (use any Python >= 3.9 environment):
 
 Build:
 
-    cd docs && mkdocs build
+    mkdocs build
 
 Serve locally:
 
-    cd docs && mkdocs serve
+    mkdocs serve

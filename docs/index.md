@@ -59,12 +59,12 @@ Run the full screening pipeline — from SISSO feature engineering through Cryst
 
 <div markdown="block">
 
-### :material-api: API Reference
-**Source code documentation**
+### :material-book-open-variant: References & Citation
+**Methods and attribution**
 
-Browse auto-generated documentation for all Python modules: dataset processing, feature engineering, ML models, and visualization utilities.
+Key references for the methods used in this pipeline, BibTeX citation, acknowledgements, and license information.
 
-[**Browse API**](api/dataset.md)
+[**View References**](references.md)
 </div>
 
 </div>
