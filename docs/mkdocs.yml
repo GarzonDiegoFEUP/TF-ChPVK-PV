@@ -20,7 +20,6 @@ nav:
           - GCNN Predict: api/modeling/gccn_predict.md
           - CrabNet: api/modeling/crabnet.md
           - GCNN: api/modeling/gcnn.md
-          - CrabNet Utils: api/modeling/crabnet_utils.md
       - Synthesis Planning:
           - Synthesis Pathways: api/synthesis_planning/synthesis_pathways.md
           - Reactions: api/synthesis_planning/reactions.md
@@ -34,10 +33,12 @@ plugins:
   - mkdocstrings:
       handlers:
         python:
+          paths: [".."]
           options:
             docstring_style: google
             show_source: true
             show_root_heading: true
+            allow_inspection: false
 
 theme:
   name: material
