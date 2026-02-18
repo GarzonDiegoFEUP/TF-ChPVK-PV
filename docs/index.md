@@ -19,13 +19,7 @@ This repository presents a fully **data-driven and experimentally grounded scree
 
 The framework chains five complementary computational and data-driven methods:
 
-```mermaid
-flowchart LR
-    A["<b>1. SISSO</b><br/>Tolerance factor τ*"] --> B["<b>2. CrystaLLM</b><br/>Structure generation"]
-    B --> C["<b>3. GCNN</b><br/>Synthesizability"]
-    C --> D["<b>4. CrabNet</b><br/>Bandgap prediction"]
-    D --> E["<b>5. Sustainability</b><br/>HHI & ESG ranking"]
-```
+![Screening pipeline workflow](assets/screening_workflow.png)
 
 | Step | Method | Purpose |
 |------|--------|---------|

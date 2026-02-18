@@ -2,15 +2,7 @@
 
 The analysis is organized as a sequential pipeline of Jupyter notebooks. Each step builds on the outputs of the previous one, progressively narrowing the candidate space from all possible ABX₃ compositions down to a ranked shortlist of experimentally viable chalcogenide perovskites.
 
-```mermaid
-flowchart TD
-    A["<b>Step 0</b><br/>Publication figures"] -.-> F["figures"]
-    B["<b>Step 1</b><br/>SISSO tolerance factor<br/>& compositional screening"] --> C["<b>Step 2</b><br/>CrystaLLM structure<br/>generation & classification"]
-    C --> D["<b>Step 3</b><br/>GCNN crystal-likeness<br/>& synthesizability"]
-    D --> E["<b>Step 4</b><br/>CrabNet bandgap<br/>prediction"]
-    E --> G["<b>Step 5</b><br/>Sustainability<br/>HHI & ESG ranking"]
-    G --> H["Ranked candidates"]
-```
+![Screening pipeline workflow](assets/screening_workflow.png)
 
 ## Notebooks
 
