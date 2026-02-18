@@ -60,8 +60,10 @@ def patch_crabnet_elem_prop() -> None:
         current_rows = self.embed.cbfv.weight.shape[0]
         if current_rows < _N_EMBEDDING_ROWS:
             feat_size = self.embed.cbfv.weight.shape[1]
+            # Create pad on same device as existing weights to avoid device mismatch
             pad = torch.zeros(
                 _N_EMBEDDING_ROWS - current_rows, feat_size, dtype=_data_type_torch,
+                device=self.embed.cbfv.weight.device,
             )
             new_weight = torch.cat([self.embed.cbfv.weight.data, pad], dim=0)
             self.embed.cbfv = torch.nn.Embedding.from_pretrained(new_weight)
