@@ -20,6 +20,19 @@ from time import time
 def get_loader(dataset, collate_fn=default_collate,
                 batch_size=64, idx_sets=None,
                 num_workers=1, pin_memory=False):
+    """Create a list of DataLoaders for subset index sets.
+
+    Args:
+        dataset: PyTorch Dataset to load from.
+        collate_fn: Function to merge samples into a mini-batch.
+        batch_size: Number of samples per batch.
+        idx_sets: List of index arrays; one DataLoader is created per set.
+        num_workers: Number of subprocesses for data loading.
+        pin_memory: If True, pin memory for faster GPU transfer.
+
+    Returns:
+        list[DataLoader]: One DataLoader per index set in idx_sets.
+    """
     loaders = []
     for idx in idx_sets:
         loaders.append(DataLoader(dataset, batch_size=batch_size,
@@ -31,13 +44,36 @@ def get_loader(dataset, collate_fn=default_collate,
 
 
 class Parallel_Collate_Pool(object):
-    
+    """Collate and distribute crystal graph batches across multiple GPUs.
+
+    Splits each mini-batch evenly by edge count (the most compute-intensive
+    dimension) so that GPU memory is balanced across devices.
+    """
+
     def __init__(self,ngpu,atom_fea_len,nbr_fea_len):
+        """
+        Args:
+            ngpu: Number of GPUs to distribute batches across.
+            atom_fea_len: Length of atom feature vectors.
+            nbr_fea_len: Length of neighbour/edge feature vectors.
+        """
         self.ngpu = ngpu
         self.atom_fea_len=atom_fea_len
         self.nbr_fea_len=nbr_fea_len
     
-    def _evenly_split_data(self,dataset_list,ngpu): 
+    def _evenly_split_data(self,dataset_list,ngpu):
+        """Split a list of data samples evenly across GPUs by total edge count.
+
+        Args:
+            dataset_list: List of (features, target, cif_id, atom_idx) tuples.
+            ngpu: Number of GPUs to split across.
+
+        Returns:
+            tuple: Contains:
+                - dataset: List of per-GPU data sublists.
+                - atom_tensor_size: Total atom count per GPU.
+                - edge_tensor_size: Total edge count per GPU.
+        """
         # distribute data by the number of edge as edge processing is the most demanding
         edgelen = np.array(list(map(lambda x:x[0][1].shape[0],dataset_list)))
         idx = np.argsort(edgelen).tolist()
@@ -204,6 +240,24 @@ def _process_distcut(inputs):
     return (atom_fea, nbr_fea, nbr_fea_idx), target, cif_id, uniqueatom_idx
 '''
 def _process_voronoi(inputs):
+    """Featurize a single crystal structure using Voronoi neighbour analysis.
+
+    Reads a CIF file, constructs atom one-hot features, and computes edge
+    features from Voronoi face distances and solid angles expanded through
+    Gaussian basis functions.
+
+    Args:
+        inputs: Tuple of (cif_id, target, root_dir, oh, gdf, gtf) where:
+            cif_id (str): Crystal identifier matching a .cif filename.
+            target (str): Target property value as a string.
+            root_dir (str): Directory containing CIF files.
+            oh (list): One-hot encoding table indexed by atomic number.
+            gdf (GaussianExpansion): Distance Gaussian filter.
+            gtf (GaussianExpansion): Solid-angle Gaussian filter.
+
+    Returns:
+        tuple: ((atom_fea, nbr_fea, nbr_fea_idx), target, cif_id, uniqueatom_idx)
+    """
     cif_id, target, root_dir, oh, gdf, gtf = inputs
     target = np.array([float(target)])
     # loading
@@ -288,6 +342,22 @@ class CIFData(Dataset):
     cif_id: str or int
     """
     def __init__(self, root_dir, radius=7.0, dmin=0.0, dstep=0.2, tmin=0, tmax=np.pi, tstep=0.2,cache_path='./data_cache'):
+        """Load or build the crystal graph dataset from CIF files.
+
+        On first call, processes all CIF files in root_dir using Voronoi
+        neighbour analysis and caches results to disk. Subsequent calls
+        load directly from the cache for speed.
+
+        Args:
+            root_dir: Path to directory containing id_prop.csv and .cif files.
+            radius: Cutoff radius (Å) for neighbour search.
+            dmin: Minimum distance for Gaussian distance expansion.
+            dstep: Step size for Gaussian distance expansion.
+            tmin: Minimum solid angle for Gaussian angle expansion.
+            tmax: Maximum solid angle for Gaussian angle expansion.
+            tstep: Step size for Gaussian angle expansion.
+            cache_path: Directory for caching the preprocessed dataset.
+        """
         # properties
         self.orig_atom_fea_len = 120
         self.nbr_fea_len = round((radius+dstep-dmin)/dstep) + round((tmax+tstep-tmin)/tstep)
@@ -348,9 +418,15 @@ class CIFData(Dataset):
             self.data = pickle.load(open(os.path.join(cache_path,'data_cache.pkl'),'rb'))
         
     def __len__(self):
+        """Return number of crystal structures in the dataset."""
         return len(self.data)
 
     def __getitem__(self, idx):
+        """Return featurized crystal data at index idx.
+
+        Returns:
+            tuple: ((atom_fea, nbr_fea, nbr_fea_idx), target, cif_id, uniqueatom_idx)
+        """
         (atom_fea, nbr_fea, nbr_fea_idx), target, cif_id, uniqueatom_idx = self.data[idx]
         return (torch.Tensor(atom_fea), torch.Tensor(nbr_fea), torch.LongTensor(nbr_fea_idx)), torch.Tensor(target).squeeze(0), cif_id, uniqueatom_idx
         

@@ -558,6 +558,7 @@ def curated_bandgap_db_semicon(input_path: Path = BANDGAP_DATA_DIR / 'Bandgap.cs
     df = pd.read_csv(input_path)
 
     def check_S_Se(row):
+        """Return True if the composition contains S or Se."""
         import ast
         try:
             row_dict = ast.literal_eval(row)
@@ -570,6 +571,7 @@ def curated_bandgap_db_semicon(input_path: Path = BANDGAP_DATA_DIR / 'Bandgap.cs
             return False
     
     def check_no_O(row):
+        """Return True if the composition does not contain oxygen."""
         import ast
         try:
             row_dict = ast.literal_eval(row)
@@ -582,6 +584,7 @@ def curated_bandgap_db_semicon(input_path: Path = BANDGAP_DATA_DIR / 'Bandgap.cs
             return False
         
     def check_chemical_composition(row):
+        """Return True if all elements are valid periodic table symbols with non-zero count."""
         import ast
         row_dict = ast.literal_eval(row)
         periodic_table_symbols = [
@@ -599,6 +602,7 @@ def curated_bandgap_db_semicon(input_path: Path = BANDGAP_DATA_DIR / 'Bandgap.cs
         return True
         
     def convert_to_list(row):
+        """Parse a stringified dict composition and return the dict, or None on error."""
         import ast
         try:
             row_dict = ast.literal_eval(row)
@@ -608,6 +612,7 @@ def curated_bandgap_db_semicon(input_path: Path = BANDGAP_DATA_DIR / 'Bandgap.cs
             return None
         
     def create_reduced_formulas(row):
+        """Convert a stringified composition dict to a reduced chemical formula string."""
         import ast
         row_dict = ast.literal_eval(row)
         elements_formula = []
@@ -619,6 +624,7 @@ def curated_bandgap_db_semicon(input_path: Path = BANDGAP_DATA_DIR / 'Bandgap.cs
         return ''.join(elements_formula)
 
     def is_match(regex, text):
+        """Return True if regex matches anywhere in text."""
         import re
         pattern = re.compile(regex)
         return pattern.search(text) is not None

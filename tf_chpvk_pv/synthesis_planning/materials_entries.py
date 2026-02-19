@@ -18,7 +18,7 @@ from tf_chpvk_pv.config import SYNTHESIS_DATA_DIR
 
 def getOrigStableEntriesList(els,filename = None):
     """
-    Guery stable entries from MaterialsProject databse based on chemical elements. 
+    Query stable entries from MaterialsProject database based on chemical elements. 
     Save the entries in the first time query.
     Args:
         els (list): list of strings of chemical elements
@@ -62,7 +62,7 @@ def getOrigStableEntriesList(els,filename = None):
 
 def getEntriesList(els,filename = None):
     """
-    Guery all entries from MaterialsProject databse based on chemical elements. 
+    Query all entries from MaterialsProject database based on chemical elements. 
     Save the entries in the first time query.
     Args:
         els (list): list of strings of chemical elements

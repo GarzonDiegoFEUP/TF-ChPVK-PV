@@ -12,7 +12,19 @@ import torch.nn as nn
 from torch_scatter import scatter, scatter_mean, scatter_min
 
 class FilterLayer(nn.Module):
+    """Gated filter layer applying sigmoid-gated activation with skip connection.
+
+    Applies a two-step linear transformation where the first step output is
+    split into a filter and a core, combined via sigmoid gating, then passed
+    through a second linear layer with batch normalisation.
+    """
+
     def __init__(self, in_fea_len,out_fea_len):
+        """
+        Args:
+            in_fea_len: Number of input features.
+            out_fea_len: Number of output features.
+        """
         super(FilterLayer, self).__init__()
         self.lin1 = nn.Linear(in_fea_len,2*out_fea_len)
         self.bn1 = nn.BatchNorm1d(2*out_fea_len)
@@ -22,6 +34,14 @@ class FilterLayer(nn.Module):
         self.bn3 = nn.BatchNorm1d(out_fea_len)        
        
     def forward(self, fea):
+        """Apply gated filter transformation.
+
+        Args:
+            fea: Input feature tensor of shape (N, in_fea_len).
+
+        Returns:
+            torch.Tensor: Transformed features of shape (N, out_fea_len).
+        """
         filter_core = self.lin1(fea)
         filter_core = self.bn1(filter_core)
         filter,core = filter_core.chunk(2, dim=1)
@@ -32,7 +52,14 @@ class FilterLayer(nn.Module):
         return out
 
 class DenseLayer(nn.Module):
+    """Single fully-connected layer with batch normalisation and Softplus activation."""
+
     def __init__(self, in_fea_len,out_fea_len):
+        """
+        Args:
+            in_fea_len: Number of input features.
+            out_fea_len: Number of output features.
+        """
         super(DenseLayer, self).__init__()
         self.lin1 = nn.Linear(in_fea_len,out_fea_len)
         self.bn1 = nn.BatchNorm1d(out_fea_len)
@@ -40,6 +67,14 @@ class DenseLayer(nn.Module):
         self.bn2 = nn.BatchNorm1d(out_fea_len)
         
     def forward(self, fea):
+        """Apply linear → BN → Softplus transformation.
+
+        Args:
+            fea: Input feature tensor of shape (N, in_fea_len).
+
+        Returns:
+            torch.Tensor: Transformed features of shape (N, out_fea_len).
+        """
         fea = self.lin1(fea)
         fea = self.bn1(fea)
         fea = self.act(fea)
@@ -51,6 +86,16 @@ class ConvLayer(nn.Module):
     Convolutional operation on graphs
     """
     def __init__(self, in_atom_fea_len, in_edge_fea_len, fea_len):
+        """Initialise three-layer graph convolutional block.
+
+        Each layer updates edge features by concatenating neighbouring atom
+        features, then updates atom features by pooling updated edge features.
+
+        Args:
+            in_atom_fea_len: Input atom feature dimension.
+            in_edge_fea_len: Input edge feature dimension.
+            fea_len: Hidden feature dimension used throughout all layers.
+        """
         super(ConvLayer, self).__init__()
         self.act = torch.nn.Softplus()
         
@@ -102,6 +147,16 @@ class ConvLayer(nn.Module):
         self.atom_bn3_3 = nn.BatchNorm1d(fea_len)
 
     def forward(self, atom_fea, edge_fea, edge_idx):
+        """Apply three graph convolutional layers and return updated edge features.
+
+        Args:
+            atom_fea: Atom feature tensor of shape (N, fea_len).
+            edge_fea: Edge feature tensor of shape (E, fea_len).
+            edge_idx: Edge index tensor of shape (E, 2) with [src, dst] pairs.
+
+        Returns:
+            torch.Tensor: Updated edge features of shape (E, fea_len).
+        """
         ### first layer
         ## atom pooling + edge > new edge
         atom_edge_fea = torch.flatten(atom_fea[edge_idx, :],1,2)

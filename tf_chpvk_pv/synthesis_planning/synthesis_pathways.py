@@ -146,6 +146,14 @@ class SynthesisPathways():
         return selected_reactions
     
     def get_all_pairwise_reactions_info(self):
+        """
+        Collect Reaction objects for all pairwise precursor combinations,
+        regardless of whether the target is the deepest entry in the compound
+        convex hull. Unlike get_target_deepest_reactions(), this method does
+        not filter by depth so it captures the full reaction landscape.
+        Return:
+            list of Reaction objects for all pairwise combinations
+        """
         pd = self.pd
         all_pairwise_reactions = []
         for reaction in self.reactions:

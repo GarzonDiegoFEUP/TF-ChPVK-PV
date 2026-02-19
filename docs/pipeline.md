@@ -69,6 +69,13 @@ Generates all publication-quality figures. Can be run after all other steps are 
 - Compare different elemental encoding strategies for CrabNet
 - Benchmark Pettifor-based vs default encoders
 
+#### Step 4.2 — Training Data Size Ablation
+
+[`4_2_data_size.ipynb`](https://github.com/GarzonDiegoFEUP/TF-ChPVK-PV/blob/main/notebooks/4_2_data_size.ipynb)
+
+- Analyse the effect of training set size on CrabNet bandgap prediction accuracy
+- Determine the minimum data requirement for reliable composition-based predictions
+
 ---
 
 ### Step 5 — Sustainability Analysis
