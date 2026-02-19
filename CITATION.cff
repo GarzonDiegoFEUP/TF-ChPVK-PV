@@ -1,0 +1,56 @@
+cff-version: 1.2.0
+title: TF-ChPVK-PV
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - given-names: Diego A.
+    family-names: Garzón
+    orcid: 'https://orcid.org/0000-0001-9576-8183'
+    email: diego.garzon@inl.int
+  - given-names: Lauri
+    family-names: Himanen
+    orcid: 'https://orcid.org/0000-0002-3130-8193'
+  - given-names: Luisa
+    family-names: Andrade
+    orcid: 'https://orcid.org/0000-0001-5750-1285'
+  - given-names: Sascha
+    family-names: Sadewasser
+    orcid: 'https://orcid.org/0000-0001-8384-6025'
+  - given-names: José A.
+    family-names: Márquez
+    orcid: 'https://orcid.org/0000-0002-8173-2566'
+repository-code: 'https://github.com/GarzonDiegoFEUP/TF-ChPVK-PV'
+url: 'https://garzondiegufeup.github.io/TF-ChPVK-PV/'
+abstract: >-
+  TF-ChPVK-PV is a Python package and analysis pipeline for
+  ML-guided screening of chalcogenide perovskites (ABX3,
+  X = S, Se) as solar energy materials. It integrates a
+  SISSO-derived tolerance factor, CrystaLLM crystal structure
+  generation, a GCNN crystal-likeness scorer, CrabNet bandgap
+  prediction, and multi-objective sustainability screening
+  (HHI, supply risk, ESG scores) to identify experimentally
+  viable absorber candidates for photovoltaic applications.
+keywords:
+  - chalcogenide perovskites
+  - machine learning
+  - photovoltaics
+  - tolerance factor
+  - SISSO
+  - crystal structure prediction
+  - synthesizability
+  - bandgap prediction
+  - sustainability
+license: MIT
+version: 1.0.0
+date-released: '2026-02-19'
+funding:
+  - name: >-
+      Fundação para a Ciência e Tecnologia, I.P. (FCT)
+    award-number: 2023.00258.BD
+    title: FCT PhD Fellowship
+  - name: >-
+      COST Action "Emerging Inorganic Chalcogenides for
+      Photovoltaics (RENEW-PV)"
+    award-number: CA21148

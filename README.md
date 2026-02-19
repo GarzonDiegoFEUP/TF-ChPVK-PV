@@ -4,6 +4,7 @@
 
 [![Python 3.8.2](https://img.shields.io/badge/python-3.8%2B-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Version](https://img.shields.io/badge/version-1.0.0-green.svg)](CITATION.cff)
 
 This repository contains the datasets, analysis notebooks, and source code for the paper:
 
@@ -111,7 +112,9 @@ The analysis is organized as a sequential pipeline. Run notebooks in order:
 | 1 | `1_get_SISSO_features.ipynb` | Dataset creation, SISSO feature generation, tolerance factor training and evaluation, Platt scaling, compositional screening |
 | 2 | `2_CrystaLLM_analysis.ipynb` | Parse CrystaLLM-generated CIF files, crystal-likeness scoring, corner-sharing vs edge-sharing classification |
 | 3 | `3_Experimental_likelihood.ipynb` | GCNN-based synthesizability assessment and experimental plausibility scoring |
-| 4 | `4. crabnet_bandgap_prediction.ipynb` | CrabNet bandgap model: training, evaluation, predictions for all candidates |
+| 4 | `4_bandgap_prediction.ipynb` | CrabNet bandgap model: training, evaluation, predictions for all candidates |
+| 4.1 | `4_1_encoder_comparison.ipynb` | Compare elemental encoding strategies for CrabNet (Pettifor vs default) |
+| 4.2 | `4_2_data_size.ipynb` | Training data size ablation: effect on CrabNet bandgap prediction accuracy |
 | 5 | `5_HHI_calculation.ipynb` | Sustainability analysis: HHI, supply risk, ESG scoring |
 
 
@@ -186,17 +189,21 @@ Key methods and data sources used in this pipeline:
 
 ## Citation
 
-*Preprint not yet available. Citation will be added upon publication.*
+If you use this software or data, please cite it using the metadata in [`CITATION.cff`](CITATION.cff):
 
-<!-- TODO: replace with actual BibTeX once preprint is out
 ```bibtex
-@article{garzon2026mlguided,
-  title={ML-guided screening of chalcogenide perovskites as solar energy materials},
-  author={Garz{\'o}n, Diego A. and Himanen, Lauri and Andrade, Luisa and Sadewasser, Sascha and M{\'a}rquez, Jos{\'e} A.},
-  year={2026}
+@software{garzon2026tfchpvkpv,
+  author  = {Garz{\'o}n, Diego A. and Himanen, Lauri and Andrade, Luisa
+             and Sadewasser, Sascha and M{\'a}rquez, Jos{\'e} A.},
+  title   = {{TF-ChPVK-PV}},
+  version = {1.0.0},
+  year    = {2026},
+  url     = {https://github.com/GarzonDiegoFEUP/TF-ChPVK-PV},
+  license = {MIT},
 }
 ```
--->
+
+<!-- TODO: add paper BibTeX and Zenodo DOI once published -->
 
 ## License
 

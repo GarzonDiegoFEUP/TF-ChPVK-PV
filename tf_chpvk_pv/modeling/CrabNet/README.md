@@ -28,7 +28,7 @@ In this pipeline, CrabNet is used to:
 - Serve as a key property descriptor for multi-objective optimization
 - Support the experimental plausibility assessment and sustainability ranking
 
-See [`4. crabnet_bandgap_prediction.ipynb`](../../notebooks/4.%20crabnet_bandgap_prediction.ipynb) for training, evaluation, and inference workflows.
+See [`4_bandgap_prediction.ipynb`](../../notebooks/4_bandgap_prediction.ipynb) for training, evaluation, and inference workflows.
 
 ## References
 
