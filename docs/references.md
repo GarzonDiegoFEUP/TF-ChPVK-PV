@@ -36,6 +36,18 @@ The methods and data sources used in this pipeline:
 | Synthesizability (GCNN) | Gu, G. H. et al. *npj Computational Materials* **8**, 71 (2022) | [10.1038/s41524-022-00757-z](https://doi.org/10.1038/s41524-022-00757-z) |
 | Synthesizability | Jang, J. et al. *J. Am. Chem. Soc.* **142**, 18836–18843 (2020) | [10.1021/jacs.0c07384](https://doi.org/10.1021/jacs.0c07384) |
 
+## Raw Data Sources
+
+Full citations for every file in `data/raw/` — including ionic radii, band gap
+databases, device data, and PCE limits — are listed on the
+[Raw Data Sources](raw-data.md) page.
+
+## Sustainability Data Sources
+
+Full citations for every file in `data/sustainability_data/` — including USGS
+mineral commodity data and World Bank ESG indicators — are listed on the
+[Sustainability Data Sources](sustainability-data.md) page.
+
 ## License
 
 This project is licensed under the **MIT License**. See the [LICENSE](https://github.com/GarzonDiegoFEUP/TF-ChPVK-PV/blob/main/LICENSE) file for details.
