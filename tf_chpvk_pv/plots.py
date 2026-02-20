@@ -1502,57 +1502,90 @@ def plot_matrix_interactive(df_out: pd.DataFrame, df_crystal: pd.DataFrame, anio
         for _, row in df_crystal_anion.iterrows()
     ]
 
+    # Build sorted axis labels
+    b_elements = df_anion['B'].unique().tolist()
+    a_elements = df_anion['A'].unique().tolist()
+    b_order = sorted(b_elements, key=lambda e: element_to_number.get(e, 999))
+    a_order = sorted(a_elements, key=lambda e: element_to_number.get(e, 999))
+
+    # Build 2-D z/hover grids for the heatmap
+    import numpy as np
+    z_grid = np.full((len(a_order), len(b_order)), float('nan'))
+    hover_grid = [["" for _ in b_order] for _ in a_order]
+    crystal_set = set(df_crystal_anion['formula'].tolist())
+
+    b_idx = {e: i for i, e in enumerate(b_order)}
+    a_idx = {e: i for i, e in enumerate(a_order)}
+
+    for _, row in df_anion.iterrows():
+        ai, bi = a_idx[row['A']], b_idx[row['B']]
+        z_grid[ai][bi] = row[parameter]
+        hover_grid[ai][bi] = f"<b>{row['formula']}</b><br>{hover_label} = {row[parameter]:.3f}{hover_unit}"
+
+    # Crystal border overlay — shapes drawn after layout; keep refs for iteration
+    cx = [row['B'] for _, row in df_crystal_anion.iterrows()]
+    cy = [row['A'] for _, row in df_crystal_anion.iterrows()]
+
     fig = go.Figure()
 
-    fig.add_trace(go.Scatter(
-        x=df_anion['B'],
-        y=df_anion['A'],
-        mode='markers',
-        marker=dict(
-            symbol='square',
-            size=14,
-            color=df_anion[parameter],
-            colorscale=colorscale,
-            cmin=cmin, cmax=cmax,
-            showscale=True,
-            colorbar=dict(title=colorbar_title),
-            line=dict(color='rgba(0,0,0,0)', width=0),
-        ),
-        hovertext=hover_all,
+    fig.add_trace(go.Heatmap(
+        x=b_order,
+        y=a_order,
+        z=z_grid,
+        colorscale=colorscale,
+        zmin=cmin, zmax=cmax,
+        colorbar=dict(title=colorbar_title),
+        hovertext=hover_grid,
         hoverinfo='text',
-        name='All τ*-stable',
+        xgap=1, ygap=1,
     ))
 
+    # Legend-only dummy trace for CrystaLLM compounds (borders are drawn as shapes)
     fig.add_trace(go.Scatter(
-        x=df_crystal_anion['B'],
-        y=df_crystal_anion['A'],
+        x=[None], y=[None],
         mode='markers',
-        marker=dict(
-            symbol='square',
-            size=14,
-            color=df_crystal_anion[parameter],
-            colorscale=colorscale,
-            cmin=cmin, cmax=cmax,
-            showscale=False,
-            line=dict(color='black', width=2),
-        ),
-        hovertext=hover_crystal,
-        hoverinfo='text',
+        marker=dict(symbol='square', size=10, color='rgba(0,0,0,0)',
+                    line=dict(color='black', width=2)),
         name='CrystaLLM: perovskite-type',
+        showlegend=True,
+    ))
+
+    # Invisible trace just for the legend entry for heatmap cells
+    fig.add_trace(go.Scatter(
+        x=[None], y=[None],
+        mode='markers',
+        marker=dict(symbol='square', size=10, color='navy'),
+        name='All τ*-stable',
+        showlegend=True,
     ))
 
     anion_label = 'S' if anion == 'S' else 'Se'
     title_text = f'AB{anion_label}₃ — {colorbar_title}'
+
+    # Black border rectangles using axis coordinates — each heatmap cell spans ±0.5
+    shapes = []
+    for _, row in df_crystal_anion.iterrows():
+        if row['B'] in b_idx and row['A'] in a_idx:
+            bi = b_idx[row['B']]
+            ai = a_idx[row['A']]
+            shapes.append(dict(
+                type='rect',
+                xref='x', yref='y',
+                x0=bi - 0.5, x1=bi + 0.5,
+                y0=ai - 0.5, y1=ai + 0.5,
+                line=dict(color='black', width=2),
+                fillcolor='rgba(0,0,0,0)',
+            ))
+
     fig.update_layout(
         title=title_text,
         xaxis=dict(title='Cation B', tickangle=90, type='category',
-                   categoryorder='array',
-                   categoryarray=df_anion['B'].tolist()),
+                   categoryorder='array', categoryarray=b_order),
         yaxis=dict(title='Cation A', type='category',
-                   categoryorder='array',
-                   categoryarray=df_anion['A'].unique().tolist()),
+                   categoryorder='array', categoryarray=a_order),
         template='plotly_white',
         height=700,
+        shapes=shapes,
         legend=dict(x=0.01, y=0.99, bgcolor='rgba(255,255,255,0.7)'),
     )
     return fig
