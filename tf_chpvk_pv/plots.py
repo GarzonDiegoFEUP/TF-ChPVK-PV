@@ -1277,5 +1277,493 @@ def corr_matrix(df: pd.DataFrame, metrics: List[str], dict_labels: Dict[str, str
 
 
 
+def colormap_radii_interactive(df: pd.DataFrame, exp_df: pd.DataFrame, clf_proba: Optional[Any] = None, t_sisso: bool = False, anion: Optional[str] = None) -> Any:
+    """Create interactive 2D heatmap of stability predictions vs ionic radii.
+
+    Interactive Plotly version of :func:`colormap_radii`. Generates heatmaps
+    showing t_sisso or P(t_sisso) values across the (rA, rB) ionic radii space,
+    with experimentally observed compounds as hoverable markers.
+
+    Args:
+        df: DataFrame with predicted compositions containing rA, rB, rX columns.
+        exp_df: DataFrame with experimental compounds for overlay markers, indexed by material name.
+        clf_proba: Pre-trained Platt scaling classifier; if None, loads from file.
+        t_sisso: If True, plot raw t_sisso values; if False, plot P(t_sisso).
+        anion: If 'S' or 'Se', render a single-panel figure for that anion only.
+            If None (default), render both side-by-side.
+
+    Returns:
+        plotly.graph_objects.Figure: Interactive figure.
+    """
+    import numpy as np
+    import plotly.graph_objects as go
+    from plotly.subplots import make_subplots
+
+    if clf_proba is None:
+        from tf_chpvk_pv.modeling.train import train_platt_scaling
+
+        train_df = pd.read_csv(RESULTS_DIR / "processed_chpvk_train_dataset.csv")
+        test_df = pd.read_csv(RESULTS_DIR / "processed_chpvk_test_dataset.csv")
+
+        with open(INTERIM_DATA_DIR / "tolerance_factor_classifiers.pkl", 'rb') as file:
+            clfs = pickle.load(file)
+
+        train_df, test_df, clf_proba = train_platt_scaling(train_df, test_df, clfs['t_sisso'])
+
+    rX_range = [df.rX.min(), df.rX.max()]
+
+    def calculate_t_sisso(rA, rB, rX):
+        return np.abs(((rA / rX + rB / rX) + (np.abs(rB / rX - np.log(rA / rB)))) - (rA / rX) ** 3)
+
+    rA_vals = np.linspace(110, 180, 500)
+    rB_vals = np.linspace(50, 120, 500)
+    xv, yv = np.meshgrid(rA_vals, rB_vals)
+
+    t_sisso_S = calculate_t_sisso(xv, yv, rX_range[0])
+    t_sisso_Se = calculate_t_sisso(xv, yv, rX_range[1])
+
+    if t_sisso:
+        z_S = t_sisso_S
+        z_Se = t_sisso_Se
+        colorscale = 'RdBu'
+        zmin, zmax = 0.5, 2.5
+        colorbar_title = 'τ*'
+    else:
+        z_S = clf_proba.predict_proba(t_sisso_S.reshape(-1, 1))[:, 1].reshape(t_sisso_S.shape)
+        z_Se = clf_proba.predict_proba(t_sisso_Se.reshape(-1, 1))[:, 1].reshape(t_sisso_Se.shape)
+        colorscale = 'RdBu_r'
+        zmin, zmax = 0.0, 1.0
+        colorbar_title = 'P(τ*)'
+
+    exp_df = exp_df[exp_df.rX.isin(rX_range)]
+    exp_df = exp_df[exp_df.rX != 196]
+
+    def _exp_traces(anion_rX, subplot_col):
+        """Build scatter traces for experimental compounds."""
+        traces = []
+        df_anion = exp_df[exp_df.rX == anion_rX]
+        for label_val, marker_sym, group_name in [(1, 'square', 'Perovskite'), (0, 'triangle-up', 'Non-perovskite')]:
+            df_group = df_anion[df_anion.exp_label == label_val]
+            if df_group.empty:
+                continue
+            hover = [
+                f"<b>{idx}</b><br>rA = {row.rA:.1f} pm<br>rB = {row.rB:.1f} pm"
+                for idx, row in df_group.iterrows()
+            ]
+            traces.append(go.Scatter(
+                x=df_group.rA,
+                y=df_group.rB,
+                mode='markers',
+                marker=dict(symbol=marker_sym, size=10, color='lightgray',
+                            line=dict(color='black', width=1.5)),
+                name=group_name,
+                hovertext=hover,
+                hoverinfo='text',
+                showlegend=(subplot_col == 1),
+                legendgroup=group_name,
+            ))
+        return traces
+
+    fig = make_subplots(rows=1, cols=2,
+                        subplot_titles=['ABS₃ compounds', 'ABSe₃ compounds'],
+                        shared_yaxes=True,
+                        horizontal_spacing=0.06)
+
+    # Shared kwargs (no showscale — set per-trace below)
+    heatmap_kwargs = dict(
+        x=rA_vals, y=rB_vals,
+        colorscale=colorscale, zmin=zmin, zmax=zmax,
+        colorbar=dict(title=colorbar_title, x=1.02),
+        hovertemplate='rA = %{x:.1f} pm<br>rB = %{y:.1f} pm<br>' + colorbar_title + ' = %{z:.3f}<extra></extra>',
+    )
+
+    if anion is not None:
+        # Single-anion figure: full width, no subplots
+        rX_val = rX_range[0] if anion == 'S' else rX_range[1]
+        z = z_S if anion == 'S' else z_Se
+        anion_label = anion
+        title_text = f'AB{anion_label}₃ — {colorbar_title}'
+
+        fig = go.Figure()
+        fig.add_trace(go.Heatmap(z=z, showscale=True, **heatmap_kwargs))
+        for trace in _exp_traces(rX_val, 1):
+            fig.add_trace(trace)
+
+        fig.update_xaxes(title_text='r<sub>A</sub> (pm)', range=[110, 180])
+        fig.update_yaxes(title_text='r<sub>B</sub> (pm)', range=[50, 120])
+        fig.update_layout(
+            title=title_text,
+            height=540,
+            template='plotly_white',
+            legend=dict(x=0.01, y=0.01, bgcolor='rgba(255,255,255,0.7)'),
+        )
+        return fig
+
+    fig.add_trace(go.Heatmap(z=z_S, showscale=False, **heatmap_kwargs), row=1, col=1)
+    fig.add_trace(go.Heatmap(z=z_Se, showscale=True, **heatmap_kwargs), row=1, col=2)
+
+    for trace in _exp_traces(rX_range[0], 1):
+        fig.add_trace(trace, row=1, col=1)
+    for trace in _exp_traces(rX_range[1], 2):
+        fig.add_trace(trace, row=1, col=2)
+
+    fig.update_xaxes(title_text='r<sub>A</sub> (pm)', range=[110, 180])
+    fig.update_yaxes(title_text='r<sub>B</sub> (pm)', range=[50, 120], row=1, col=1)
+    fig.update_layout(
+        height=520,
+        template='plotly_white',
+        legend=dict(x=0.01, y=0.01, bgcolor='rgba(255,255,255,0.7)'),
+    )
+    return fig
+
+
+def plot_matrix_interactive(df_out: pd.DataFrame, df_crystal: pd.DataFrame, anion: str = 'S', parameter: str = 'Eg', clf_proba: Optional[Any] = None) -> Any:
+    """Create interactive element-element matrix colored by bandgap or P(t_sisso).
+
+    Interactive Plotly version of :func:`plot_matrix`. Generates a matrix scatter
+    plot where each point represents a predicted AB composition for the given anion,
+    with hover text showing the formula and metric value.
+    CrystaLLM-validated compositions are highlighted with a black border.
+
+    Args:
+        df_out: DataFrame with predicted compositions containing A, B, X, formula columns.
+        df_crystal: DataFrame with CrystaLLM-validated compositions for highlighting.
+        anion: Anion element to filter ('S' or 'Se').
+        parameter: Coloring parameter ('Eg' for bandgap, 'p_t_sisso' for probability).
+        clf_proba: Pre-trained Platt scaling classifier; if None, loads from file.
+
+    Returns:
+        plotly.graph_objects.Figure: Interactive element matrix figure.
+    """
+    import plotly.graph_objects as go
+
+    element_to_number = {
+        "H": 1, "He": 2, "Li": 3, "Be": 4, "B": 5, "C": 6, "N": 7, "O": 8, "F": 9, "Ne": 10,
+        "Na": 11, "Mg": 12, "Al": 13, "Si": 14, "P": 15, "S": 16, "Cl": 17, "Ar": 18, "K": 19, "Ca": 20,
+        "Sc": 21, "Ti": 22, "V": 23, "Cr": 24, "Mn": 25, "Fe": 26, "Co": 27, "Ni": 28, "Cu": 29, "Zn": 30,
+        "Ga": 31, "Ge": 32, "As": 33, "Se": 34, "Br": 35, "Kr": 36, "Rb": 37, "Sr": 38, "Y": 39, "Zr": 40,
+        "Nb": 41, "Mo": 42, "Tc": 43, "Ru": 44, "Rh": 45, "Pd": 46, "Ag": 47, "Cd": 48, "In": 49, "Sn": 50,
+        "Sb": 51, "Te": 52, "I": 53, "Xe": 54, "Cs": 55, "Ba": 56, "La": 57, "Ce": 58, "Pr": 59, "Nd": 60,
+        "Pm": 61, "Sm": 62, "Eu": 63, "Gd": 64, "Tb": 65, "Dy": 66, "Ho": 67, "Er": 68, "Tm": 69, "Yb": 70,
+        "Lu": 71, "Hf": 72, "Ta": 73, "W": 74, "Re": 75, "Os": 76, "Ir": 77, "Pt": 78, "Au": 79, "Hg": 80,
+        "Tl": 81, "Pb": 82, "Bi": 83, "Po": 84, "At": 85, "Rn": 86, "Fr": 87, "Ra": 88, "Ac": 89, "Th": 90,
+        "Pa": 91, "U": 92,
+    }
+
+    if parameter == 'p_t_sisso' and clf_proba is None:
+        from tf_chpvk_pv.modeling.train import train_platt_scaling
+
+        train_df = pd.read_csv(RESULTS_DIR / "processed_chpvk_train_dataset.csv")
+        test_df = pd.read_csv(RESULTS_DIR / "processed_chpvk_test_dataset.csv")
+
+        with open(INTERIM_DATA_DIR / "tolerance_factor_classifiers.pkl", 'rb') as file:
+            clfs = pickle.load(file)
+
+        train_df, test_df, clf_proba = train_platt_scaling(train_df, test_df, clfs['t_sisso'])
+        df_out = df_out.copy()
+        df_out['p_t_sisso'] = clf_proba.predict_proba(df_out['t_sisso'].values.reshape(-1, 1))[:, 1]
+
+    df_out = df_out.copy()
+    df_out["norm_formula"] = df_out["formula"].apply(normalize_abx3)
+    df_crystal = df_crystal.copy()
+    df_crystal["norm_formula"] = df_crystal["formula"].apply(normalize_abx3)
+    df_sisso = df_out[df_out['norm_formula'].isin(df_crystal['norm_formula'])]
+
+    df_anion = df_out[df_out['X'] == anion].copy()
+    if parameter in ['Eg']:
+        df_anion = df_anion[df_anion[parameter] > 0].copy()
+    df_anion['Z_A'] = df_anion.A.map(element_to_number)
+    df_anion['Z_B'] = df_anion.B.map(element_to_number)
+    df_anion.sort_values(by=['Z_A', 'Z_B'], inplace=True, ascending=[True, True])
+
+    df_crystal_anion = df_sisso[df_sisso['X'] == anion].copy()
+    if parameter in ['Eg']:
+        df_crystal_anion = df_crystal_anion[df_crystal_anion[parameter] > 0].copy()
+
+    if parameter == 'Eg':
+        colorscale = 'Jet'
+        cmin, cmax = 0.5, 3.5
+        colorbar_title = 'Bandgap (eV)'
+        hover_label = 'E<sub>g</sub>'
+        hover_unit = ' eV'
+    else:
+        colorscale = 'RdBu_r'
+        cmin, cmax = 0.0, 1.0
+        colorbar_title = 'P(τ*)'
+        hover_label = 'P(τ*)'
+        hover_unit = ''
+
+    hover_all = [
+        f"<b>{row['formula']}</b><br>{hover_label} = {row[parameter]:.3f}{hover_unit}"
+        for _, row in df_anion.iterrows()
+    ]
+    hover_crystal = [
+        f"<b>{row['formula']}</b><br>{hover_label} = {row[parameter]:.3f}{hover_unit}<br><i>CrystaLLM: perovskite-type</i>"
+        for _, row in df_crystal_anion.iterrows()
+    ]
+
+    # Build sorted axis labels
+    b_elements = df_anion['B'].unique().tolist()
+    a_elements = df_anion['A'].unique().tolist()
+    b_order = sorted(b_elements, key=lambda e: element_to_number.get(e, 999))
+    a_order = sorted(a_elements, key=lambda e: element_to_number.get(e, 999))
+
+    # Build 2-D z/hover grids for the heatmap
+    import numpy as np
+    z_grid = np.full((len(a_order), len(b_order)), float('nan'))
+    hover_grid = [["" for _ in b_order] for _ in a_order]
+    crystal_set = set(df_crystal_anion['formula'].tolist())
+
+    b_idx = {e: i for i, e in enumerate(b_order)}
+    a_idx = {e: i for i, e in enumerate(a_order)}
+
+    for _, row in df_anion.iterrows():
+        ai, bi = a_idx[row['A']], b_idx[row['B']]
+        z_grid[ai][bi] = row[parameter]
+        hover_grid[ai][bi] = f"<b>{row['formula']}</b><br>{hover_label} = {row[parameter]:.3f}{hover_unit}"
+
+    # Crystal border overlay — shapes drawn after layout; keep refs for iteration
+    cx = [row['B'] for _, row in df_crystal_anion.iterrows()]
+    cy = [row['A'] for _, row in df_crystal_anion.iterrows()]
+
+    fig = go.Figure()
+
+    fig.add_trace(go.Heatmap(
+        x=b_order,
+        y=a_order,
+        z=z_grid,
+        colorscale=colorscale,
+        zmin=cmin, zmax=cmax,
+        colorbar=dict(title=colorbar_title),
+        hovertext=hover_grid,
+        hoverinfo='text',
+        xgap=1, ygap=1,
+    ))
+
+    # Legend-only dummy trace for CrystaLLM compounds (borders are drawn as shapes)
+    fig.add_trace(go.Scatter(
+        x=[None], y=[None],
+        mode='markers',
+        marker=dict(symbol='square', size=10, color='rgba(0,0,0,0)',
+                    line=dict(color='black', width=2)),
+        name='CrystaLLM: perovskite-type',
+        showlegend=True,
+    ))
+
+    # Invisible trace just for the legend entry for heatmap cells
+    fig.add_trace(go.Scatter(
+        x=[None], y=[None],
+        mode='markers',
+        marker=dict(symbol='square', size=10, color='navy'),
+        name='All τ*-stable',
+        showlegend=True,
+    ))
+
+    anion_label = 'S' if anion == 'S' else 'Se'
+    title_text = f'AB{anion_label}₃ — {colorbar_title}'
+
+    # Black border rectangles using axis coordinates — each heatmap cell spans ±0.5
+    shapes = []
+    for _, row in df_crystal_anion.iterrows():
+        if row['B'] in b_idx and row['A'] in a_idx:
+            bi = b_idx[row['B']]
+            ai = a_idx[row['A']]
+            shapes.append(dict(
+                type='rect',
+                xref='x', yref='y',
+                x0=bi - 0.5, x1=bi + 0.5,
+                y0=ai - 0.5, y1=ai + 0.5,
+                line=dict(color='black', width=2),
+                fillcolor='rgba(0,0,0,0)',
+            ))
+
+    fig.update_layout(
+        title=title_text,
+        xaxis=dict(title='Cation B', tickangle=90, type='category',
+                   categoryorder='array', categoryarray=b_order),
+        yaxis=dict(title='Cation A', type='category',
+                   categoryorder='array', categoryarray=a_order),
+        template='plotly_white',
+        height=700,
+        shapes=shapes,
+        legend=dict(x=0.01, y=0.99, bgcolor='rgba(255,255,255,0.7)'),
+    )
+    return fig
+
+
+def pareto_front_interactive(df: pd.DataFrame, variable: str, Eg_ref: float = 1.34,
+                              plot_PCE: bool = False,
+                              sj_limit_path: Path = RAW_DATA_DIR / "SJ_limit.csv",
+                              dj_limit_path: Path = RAW_DATA_DIR / "DJ_limit.csv") -> Any:
+    """Create interactive Pareto front scatter plot for bandgap deviation vs sustainability metric.
+
+    Interactive Plotly version of :func:`pareto_front_plot`. Points are colored
+    by their Pareto status (gray=dominated, blue=near-optimal, red=Pareto-optimal)
+    with hover text showing formula, bandgap, and metric value.
+
+    Args:
+        df: DataFrame with 'bandgap', 'formula', 'A', 'B', and sustainability metric columns.
+        variable: Sustainability metric column name ('HHI', 'SR', or '1-CL score').
+        Eg_ref: Reference bandgap in eV (1.34 for single-junction, 1.71 for tandem).
+        plot_PCE: If True, overlay theoretical PCE limit colormap background.
+        sj_limit_path: Path to single-junction Shockley-Queisser limit CSV.
+        dj_limit_path: Path to dual-junction limit CSV for tandem cells.
+
+    Returns:
+        plotly.graph_objects.Figure: Interactive Pareto front figure.
+    """
+    import numpy as np
+    import plotly.graph_objects as go
+    import pandas as pd
+
+    df = df[df['B'] != 'U']
+    df = df[df['A'] != 'U'].reset_index(drop=True).copy()
+    cols = [variable, 'Eg_dev']
+    df["Eg_dev"] = abs(Eg_ref - df["bandgap"])
+
+    is_pareto = np.ones(len(df), dtype=bool)
+    for i, point in df[cols].iterrows():
+        if is_pareto[i]:
+            is_pareto[is_pareto] = ~(
+                (df.loc[is_pareto, cols] >= point).all(axis=1) &
+                (df.loc[is_pareto, cols] > point).any(axis=1)
+            )
+            is_pareto[i] = True
+
+    df['color_group'] = 'Dominated'
+    df.loc[df['Eg_dev'] / Eg_ref <= 0.10, 'color_group'] = 'Near-optimal'
+    var_min, var_max = df[variable].min(), df[variable].max()
+    if var_max > var_min:
+        df.loc[(df[variable] - var_min) / (var_max - var_min) <= 0.10, 'color_group'] = 'Near-optimal'
+    df.loc[is_pareto, 'color_group'] = 'Pareto-optimal'
+
+    variable_title = {
+        'HHI': 'Herfindahl-Hirschman Index (HHI)',
+        'SR': 'Supply Risk (SR)',
+        '1-CL score': '1 − Crystal-likeness Score (CLS)',
+    }
+
+    def _hover(row):
+        bg_sigma = f" ± {row['bandgap_sigma']:.3f}" if 'bandgap_sigma' in row.index else ''
+        return (f"<b>{row['formula']}</b><br>"
+                f"E<sub>g</sub> = {row['bandgap']:.3f}{bg_sigma} eV<br>"
+                f"|{Eg_ref:.2f} − E<sub>g</sub>| = {row['Eg_dev']:.3f} eV<br>"
+                f"{variable} = {row[variable]:.3f}")
+
+    groups = [
+        ('Dominated', 'circle', 'rgba(80,80,80,0.6)', 'gray'),
+        ('Near-optimal', 'square', 'rgba(30,100,200,0.8)', 'blue'),
+        ('Pareto-optimal', 'triangle-up', 'rgba(200,30,30,0.9)', 'red'),
+    ]
+
+    fig = go.Figure()
+
+    if plot_PCE:
+        try:
+            limit_df = pd.read_csv(sj_limit_path if Eg_ref == 1.34 else dj_limit_path)
+            pce_vals = limit_df['PCE (%)'].values
+            xlims = [0, df["Eg_dev"].max() * 1.1]
+            ylims = [df[variable].min() * 0.9, df[variable].max() * 1.1]
+            if Eg_ref == 1.34:
+                colorscale_pce = [[0, 'rgba(255,255,255,0)'], [1, 'rgba(0,150,80,0.35)']]
+                cmin_pce, cmax_pce = 0, 35
+            else:
+                colorscale_pce = [[0, 'rgba(255,255,255,0)'], [1, 'rgba(0,80,180,0.35)']]
+                cmin_pce, cmax_pce = 29, 45
+            fig.add_trace(go.Heatmap(
+                z=[pce_vals],
+                x=list(xlims),
+                y=list(ylims),
+                colorscale=colorscale_pce,
+                zmin=cmin_pce, zmax=cmax_pce,
+                colorbar=dict(title='PCE limit (%)', x=1.12, len=0.5, y=0.8),
+                hoverinfo='skip',
+                showscale=True,
+            ))
+        except FileNotFoundError:
+            pass
+
+    for group_name, marker_sym, color, _ in groups:
+        df_g = df[df['color_group'] == group_name]
+        if df_g.empty:
+            continue
+        fig.add_trace(go.Scatter(
+            x=df_g['Eg_dev'],
+            y=df_g[variable],
+            mode='markers',
+            marker=dict(symbol=marker_sym, size=10, color=color,
+                        line=dict(color='black', width=0.8)),
+            name=group_name,
+            hovertext=[_hover(row) for _, row in df_g.iterrows()],
+            hoverinfo='text',
+        ))
+
+    arch = 'Single junction' if Eg_ref == 1.34 else 'Tandem top cell'
+    fig.update_layout(
+        title=f'{variable_title.get(variable, variable)} — {arch} (E<sub>g</sub><sup>opt</sup> = {Eg_ref} eV)',
+        xaxis=dict(title=f'|{Eg_ref:.2f} − E<sub>g</sub>| (eV)', rangemode='tozero'),
+        yaxis=dict(title=variable_title.get(variable, variable), rangemode='tozero'),
+        template='plotly_white',
+        height=520,
+        legend=dict(x=0.65, y=0.98, bgcolor='rgba(255,255,255,0.7)'),
+    )
+    return fig
+
+
+def corr_matrix_interactive(df: pd.DataFrame, metrics: List[str], dict_labels: Dict[str, str]) -> Any:
+    """Create interactive Spearman rank correlation matrix heatmap.
+
+    Interactive Plotly version of :func:`corr_matrix`. Generates an annotated
+    heatmap of pairwise Spearman correlations between screening metrics with
+    hover text showing exact ρ values.
+
+    Note:
+        Uses Spearman rank correlation (consistent with the paper), whereas the
+        static :func:`corr_matrix` uses Pearson correlation.
+
+    Args:
+        df: DataFrame containing the metric columns to analyze.
+        metrics: List of metric column names to include in correlation analysis.
+        dict_labels: Dictionary mapping column names to display labels.
+
+    Returns:
+        plotly.graph_objects.Figure: Interactive correlation heatmap.
+    """
+    import plotly.graph_objects as go
+    import numpy as np
+
+    available_metrics = [m for m in metrics if m in df.columns]
+    corr_data = df[available_metrics].dropna()
+    corr = corr_data.corr(method='spearman')
+
+    labels = [dict_labels.get(m, m) for m in available_metrics]
+    z = corr.values
+    n = len(labels)
+
+    # Build annotation text
+    text = [[f'ρ = {z[i][j]:.3f}' for j in range(n)] for i in range(n)]
+
+    fig = go.Figure(go.Heatmap(
+        z=z,
+        x=labels,
+        y=labels,
+        colorscale='RdBu_r',
+        zmin=-1, zmax=1,
+        text=text,
+        texttemplate='%{text}',
+        hovertemplate='%{y} vs %{x}<br>%{text}<extra></extra>',
+        colorbar=dict(title='ρ (Spearman)'),
+    ))
+
+    fig.update_layout(
+        title='Spearman rank correlation — screening metrics',
+        xaxis=dict(tickangle=30),
+        template='plotly_white',
+        height=480,
+        width=540,
+    )
+    return fig
+
+
 if __name__ == "__main__":
     app()

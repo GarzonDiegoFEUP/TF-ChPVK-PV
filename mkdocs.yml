@@ -10,6 +10,7 @@ nav:
   - Getting Started: getting-started.md
   - Pipeline: pipeline.md
   - References & Citation: references.md
+  - Interactive Figures: interactive-figures.md
 
 plugins:
   - search

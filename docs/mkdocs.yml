@@ -9,6 +9,7 @@ nav:
   - Home: index.md
   - Getting Started: getting-started.md
   - Pipeline: pipeline.md
+  - Interactive Figures: interactive-figures.md
   - References & Citation: references.md
 
 plugins:
