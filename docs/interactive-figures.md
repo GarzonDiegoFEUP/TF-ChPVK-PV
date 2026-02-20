@@ -10,7 +10,7 @@ python docs/generate_interactive_figures.py
 ```
 
 from the repository root. Output HTML files land in
-`docs/docs/assets/figures/` (CDN-linked Plotly, requires an internet
+`docs/assets/figures/` (CDN-linked Plotly, requires an internet
 connection to render).
 
 ---
@@ -18,12 +18,24 @@ connection to render).
 ## Figure 3 — τ* stability over ionic-radii space
 
 Logistic-calibrated probability P(τ\*) of perovskite-type structural stability
-as a function of the A-site (r_A) and B-site (r_B) ionic radii for ABS₃ (left)
-and ABSe₃ (right) compositions. Hover over the experimental compound markers to
-see the formula, radii, and stability class.
+as a function of the A-site (r_A) and B-site (r_B) ionic radii.
+Hover over the experimental compound markers to see the formula, radii, and
+stability class.
+
+### ABS₃
 
 <iframe
-  src="assets/figures/colormap_radii_prob.html"
+  src="../assets/figures/colormap_radii_prob_S.html"
+  width="100%"
+  height="560px"
+  frameborder="0"
+  scrolling="no">
+</iframe>
+
+### ABSe₃
+
+<iframe
+  src="../assets/figures/colormap_radii_prob_Se.html"
   width="100%"
   height="560px"
   frameborder="0"
@@ -32,13 +44,27 @@ see the formula, radii, and stability class.
 
 <details>
 <summary>Show raw τ* values instead of P(τ*)</summary>
+
+**ABS₃**
+
 <iframe
-  src="assets/figures/colormap_radii_tsisso.html"
+  src="../assets/figures/colormap_radii_tsisso_S.html"
   width="100%"
   height="560px"
   frameborder="0"
   scrolling="no">
 </iframe>
+
+**ABSe₃**
+
+<iframe
+  src="../assets/figures/colormap_radii_tsisso_Se.html"
+  width="100%"
+  height="560px"
+  frameborder="0"
+  scrolling="no">
+</iframe>
+
 </details>
 
 ---
@@ -53,9 +79,9 @@ structure. Hover to see the formula and exact bandgap.
 ### ABS₃ bandgap matrix
 
 <iframe
-  src="assets/figures/plot_matrix_Eg_S.html"
+  src="../assets/figures/plot_matrix_Eg_S.html"
   width="100%"
-  height="640px"
+  height="740px"
   frameborder="0"
   scrolling="no">
 </iframe>
@@ -63,9 +89,9 @@ structure. Hover to see the formula and exact bandgap.
 ### ABSe₃ bandgap matrix
 
 <iframe
-  src="assets/figures/plot_matrix_Eg_Se.html"
+  src="../assets/figures/plot_matrix_Eg_Se.html"
   width="100%"
-  height="640px"
+  height="740px"
   frameborder="0"
   scrolling="no">
 </iframe>
@@ -80,9 +106,9 @@ probability of perovskite-type stability derived from τ\*.
 ### ABS₃ probability matrix
 
 <iframe
-  src="assets/figures/plot_matrix_prob_S.html"
+  src="../assets/figures/plot_matrix_prob_S.html"
   width="100%"
-  height="640px"
+  height="740px"
   frameborder="0"
   scrolling="no">
 </iframe>
@@ -90,9 +116,9 @@ probability of perovskite-type stability derived from τ\*.
 ### ABSe₃ probability matrix
 
 <iframe
-  src="assets/figures/plot_matrix_prob_Se.html"
+  src="../assets/figures/plot_matrix_prob_Se.html"
   width="100%"
-  height="640px"
+  height="740px"
   frameborder="0"
   scrolling="no">
 </iframe>
@@ -114,7 +140,7 @@ Hover over any point to see the formula, bandgap, and SR.
 ### Single-junction photovoltaics (E_g^opt = 1.34 eV)
 
 <iframe
-  src="assets/figures/pareto_SR_sj.html"
+  src="../assets/figures/pareto_SR_sj.html"
   width="100%"
   height="560px"
   frameborder="0"
@@ -124,7 +150,7 @@ Hover over any point to see the formula, bandgap, and SR.
 ### Tandem top cell (E_g^opt = 1.71 eV)
 
 <iframe
-  src="assets/figures/pareto_SR_tandem.html"
+  src="../assets/figures/pareto_SR_tandem.html"
   width="100%"
   height="560px"
   frameborder="0"
@@ -142,7 +168,7 @@ Pareto-optimal materials; squares indicate tandem-optimal materials.
 ### Single-junction (E_g^opt = 1.34 eV)
 
 <iframe
-  src="assets/figures/pareto_CLS_sj.html"
+  src="../assets/figures/pareto_CLS_sj.html"
   width="100%"
   height="560px"
   frameborder="0"
@@ -152,7 +178,7 @@ Pareto-optimal materials; squares indicate tandem-optimal materials.
 ### Tandem top cell (E_g^opt = 1.71 eV)
 
 <iframe
-  src="assets/figures/pareto_CLS_tandem.html"
+  src="../assets/figures/pareto_CLS_tandem.html"
   width="100%"
   height="560px"
   frameborder="0"
@@ -169,7 +195,7 @@ that each pipeline stage captures largely independent information. Hover for
 exact values.
 
 <iframe
-  src="assets/figures/corr_matrix.html"
+  src="../assets/figures/corr_matrix.html"
   width="600px"
   height="520px"
   frameborder="0"

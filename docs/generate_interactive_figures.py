@@ -85,12 +85,14 @@ df_crystal_sisso_hhi_cl = df_crystal_sisso_hhi.merge(
 # 2. Figure 3 — colormap_radii (stability heatmap over rA/rB space)
 # ---------------------------------------------------------------------------
 print("\n[Fig 3] Colormap radii (P(τ*)) …")
-fig = colormap_radii_interactive(df=df_valid, exp_df=df_exp, t_sisso=False)
-_save(fig, "colormap_radii_prob.html")
+for anion in ["S", "Se"]:
+    fig = colormap_radii_interactive(df=df_valid, exp_df=df_exp, t_sisso=False, anion=anion)
+    _save(fig, f"colormap_radii_prob_{anion}.html")
 
 print("[Fig 3alt] Colormap radii (τ* raw) …")
-fig = colormap_radii_interactive(df=df_valid, exp_df=df_exp, t_sisso=True)
-_save(fig, "colormap_radii_tsisso.html")
+for anion in ["S", "Se"]:
+    fig = colormap_radii_interactive(df=df_valid, exp_df=df_exp, t_sisso=True, anion=anion)
+    _save(fig, f"colormap_radii_tsisso_{anion}.html")
 
 # ---------------------------------------------------------------------------
 # 3. Figure 5 — plot_matrix (element×element bandgap matrix)

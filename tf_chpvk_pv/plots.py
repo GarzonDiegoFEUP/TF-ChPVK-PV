@@ -1277,21 +1277,23 @@ def corr_matrix(df: pd.DataFrame, metrics: List[str], dict_labels: Dict[str, str
 
 
 
-def colormap_radii_interactive(df: pd.DataFrame, exp_df: pd.DataFrame, clf_proba: Optional[Any] = None, t_sisso: bool = False) -> Any:
-    """Create interactive 2D heatmap of stability predictions vs ionic radii for S and Se anions.
+def colormap_radii_interactive(df: pd.DataFrame, exp_df: pd.DataFrame, clf_proba: Optional[Any] = None, t_sisso: bool = False, anion: Optional[str] = None) -> Any:
+    """Create interactive 2D heatmap of stability predictions vs ionic radii.
 
-    Interactive Plotly version of :func:`colormap_radii`. Generates side-by-side
-    heatmaps showing t_sisso or P(t_sisso) values across the (rA, rB) ionic radii
-    space, with experimentally observed compounds as hoverable markers.
+    Interactive Plotly version of :func:`colormap_radii`. Generates heatmaps
+    showing t_sisso or P(t_sisso) values across the (rA, rB) ionic radii space,
+    with experimentally observed compounds as hoverable markers.
 
     Args:
         df: DataFrame with predicted compositions containing rA, rB, rX columns.
         exp_df: DataFrame with experimental compounds for overlay markers, indexed by material name.
         clf_proba: Pre-trained Platt scaling classifier; if None, loads from file.
         t_sisso: If True, plot raw t_sisso values; if False, plot P(t_sisso).
+        anion: If 'S' or 'Se', render a single-panel figure for that anion only.
+            If None (default), render both side-by-side.
 
     Returns:
-        plotly.graph_objects.Figure: Interactive figure with two subplots.
+        plotly.graph_objects.Figure: Interactive figure.
     """
     import numpy as np
     import plotly.graph_objects as go
@@ -1374,6 +1376,28 @@ def colormap_radii_interactive(df: pd.DataFrame, exp_df: pd.DataFrame, clf_proba
         colorbar=dict(title=colorbar_title, x=1.02),
         hovertemplate='rA = %{x:.1f} pm<br>rB = %{y:.1f} pm<br>' + colorbar_title + ' = %{z:.3f}<extra></extra>',
     )
+
+    if anion is not None:
+        # Single-anion figure: full width, no subplots
+        rX_val = rX_range[0] if anion == 'S' else rX_range[1]
+        z = z_S if anion == 'S' else z_Se
+        anion_label = anion
+        title_text = f'AB{anion_label}₃ — {colorbar_title}'
+
+        fig = go.Figure()
+        fig.add_trace(go.Heatmap(z=z, showscale=True, **heatmap_kwargs))
+        for trace in _exp_traces(rX_val, 1):
+            fig.add_trace(trace)
+
+        fig.update_xaxes(title_text='r<sub>A</sub> (pm)', range=[110, 180])
+        fig.update_yaxes(title_text='r<sub>B</sub> (pm)', range=[50, 120])
+        fig.update_layout(
+            title=title_text,
+            height=540,
+            template='plotly_white',
+            legend=dict(x=0.01, y=0.01, bgcolor='rgba(255,255,255,0.7)'),
+        )
+        return fig
 
     fig.add_trace(go.Heatmap(z=z_S, showscale=False, **heatmap_kwargs), row=1, col=1)
     fig.add_trace(go.Heatmap(z=z_Se, showscale=True, **heatmap_kwargs), row=1, col=2)
@@ -1528,7 +1552,7 @@ def plot_matrix_interactive(df_out: pd.DataFrame, df_crystal: pd.DataFrame, anio
                    categoryorder='array',
                    categoryarray=df_anion['A'].unique().tolist()),
         template='plotly_white',
-        height=600,
+        height=700,
         legend=dict(x=0.01, y=0.99, bgcolor='rgba(255,255,255,0.7)'),
     )
     return fig
