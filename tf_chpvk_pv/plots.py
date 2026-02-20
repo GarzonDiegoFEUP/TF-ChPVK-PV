@@ -828,6 +828,11 @@ def plot_matrix(df_out: pd.DataFrame, df_crystal: pd.DataFrame, anion: str = 'S'
     df_sisso['Z_B'] = df_sisso.B.map(element_to_number)
     df_sisso.sort_values(by=['Z_A', 'Z_B'], inplace=True, ascending=[True, True])
 
+    # Build x-axis positions sorted by atomic number
+    sorted_B = sorted(df_out['B'].unique(), key=lambda x: element_to_number[x])
+    b_to_idx = {b: i for i, b in enumerate(sorted_B)}
+    df_out['x_pos'] = df_out['B'].map(b_to_idx)
+    df_sisso['x_pos'] = df_sisso['B'].map(b_to_idx)
 
     #sns.set_theme(style="whitegrid")
     sns.set_context('talk')
@@ -859,10 +864,10 @@ def plot_matrix(df_out: pd.DataFrame, df_crystal: pd.DataFrame, anion: str = 'S'
         vmin_, vmax_ = df_out[parameter].min(), df_out[parameter].max()
 
         
-    im1 = ax.scatter(df_out.B, df_out.A, c=df_out[parameter], marker='s',
+    im1 = ax.scatter(df_out.x_pos, df_out.A, c=df_out[parameter], marker='s',
                 vmin=vmin_, vmax=vmax_, cmap=cmap_, s=size_markers)
     
-    ax.scatter(df_crab.B, df_crab.A, marker='s',
+    ax.scatter(df_crab.x_pos, df_crab.A, marker='s',
                 edgecolor="black", color="None", s=size_markers)
 
     cbar1 = plt.colorbar(im1, ax=ax)
@@ -877,7 +882,8 @@ def plot_matrix(df_out: pd.DataFrame, df_crystal: pd.DataFrame, anion: str = 'S'
     # Tweak the figure to finalize
     ax.set(xlabel="Cation B", ylabel="Cation A", aspect="equal")
 
-    plt.xticks(rotation=90)
+    ax.set_xticks(range(len(sorted_B)))
+    ax.set_xticklabels(sorted_B, rotation=90)
     #plt.grid(color='None', linestyle='-')
     #ax.set_frame_on(False)
     ax.grid(False)
